@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import type { GetStaticPaths } from "astro"
 import Layout from "@/layouts/main.astro"
 import Moon from "@/components/moon.astro"
@@ -33,7 +34,9 @@ const r = review.data
 
 // The homepage picks have local photos; the rest still come from the old site
 const local = HOME_PICKS.find((p) => p.id === review.id)
-const photos = local ? local.photos.map((p) => `/img/home/${p}.jpg`) : r.images
+const photos = local
+  ? local.photos.map((p) => url(`/img/home/${p}.jpg`))
+  : r.images
 // A dish that has its own photo shows it beside its line in the dish list,
 // and that photo then leaves the gallery so it isn't shown twice
 const dishMap: Record<string, string> =
@@ -41,7 +44,7 @@ const dishMap: Record<string, string> =
 const dishPhoto = (item: string) => {
   const text = item.toLowerCase()
   const key = Object.keys(dishMap).find((k) => text.includes(k))
-  return key ? dishMap[key] : undefined
+  return key ? url(dishMap[key]!) : undefined
 }
 const inDishes = new Set(
   r.body.flatMap((b) =>
@@ -127,7 +130,7 @@ const description =
         )}
       </div>
       <div class="head-inner">
-        <a class="back" href="/restaurantes">
+        <a class="back" href={url("/restaurantes")}>
           ← Todas las reseñas
         </a>
         <div class="head-bottom">
@@ -185,7 +188,7 @@ const description =
               <span>{line}</span>
             ))}
             {onMap && (
-              <a class="map-link" href={`/mapa?r=${review.id}`}>
+              <a class="map-link" href={url(`/mapa?r=${review.id}`)}>
                 Ver en el mapa →
               </a>
             )}
@@ -297,7 +300,7 @@ const description =
         <div>
           <span class="eyebrow">¿Es tu restaurante?</span>
           <p>Luce tus {formatScore(r.score)} lunas en la puerta y en tu web.</p>
-          <a href={`/sello/${review.id}`}>Consigue el sello →</a>
+          <a href={url(`/sello/${review.id}`)}>Consigue el sello →</a>
         </div>
       </aside>
     )}

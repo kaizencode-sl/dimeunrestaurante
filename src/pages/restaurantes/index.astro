@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
 import Moon from "@/components/moon.astro"
 import {
@@ -38,7 +39,7 @@ const searchText = ({ data: r }: (typeof reviews)[number]) => {
 
 const cover = (id: string, images: string[]) => {
   const local = HOME_PICKS.find((p) => p.id === id)
-  return local ? `/img/home/${local.photos[0]}.jpg` : images[0]
+  return local ? url(`/img/home/${local.photos[0]}.jpg`) : images[0]
 }
 ---
 

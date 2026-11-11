@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
 import Moon from "@/components/moon.astro"
 import ShadedMoon from "@/components/shaded-moon.astro"
@@ -34,7 +35,7 @@ const latest = reviews
 const picks = HOME_PICKS.flatMap(({ id, photos }) => {
   const review = reviews.find((r) => r.id === id)
   return review
-    ? [{ review, photos: photos.map((p) => `/img/home/${p}.jpg`) }]
+    ? [{ review, photos: photos.map((p) => url(`/img/home/${p}.jpg`)) }]
     : []
 })
 
@@ -89,7 +90,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         <div class="hero-media" data-hero-media>
           <div class="hero-frame" data-hero-frame>
             <img
-              src="/img/home/umiko-0.jpg"
+              src={url("/img/home/umiko-0.jpg")}
               alt="Ostras con caviar sobre hielo en Umiko"
               fetchpriority="high"
             />
@@ -100,7 +101,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
               preload="none"
               aria-hidden="true"
               data-hero-video
-              data-src="/video/ostras.mp4"
+              data-src={url("/video/ostras.mp4")}
             ></video>
           </div>
         </div>
@@ -173,7 +174,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         <ul class="examples">
           {SCALE.map((e) => (
             <li class="ex" data-at={e.at}>
-              <a href={`/restaurantes/${e.slug}`}>
+              <a href={url(`/restaurantes/${e.slug}`)}>
                 <Moon score={e.at} class="ex-moon" />
                 {e.name}
                 <b>{e.at}</b>
@@ -265,7 +266,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         <h2 data-chars>Madrid</h2>
         <p>
           Algunas de sus notas más altas.{" "}
-          <a href="/restaurantes">Ver las {reviews.length}</a>
+          <a href={url("/restaurantes")}>Ver las {reviews.length}</a>
         </p>
       </div>
       <div class="reviews-grid">
@@ -302,7 +303,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         </p>
         <div class="final-map" data-moon-map data-home-map>
           <div class="map" data-map></div>
-          <a class="map-open" href="/mapa">
+          <a class="map-open" href={url("/mapa")}>
             Abrir el mapa de lunas →
           </a>
         </div>
@@ -398,7 +399,9 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         io.disconnect()
         const [{ moonMap }, pins] = await Promise.all([
           import("@/lib/moon-map"),
-          fetch("/mapa/lunas.json").then((r) => r.json()),
+          fetch(
+            `${import.meta.env.BASE_URL.replace(/\/$/, "")}/mapa/lunas.json`
+          ).then((r) => r.json()),
         ])
         moonMap(homeMap, pins, { embedded: true })
       },

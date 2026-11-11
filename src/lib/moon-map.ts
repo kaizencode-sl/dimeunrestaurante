@@ -13,6 +13,7 @@ import "@/styles/moon-map.css"
 import { moonPath } from "@/lib/moon"
 
 import type { Pin } from "@/lib/pins"
+import { url } from "@/lib/url"
 export type { Pin }
 
 const STYLE = "https://tiles.openfreemap.org/styles/dark"
@@ -129,7 +130,7 @@ const escape = (s: string) =>
 
 function card(p: Pin) {
   const score = String(p.score).replace(".", ",")
-  return `<a class="map-card" href="/restaurantes/${p.id}">
+  return `<a class="map-card" href="${url(`/restaurantes/${p.id}`)}">
     ${p.photo ? `<img src="${escape(p.photo)}" alt="" loading="lazy" />` : ""}
     <span class="map-card-body">
       <span class="map-card-city">${escape(p.city)}</span>

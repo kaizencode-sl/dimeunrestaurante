@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
 import { getReviews, formatScore } from "@/lib/reviews"
 import { SEAL_MIN, sealUrl } from "@/lib/seal"
@@ -41,7 +42,7 @@ const sealed = (await getReviews())
     <ul class="grid" data-grid>
       {sealed.map((r) => (
         <li data-text={fold(`${r.data.name} ${r.data.city}`)}>
-          <a href={`/sello/${r.id}`}>
+          <a href={url(`/sello/${r.id}`)}>
             <img
               src={sealUrl(r.id)}
               alt=""

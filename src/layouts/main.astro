@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import "@/styles/global.css"
 import SiteNav from "@/components/site-nav.astro"
 import PhaseStrip from "@/components/phase-strip.astro"
@@ -21,7 +22,7 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
     <link
       rel="preload"
       as="font"
@@ -38,6 +39,7 @@ const {
     />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {import.meta.env.PUBLIC_PREVIEW && <meta name="robots" content="noindex" />}
     <script is:inline>
       // Hidden start states only apply when the animations will run
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {

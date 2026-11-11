@@ -1,5 +1,6 @@
 import { getReviews, HOME_PICKS } from "@/lib/reviews"
 import geo from "@/data/geo.json"
+import { url } from "@/lib/url"
 
 /** A restaurant on the moon map */
 export type Pin = {
@@ -34,7 +35,7 @@ export async function getPins(): Promise<Pin[]> {
         score: r.score,
         headline: r.headline,
         photo: local
-          ? `/img/home/${local.photos[0]}.jpg`
+          ? url(`/img/home/${local.photos[0]}.jpg`)
           : (r.images[0] ?? null),
         lon: g.lon,
         lat: g.lat,

@@ -1,6 +1,7 @@
 import qrcode from "qrcode-generator"
 import { moonPath } from "@/lib/moon"
 import { Type } from "@/lib/seal-type"
+import { url } from "@/lib/url"
 
 /** Restaurants get a seal from this score up */
 export const SEAL_MIN = 7
@@ -40,10 +41,10 @@ const escape = (s: string) =>
   )
 
 export const sealUrl = (id: string, theme: SealTheme = "noche") =>
-  `/sello/${theme === "claro" ? `${id}-claro` : id}.svg`
+  url(`/sello/${theme === "claro" ? `${id}-claro` : id}.svg`)
 
 export const signUrl = (id: string, theme: SealTheme = "noche") =>
-  `/sello/${id}-cartel${theme === "claro" ? "-claro" : ""}.svg`
+  url(`/sello/${id}-cartel${theme === "claro" ? "-claro" : ""}.svg`)
 
 /** A four-point sparkle, the site's star, centred on x,y */
 const sparkle = (x: number, y: number, r: number, fill: string) =>

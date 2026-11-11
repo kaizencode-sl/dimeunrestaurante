@@ -7,6 +7,7 @@
  * the palette's moonlight. Returns null without WebGL; the SVG moon underneath
  * stays as the fallback until the textures are in.
  */
+import { url } from "@/lib/url"
 
 const VERT = `
 attribute vec2 a;
@@ -237,8 +238,8 @@ function mount(canvas: HTMLCanvasElement): MoonGL | null {
   }).observe(canvas)
 
   Promise.all([
-    loadImage("/textures/moon-albedo.webp"),
-    loadImage("/textures/moon-height.webp"),
+    loadImage(url("/textures/moon-albedo.webp")),
+    loadImage(url("/textures/moon-height.webp")),
   ])
     .then(([a, h]) => {
       texture(0, a, "albedo")

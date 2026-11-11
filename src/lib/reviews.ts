@@ -1,8 +1,9 @@
 import { getCollection, type CollectionEntry } from "astro:content"
+import { url } from "@/lib/url"
 
 export type Review = CollectionEntry<"reviews">
 
-export const reviewUrl = (id: string) => `/restaurantes/${id}`
+export const reviewUrl = (id: string) => url(`/restaurantes/${id}`)
 
 /** "9.5" → "9,5" */
 export const formatScore = (score: number | null) =>
@@ -10,7 +11,12 @@ export const formatScore = (score: number | null) =>
 
 /** Reviews newest visit first, as imported */
 export async function getReviews() {
-  return getCollection("reviews")
+  const reviews = await getCollection("reviews")
+  // Local photos live under the site's base
+  return reviews.map((r) => ({
+    ...r,
+    data: { ...r.data, images: r.data.images.map(url) },
+  }))
 }
 
 /**

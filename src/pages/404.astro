@@ -1,4 +1,5 @@
 ---
+import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
 import Moon from "@/components/moon.astro"
 import Stars from "@/components/stars.astro"
@@ -16,9 +17,9 @@ import Stars from "@/components/stars.astro"
       <h1>Esta luna no ha salido</h1>
       <p>La página que buscas no existe, o se ha movido.</p>
       <nav class="lost-links" aria-label="Sigue por aquí">
-        <a href="/">Inicio</a>
-        <a href="/restaurantes">Restaurantes</a>
-        <a href="/mapa">Mapa de lunas</a>
+        <a href={url("/")}>Inicio</a>
+        <a href={url("/restaurantes")}>Restaurantes</a>
+        <a href={url("/mapa")}>Mapa de lunas</a>
       </nav>
     </div>
   </main>

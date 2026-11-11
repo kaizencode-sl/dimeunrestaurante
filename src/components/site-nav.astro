@@ -1,9 +1,15 @@
 ---
+import { url } from "@/lib/url"
 import Moon from "@/components/moon.astro"
 ---
 
 <header class="nav" data-nav>
-  <a class="logo" href="/" aria-label="Dime un restaurante, inicio" data-tone>
+  <a
+    class="logo"
+    href={url("/")}
+    aria-label="Dime un restaurante, inicio"
+    data-tone
+  >
     DIME
   </a>
   <span class="when" data-tone>
@@ -38,10 +44,10 @@ import Moon from "@/components/moon.astro"
     </script>
   </span>
   <nav class="links" data-tone>
-    <a class="link" href="/mapa">
+    <a class="link" href={url("/mapa")}>
       Mapa
     </a>
-    <a class="link" href="/restaurantes">
+    <a class="link" href={url("/restaurantes")}>
       Restaurantes
     </a>
   </nav>
