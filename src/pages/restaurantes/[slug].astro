@@ -35,6 +35,33 @@ const local = HOME_PICKS.find((p) => p.id === review.id)
 const photos = local ? local.photos.map((p) => `/img/home/${p}.jpg`) : r.images
 const [cover, ...gallery] = photos
 
+// Photos go into the text instead of piling up at the end: roughly one
+// moment every three paragraphs, alternating a wide photo and a pair. What
+// doesn't fit in the text closes the review as a strip you can swipe.
+type Moment = { kind: "wide" | "pair"; photos: string[] }
+const paragraphs = r.body
+  .map((b, i) => (b.type === "p" && i > 0 ? i : -1))
+  .filter((i) => i >= 0 && i < r.body.length - 1)
+const moments: Moment[] = []
+let used = 0
+const slots = Math.min(4, Math.floor(paragraphs.length / 3))
+for (let k = 0; k < slots && used < gallery.length; k++) {
+  const kind = k % 2 === 0 || gallery.length - used < 2 ? "wide" : "pair"
+  const take = kind === "wide" ? 1 : 2
+  moments.push({ kind, photos: gallery.slice(used, used + take) })
+  used += take
+}
+// Block index → the moment shown after it, spread evenly through the text
+const after = new Map(
+  moments.map((m, k) => [
+    paragraphs[
+      Math.floor(((k + 1) * paragraphs.length) / (moments.length + 1))
+    ],
+    m,
+  ])
+)
+const rest = gallery.slice(used, 16)
+
 const visit = r.visit
   ? r.visit.toLowerCase().replace(/^./, (c) => c.toUpperCase())
   : null
@@ -158,8 +185,8 @@ const description =
           ))}
         </ul>
       )}
-      <div class="text">
-        {r.body.map((block) =>
+      <div class="text" data-gallery>
+        {r.body.map((block, i) => [
           block.type === "p" ? (
             <p data-reveal>{block.text}</p>
           ) : block.type === "h" ? (
@@ -172,8 +199,17 @@ const description =
                 <li>{item}</li>
               ))}
             </ol>
-          )
-        )}
+          ),
+          after.has(i) && (
+            <div class:list={["moment", after.get(i)!.kind]}>
+              {after.get(i)!.photos.map((src) => (
+                <figure data-wipe>
+                  <img src={src} alt="" loading="lazy" decoding="async" />
+                </figure>
+              ))}
+            </div>
+          ),
+        ])}
         {ig && (
           <p class="ig-note">
             {ig.kind === "new" ? "Publicada" : "Actualizada"} desde Instagram
@@ -191,13 +227,21 @@ const description =
       </div>
     </article>
 
-    {gallery.length > 0 && (
-      <section class="gallery" data-gallery aria-label="Fotos">
-        {gallery.slice(0, 12).map((src, i) => (
-          <figure data-wipe class={i % 5 === 0 ? "big" : ""}>
-            <img src={src} alt="" loading="lazy" decoding="async" />
-          </figure>
-        ))}
+    {rest.length > 0 && (
+      <section class="gallery" data-gallery aria-label="Más fotos">
+        <p class="gallery-label">
+          Más fotos <span>{rest.length}</span>
+          <span class="gallery-hint" aria-hidden="true">
+            Desliza →
+          </span>
+        </p>
+        <div class="gallery-strip">
+          {rest.map((src) => (
+            <figure data-wipe>
+              <img src={src} alt="" loading="lazy" decoding="async" />
+            </figure>
+          ))}
+        </div>
       </section>
     )}
 
@@ -463,25 +507,86 @@ const description =
     font-variant-numeric: tabular-nums;
   }
 
-  .gallery {
+  /* Photos inside the text */
+  .moment {
+    margin: 2.2em 0 2.4em;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-rows: 22vw;
-    gap: 6px;
-    padding: 0 6px 6px;
-    background: var(--paper);
+    gap: 8px;
   }
-  .gallery figure {
+  .moment.pair {
+    grid-template-columns: 1fr 1fr;
+  }
+  .moment figure {
     margin: 0;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 6px;
     background: var(--photo-bg);
   }
-  .gallery .big {
-    grid-column: span 2;
-    grid-row: span 2;
+  .moment.wide figure {
+    aspect-ratio: 3 / 2;
   }
-  .gallery img {
+  .moment.pair figure {
+    aspect-ratio: 4 / 5;
+  }
+  .moment img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* On a wide screen the single photos reach into the empty right column */
+  @media (min-width: 1200px) {
+    .moment.wide {
+      /* Up to the width of that column (text 680px, gaps and padding 128px) */
+      margin-right: calc(-1 * min(340px, (100vw - 808px) / 2));
+    }
+  }
+
+  /* What's left, as a strip to swipe through */
+  .gallery {
+    padding: 0 0 12vh;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .gallery-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 24px 14px;
+    padding-top: 14px;
+    border-top: 2px solid var(--ink);
+    font: 800 13px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .gallery-label span {
+    color: var(--glow-text);
+  }
+  .gallery-label .gallery-hint {
+    margin-left: auto;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .gallery-strip {
+    display: flex;
+    gap: 8px;
+    padding: 0 24px 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 24px;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .gallery-strip figure {
+    flex: 0 0 auto;
+    height: min(52vh, 460px);
+    aspect-ratio: 4 / 5;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--photo-bg);
+    scroll-snap-align: start;
+  }
+  .gallery-strip img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -560,9 +665,8 @@ const description =
     .text {
       grid-column: 1;
     }
-    .gallery {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: 44vw;
+    .gallery-strip figure {
+      height: 62vw;
     }
   }
 </style>
