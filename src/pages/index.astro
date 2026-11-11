@@ -197,6 +197,16 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
             return (
               <li data-reveal>
                 <a class="card" href={reviewUrl(review.id)} data-cursor="Leer">
+                  {r.images[0] && (
+                    <span class="card-photo">
+                      <img
+                        src={r.images[0]}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  )}
                   <span class="card-meta">
                     <span>{shortDate.format(new Date(ig.date!))}</span>
                     <span class:list={["tag", ig.kind]}>
@@ -616,7 +626,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .card {
     height: 100%;
     display: grid;
-    grid-template-rows: auto auto 1fr auto auto;
+    grid-template-rows: auto auto auto 1fr auto auto;
     gap: 14px;
     padding: 22px 22px 20px;
     border: 2px solid var(--ink);
@@ -631,6 +641,23 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .card:focus-visible {
     background: var(--ink);
     color: var(--paper);
+  }
+  .card-photo {
+    display: block;
+    margin: -10px -10px 4px;
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--photo-bg);
+  }
+  .card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .card:hover .card-photo img {
+    transform: scale(1.05);
   }
   .card-meta {
     display: flex;
@@ -1052,6 +1079,10 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
 
   @media (max-width: 800px) {
+    /* "comemos" / "cenamos" must fit the panel on a phone */
+    .final h2 {
+      font-size: 12vw;
+    }
     .lunas-stage {
       grid-template-columns: 1fr;
       padding: 12vh 24px 0;

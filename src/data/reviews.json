@@ -21,7 +21,15 @@
   "year": 2026,
   "month": 11,
   "address": [],
-  "images": [],
+  "images": [
+   "/img/ig/yakiniku-rikyu-1.webp",
+   "/img/ig/yakiniku-rikyu-0.webp",
+   "/img/ig/yakiniku-rikyu-2.webp",
+   "/img/ig/yakiniku-rikyu-3.webp",
+   "/img/ig/yakiniku-rikyu-4.webp",
+   "/img/ig/yakiniku-rikyu-5.webp",
+   "/img/ig/yakiniku-rikyu-6.webp"
+  ],
   "excerpt": "Es ya una tradición que, cada vez que mis padres vienen a Madrid, acabemos comiendo en YAKINIKU RIKYU. Esta vez, comida para 4.",
   "body": [
    {
@@ -118,7 +126,18 @@
   "year": 2026,
   "month": 11,
   "address": [],
-  "images": [],
+  "images": [
+   "/img/ig/ome-5.webp",
+   "/img/ig/ome-1.webp",
+   "/img/ig/ome-2.webp",
+   "/img/ig/ome-3.webp",
+   "/img/ig/ome-4.webp",
+   "/img/ig/ome-6.webp",
+   "/img/ig/ome-7.webp",
+   "/img/ig/ome-8.webp",
+   "/img/ig/ome-9.webp",
+   "/img/ig/ome-10.webp"
+  ],
   "excerpt": "Tenía ganas de conocer OME, una pequeña barra de cocina mexicana, casi clandestina, a la que se accede a través del portal de un edificio. Cena para 2.",
   "body": [
    {
@@ -237,7 +256,17 @@
   "year": 2026,
   "month": 10,
   "address": [],
-  "images": [],
+  "images": [
+   "/img/ig/agarimo-3.webp",
+   "/img/ig/agarimo-1.webp",
+   "/img/ig/agarimo-2.webp",
+   "/img/ig/agarimo-4.webp",
+   "/img/ig/agarimo-5.webp",
+   "/img/ig/agarimo-6.webp",
+   "/img/ig/agarimo-7.webp",
+   "/img/ig/agarimo-8.webp",
+   "/img/ig/agarimo-9.webp"
+  ],
   "excerpt": "Son ya muchas las visitas a AGARIMO, este pequeño restaurante de cocina gallega con un toque de autor, y esta ha sido la mejor de todas. Cena para 2, yendo muy fuerte.",
   "body": [
    {
@@ -62416,7 +62445,9 @@
    "914 57 33 61",
    "http://www.grupolamaquina.es/puerta-57"
   ],
-  "images": [],
+  "images": [
+   "/img/ig/restaurante-puerta-57-0.webp"
+  ],
   "excerpt": "Pese a ser restaurante, lo más famoso que tiene es su barra, donde puedes picotear producto de primera calidad.",
   "body": [
    {

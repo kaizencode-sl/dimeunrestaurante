@@ -72,6 +72,15 @@ if (instagramDir) {
   }
 }
 
+// Photos saved from the Instagram posts (public/img/ig), cover first
+const instagramPhotos = existsSync("src/data/instagram-photos.json")
+  ? JSON.parse(readFileSync("src/data/instagram-photos.json", "utf8"))
+  : {}
+for (const r of raw) {
+  const photos = instagramPhotos[r.slug]
+  if (photos) r.images = [...photos, ...(r.images ?? [])]
+}
+
 const cities = new Set(raw.map((r) => r.city).filter(Boolean))
 
 // Headlines are stored in capitals. Words he writes capitalised mid-sentence

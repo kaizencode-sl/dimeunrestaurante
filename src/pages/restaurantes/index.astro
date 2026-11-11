@@ -630,6 +630,8 @@ const cover = (id: string, images: string[]) => {
     letter-spacing: -0.02em;
     text-transform: uppercase;
     overflow-wrap: break-word;
+    /* Long names split at a syllable with a hyphen, not mid-letter */
+    hyphens: auto;
   }
   .card p {
     margin: 0;
