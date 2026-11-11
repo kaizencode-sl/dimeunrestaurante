@@ -37,7 +37,8 @@ const SPAIN = "-9.6,35.8,4.4,43.9"
     <aside class="panel">
       <span class="eyebrow">Mapa de lunas</span>
       <h1>
-        <span data-count>{pins.length}</span> restaurantes en lunas
+        <span data-count>{pins.length}</span> restaurantes
+        <br /> en lunas
       </h1>
 
       <label class="min">
@@ -104,16 +105,18 @@ const SPAIN = "-9.6,35.8,4.4,43.9"
     top: 84px;
     left: 24px;
     z-index: 2;
-    width: min(340px, calc(100% - 48px));
+    width: min(360px, calc(100% - 48px));
     padding: 22px;
+    container-type: inline-size;
     border-radius: 6px;
     background: color-mix(in srgb, var(--ink) 82%, transparent);
     backdrop-filter: blur(10px);
     border: 1px solid color-mix(in srgb, var(--paper) 12%, transparent);
   }
+  /* Sized to the panel, not the screen: "restaurantes" has to fit its width */
   h1 {
     margin: 10px 0 0;
-    font: 900 clamp(28px, 3vw, 40px) / 0.92 var(--font-display);
+    font: 900 min(40px, 8.6cqi) / 0.92 var(--font-display);
     font-stretch: 112%;
     letter-spacing: -0.03em;
     text-transform: uppercase;
