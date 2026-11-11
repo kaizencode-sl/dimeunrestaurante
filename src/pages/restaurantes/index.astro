@@ -1,6 +1,7 @@
 ---
 import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
+import { breadcrumbs } from "@/lib/seo"
 import Moon from "@/components/moon.astro"
 import {
   getReviews,
@@ -45,6 +46,10 @@ const cover = (id: string, images: string[]) => {
 
 <Layout
   title="Restaurantes · Dime un restaurante"
+  jsonLd={breadcrumbs([
+    ["Inicio", "/"],
+    ["Restaurantes", "/restaurantes/"],
+  ])}
   description={`Busca entre las ${reviews.length} reseñas de Alberto de Luna por ciudad, plan, precio y lunas.`}
 >
   <main class="page">

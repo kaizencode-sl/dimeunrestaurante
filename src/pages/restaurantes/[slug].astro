@@ -2,6 +2,7 @@
 import { url } from "@/lib/url"
 import type { GetStaticPaths } from "astro"
 import Layout from "@/layouts/main.astro"
+import { reviewGraph } from "@/lib/seo"
 import Moon from "@/components/moon.astro"
 import ReviewRow from "@/components/review-row.astro"
 import RollingScore from "@/components/rolling-score.astro"
@@ -95,7 +96,9 @@ const related = reviews
   .sort((a, b) => (b.data.score ?? 0) - (a.data.score ?? 0))
   .slice(0, 3)
 
-const point = (geo as Record<string, { approx?: boolean }>)[review.id]
+const point = (
+  geo as Record<string, { lat: number; lon: number; approx?: boolean }>
+)[review.id]
 const onMap = point && !point.approx && r.score !== null
 const hasSeal = (r.score ?? 0) >= SEAL_MIN
 
@@ -112,11 +115,24 @@ const igDate = ig?.date
 
 const description =
   r.excerpt || `${r.name}: ${r.headline}. ${formatScore(r.score)} lunas.`
+
+// Shared as its cover photo, or a card with its moon when it has none
+const shareImage = cover ?? `/og/${review.id}.png`
+const jsonLd = reviewGraph(review, {
+  image: cover,
+  geo: point && !point.approx ? point : null,
+})
 ---
 
 <Layout
   title={`${r.name}, ${r.city} · Dime un restaurante`}
   description={description}
+  type="article"
+  image={shareImage}
+  imageAlt={
+    cover ? `Plato en ${r.name}` : `${r.name}: ${formatScore(r.score)} lunas`
+  }
+  jsonLd={jsonLd}
 >
   <main>
     <header class="head" data-review-head data-score={r.score ?? ""}>
@@ -247,7 +263,12 @@ const description =
             <div class:list={["moment", after.get(i)!.kind]}>
               {after.get(i)!.photos.map((src) => (
                 <figure data-wipe>
-                  <img src={src} alt="" loading="lazy" decoding="async" />
+                  <img
+                    src={src}
+                    alt={`Foto de ${r.name}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </figure>
               ))}
             </div>
@@ -281,7 +302,12 @@ const description =
         <div class="gallery-strip">
           {rest.map((src) => (
             <figure data-wipe>
-              <img src={src} alt="" loading="lazy" decoding="async" />
+              <img
+                src={src}
+                alt={`Foto de ${r.name}`}
+                loading="lazy"
+                decoding="async"
+              />
             </figure>
           ))}
         </div>

@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 36 36">
-  <path fill="#000" d="M22.25 4h-8.5a1 1 0 0 0-.96.73l-5.54 19.4a.5.5 0 0 0 .62.62l5.05-1.44a1 1 0 0 0 .67-.55L18 14l4.41 8.76a1 1 0 0 0 .67.55l5.05 1.44a.5.5 0 0 0 .62-.62l-5.54-19.4a1 1 0 0 0-.96-.73Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="32" fill="#0a0a0a"/>
+  <circle cx="32" cy="32" r="22" fill="#3a3632"/>
+  <path transform="translate(32 32)" fill="#f2b33d" d="M0,-22 A22,22 0 0,1 0,22 A9.68,22 0 0,1 0,-22Z"/>
 </svg>

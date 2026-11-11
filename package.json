@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^7",
+    "@astrojs/sitemap": "^3.7.4",
     "@base-ui/react": "^1.9.0",
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9",
     "@eslint/js": "^10",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^26.6.6",
     "eslint": "^10",
     "eslint-plugin-react-hooks": "^7.1.1",

@@ -1,6 +1,7 @@
 ---
 import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
+import { homeGraph } from "@/lib/seo"
 import Moon from "@/components/moon.astro"
 import ShadedMoon from "@/components/shaded-moon.astro"
 import Stars from "@/components/stars.astro"
@@ -67,7 +68,7 @@ const years = new Date().getFullYear() - firstYear
 const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera. Una opinión sin filtro, *puntuada *en *lunas.`
 ---
 
-<Layout>
+<Layout jsonLd={homeGraph()}>
   <div class="loader" data-loader aria-hidden="true">
     <Stars seed={11} />
     <div class="loader-moon">

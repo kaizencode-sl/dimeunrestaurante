@@ -1,5 +1,6 @@
 ---
 import { url } from "@/lib/url"
+import { absolute } from "@/lib/seo"
 import "@/styles/global.css"
 import SiteNav from "@/components/site-nav.astro"
 import PhaseStrip from "@/components/phase-strip.astro"
@@ -10,12 +11,37 @@ import serifItalicUrl from "@fontsource/instrument-serif/files/instrument-serif-
 interface Props {
   title?: string
   description?: string
+  /** Share image: a path on this site or a full URL (1200×630 is best) */
+  image?: string
+  imageAlt?: string
+  /** "article" for a review, "website" for everything else */
+  type?: "website" | "article"
+  /** Keep the page out of search results (it stays reachable) */
+  noindex?: boolean
+  /** Schema.org data for search engines, one object or several */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 
 const {
   title = "Dime un restaurante",
   description = "Restaurantes puntuados en lunas por Alberto de Luna desde 2010.",
+  image = "/og/dime.png",
+  imageAlt = "Dime un restaurante: restaurantes puntuados en lunas por Alberto de Luna",
+  type = "website",
+  noindex = false,
+  jsonLd,
 } = Astro.props
+
+const site = Astro.site ?? new URL("https://dimeunrestaurante.com")
+// One address per page: the built pages all live at /path/ (base included)
+const path = Astro.url.pathname
+  .replace(/\/index\.html$/, "/")
+  .replace(/\/?$/, "/")
+const canonical = new URL(path, site).href
+const imageUrl = absolute(image)
+const preview = Boolean(import.meta.env.PUBLIC_PREVIEW)
+// "</script>" inside a string must not end the JSON-LD block early
+const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
 ---
 
 <html lang="es">
@@ -39,7 +65,30 @@ const {
     />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {import.meta.env.PUBLIC_PREVIEW && <meta name="robots" content="noindex" />}
+    {/* The GitHub Pages preview stays out of search; on the real site only
+        the pages that ask for it do */}
+    {preview || noindex ? (
+      <meta name="robots" content="noindex, follow" />
+    ) : (
+      <link rel="canonical" href={canonical} />
+    )}
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="apple-touch-icon" href={url("/apple-touch-icon.png")} />
+    {!preview && <link rel="sitemap" href={url("/sitemap-index.xml")} />}
+
+    <meta property="og:site_name" content="Dime un restaurante" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    {ld && <script type="application/ld+json" set:html={ld} />}
     <script is:inline>
       // Hidden start states only apply when the animations will run
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {

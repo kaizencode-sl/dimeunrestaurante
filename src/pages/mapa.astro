@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/main.astro"
+import { breadcrumbs } from "@/lib/seo"
 import { getPins, type Pin } from "@/lib/pins"
 
 const pins = await getPins()
@@ -29,6 +30,10 @@ const SPAIN = "-9.6,35.8,4.4,43.9"
 
 <Layout
   title="Mapa de lunas · Dime un restaurante"
+  jsonLd={breadcrumbs([
+    ["Inicio", "/"],
+    ["Mapa de lunas", "/mapa/"],
+  ])}
   description={`Los ${pins.length} restaurantes de Alberto de Luna en el mapa, cada uno con la luna de su nota.`}
 >
   <main class="map-page" data-moon-map data-lenis-prevent>

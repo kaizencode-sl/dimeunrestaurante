@@ -1,6 +1,7 @@
 ---
 import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
+import { breadcrumbs } from "@/lib/seo"
 import { getReviews, formatScore } from "@/lib/reviews"
 import { SEAL_MIN, sealUrl } from "@/lib/seal"
 
@@ -17,6 +18,10 @@ const sealed = (await getReviews())
 
 <Layout
   title="Sello para restaurantes · Dime un restaurante"
+  jsonLd={breadcrumbs([
+    ["Inicio", "/"],
+    ["Sello para restaurantes", "/sello/"],
+  ])}
   description={`Los ${sealed.length} restaurantes con ${SEAL_MIN} lunas o más pueden lucir el sello de Dime un restaurante en su puerta y en su web.`}
 >
   <main class="page">
