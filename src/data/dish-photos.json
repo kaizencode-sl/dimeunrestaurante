@@ -1,0 +1,23 @@
+{
+  "agarimo": {
+    "croqueta": "/img/ig/agarimo-4.webp",
+    "navajas": "/img/ig/agarimo-5.webp",
+    "berberechos": "/img/ig/agarimo-6.webp",
+    "rape curado": "/img/ig/agarimo-7.webp",
+    "molleja": "/img/ig/agarimo-8.webp"
+  },
+  "ome": {
+    "guacamole": "/img/ig/ome-1.webp",
+    "chileatole": "/img/ig/ome-2.webp",
+    "tostada": "/img/ig/ome-3.webp",
+    "gordita": "/img/ig/ome-4.webp",
+    "zarandeado": "/img/ig/ome-5.webp",
+    "nogada": "/img/ig/ome-6.webp",
+    "flauta": "/img/ig/ome-7.webp",
+    "taco de wagyu": "/img/ig/ome-8.webp"
+  },
+  "yakiniku-rikyu": {
+    "karubi": "/img/ig/yakiniku-rikyu-4.webp",
+    "wagyu lomo": "/img/ig/yakiniku-rikyu-1.webp"
+  }
+}

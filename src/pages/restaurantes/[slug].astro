@@ -6,6 +6,7 @@ import ReviewRow from "@/components/review-row.astro"
 import RollingScore from "@/components/rolling-score.astro"
 import { SEAL_MIN, sealUrl } from "@/lib/seal"
 import geo from "@/data/geo.json"
+import dishPhotos from "@/data/dish-photos.json"
 import {
   getReviews,
   formatScore,
@@ -33,7 +34,23 @@ const r = review.data
 // The homepage picks have local photos; the rest still come from the old site
 const local = HOME_PICKS.find((p) => p.id === review.id)
 const photos = local ? local.photos.map((p) => `/img/home/${p}.jpg`) : r.images
-const [cover, ...gallery] = photos
+// A dish that has its own photo shows it beside its line in the dish list,
+// and that photo then leaves the gallery so it isn't shown twice
+const dishMap: Record<string, string> =
+  (dishPhotos as Record<string, Record<string, string>>)[review.id] ?? {}
+const dishPhoto = (item: string) => {
+  const text = item.toLowerCase()
+  const key = Object.keys(dishMap).find((k) => text.includes(k))
+  return key ? dishMap[key] : undefined
+}
+const inDishes = new Set(
+  r.body.flatMap((b) =>
+    b.type === "list" ? b.items.map(dishPhoto).filter(Boolean) : []
+  )
+)
+const [cover, ...gallery] = photos.filter(
+  (src, i) => i === 0 || !inDishes.has(src)
+)
 
 // Photos go into the text instead of piling up at the end: roughly one
 // moment every three paragraphs, alternating a wide photo and a pair. What
@@ -195,9 +212,24 @@ const description =
             </h2>
           ) : (
             <ol class="dishes" data-reveal>
-              {block.items.map((item) => (
-                <li>{item}</li>
-              ))}
+              {block.items.map((item) => {
+                const src = dishPhoto(item)
+                return (
+                  <li class:list={{ "has-photo": src }}>
+                    <span>{item}</span>
+                    {src && (
+                      <img
+                        src={src.replace("/img/ig/", "/img/ig/thumb/")}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width="112"
+                        height="112"
+                      />
+                    )}
+                  </li>
+                )
+              })}
             </ol>
           ),
           after.has(i) && (
@@ -505,6 +537,29 @@ const description =
     font: 800 14px/1.9 var(--font-display);
     color: var(--glow-text);
     font-variant-numeric: tabular-nums;
+  }
+  .dishes li.has-photo {
+    grid-template-columns: 44px 1fr 112px;
+    align-items: center;
+  }
+  .dishes li.has-photo::before {
+    align-self: start;
+  }
+  .dishes img {
+    width: 112px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--photo-bg);
+  }
+  @media (max-width: 600px) {
+    .dishes li.has-photo {
+      grid-template-columns: 32px 1fr 76px;
+    }
+    .dishes img {
+      width: 76px;
+      height: 76px;
+    }
   }
 
   /* Photos inside the text */
