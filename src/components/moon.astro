@@ -1,0 +1,51 @@
+---
+import { moonPath } from "@/lib/moon"
+
+interface Props {
+  /** 0–10; drawn as the phase of the moon */
+  score: number | null
+  class?: string
+  /** Leave the lit part empty so a script can fill it */
+  animated?: boolean
+  glow?: boolean
+}
+
+const { score, class: className, animated = false, glow = false } = Astro.props
+const d = animated ? "" : moonPath((score ?? 0) / 10)
+const glowId = `moon-glow-${Math.random().toString(36).slice(2, 8)}`
+---
+
+<svg
+  class:list={["moon", className]}
+  viewBox="-110 -110 220 220"
+  aria-hidden="true"
+>
+  {glow && (
+    <>
+      <defs>
+        <radialGradient id={glowId}>
+          <stop offset="0.55" stop-color="var(--moon)" stop-opacity="0.22" />
+          <stop offset="1" stop-color="var(--moon)" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle class="moon-glow" r="180" fill={`url(#${glowId})`} />
+    </>
+  )}
+  <circle class="moon-base" r="100" />
+  <path class="moon-lit" d={d} data-moon />
+</svg>
+
+<style>
+  .moon {
+    overflow: visible;
+  }
+  .moon-base {
+    fill: var(--moon-base, var(--night));
+    stroke: var(--moon-ring, transparent);
+    stroke-width: 12;
+  }
+  .moon-lit {
+    fill: var(--moon-lit, var(--moon));
+  }
+  /* A gradient, not a blur: a blurred circle gets cut off by its filter box */
+</style>

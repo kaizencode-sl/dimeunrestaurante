@@ -1,0 +1,219 @@
+---
+import Layout from "@/layouts/main.astro"
+import { getPins, type Pin } from "@/lib/pins"
+
+const pins = await getPins()
+
+// Quick jumps: the cities with most pins, framed on their own pins
+const byCity = new Map<string, Pin[]>()
+for (const p of pins) byCity.set(p.city, [...(byCity.get(p.city) ?? []), p])
+const cities = [...byCity]
+  .sort((a, b) => b[1].length - a[1].length)
+  .slice(0, 10)
+  .map(([city, list]) => {
+    const lons = list.map((p) => p.lon)
+    const lats = list.map((p) => p.lat)
+    return {
+      city,
+      count: list.length,
+      bounds: [
+        Math.min(...lons),
+        Math.min(...lats),
+        Math.max(...lons),
+        Math.max(...lats),
+      ].join(","),
+    }
+  })
+const SPAIN = "-9.6,35.8,4.4,43.9"
+---
+
+<Layout
+  title="Mapa de lunas · Dime un restaurante"
+  description={`Los ${pins.length} restaurantes de Alberto de Luna en el mapa, cada uno con la luna de su nota.`}
+>
+  <main class="map-page" data-moon-map data-lenis-prevent>
+    <div class="map" data-map></div>
+    <script type="application/json" data-pins set:html={JSON.stringify(pins)} />
+    <aside class="panel">
+      <span class="eyebrow">Mapa de lunas</span>
+      <h1>
+        <span data-count>{pins.length}</span> restaurantes en lunas
+      </h1>
+
+      <label class="min">
+        <span class="min-head">
+          <svg viewBox="-110 -110 220 220" aria-hidden="true">
+            <circle r="100"></circle>
+            <path d="" data-min-moon></path>
+          </svg>
+          Desde <strong data-min-label>0</strong> lunas
+        </span>
+        <input type="range" min="0" max="10" step="0.5" value="0" data-min />
+      </label>
+
+      <div class="jumps" role="group" aria-label="Ir a">
+        <button type="button" data-fly={SPAIN}>
+          España
+        </button>
+        {cities.map((c) => (
+          <button type="button" data-fly={c.bounds}>
+            {c.city}
+            <small>{c.count}</small>
+          </button>
+        ))}
+        <button type="button" class="near" data-near>
+          Cerca de mí
+        </button>
+      </div>
+    </aside>
+    <noscript>
+      <p class="noscript">El mapa necesita JavaScript.</p>
+    </noscript>
+  </main>
+</Layout>
+
+<script>
+  import { moonMap, type Pin } from "@/lib/moon-map"
+  const root = document.querySelector<HTMLElement>("[data-moon-map]")!
+  const pins = JSON.parse(
+    root.querySelector("[data-pins]")!.textContent!
+  ) as Pin[]
+  moonMap(root, pins)
+</script>
+
+<style>
+  .map-page {
+    position: relative;
+    height: 100svh;
+    min-height: 560px;
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+  }
+  .map {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s;
+  }
+  .map-page[data-ready] .map {
+    opacity: 1;
+  }
+  .panel {
+    position: absolute;
+    top: 84px;
+    left: 24px;
+    z-index: 2;
+    width: min(340px, calc(100% - 48px));
+    padding: 22px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--ink) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border: 1px solid color-mix(in srgb, var(--paper) 12%, transparent);
+  }
+  h1 {
+    margin: 10px 0 0;
+    font: 900 clamp(28px, 3vw, 40px) / 0.92 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  [data-count] {
+    color: var(--glow);
+    font-variant-numeric: tabular-nums;
+  }
+  .min {
+    display: grid;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .min-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 700 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .min-head svg {
+    width: 20px;
+    height: 20px;
+    overflow: visible;
+  }
+  .min-head circle {
+    fill: var(--night);
+    stroke: var(--glow);
+    stroke-width: 10;
+  }
+  .min-head path {
+    fill: var(--moon);
+  }
+  .min strong {
+    color: var(--glow);
+  }
+  .min input {
+    width: 100%;
+    accent-color: var(--glow);
+  }
+  .jumps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 22px;
+  }
+  .jumps button {
+    cursor: pointer;
+    display: inline-flex;
+    gap: 6px;
+    align-items: baseline;
+    border: 1.5px solid color-mix(in srgb, var(--paper) 30%, transparent);
+    border-radius: 99px;
+    padding: 7px 11px 6px;
+    background: transparent;
+    color: inherit;
+    font: 700 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .jumps small {
+    font-size: 10px;
+    color: var(--grey);
+  }
+  .jumps button:hover,
+  .jumps .near {
+    border-color: var(--glow);
+  }
+  .jumps button:hover {
+    background: var(--glow);
+    color: var(--on-glow);
+  }
+  .jumps button:hover small {
+    color: inherit;
+  }
+  .noscript {
+    position: absolute;
+    inset: auto 24px 24px;
+  }
+
+  @media (max-width: 640px) {
+    .panel {
+      top: auto;
+      bottom: 72px;
+      left: 16px;
+      width: calc(100% - 32px);
+      padding: 16px;
+    }
+    .jumps {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .jumps button {
+      flex-shrink: 0;
+    }
+  }
+</style>

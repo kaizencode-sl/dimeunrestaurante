@@ -1,0 +1,1056 @@
+---
+import Layout from "@/layouts/main.astro"
+import Moon from "@/components/moon.astro"
+import ShadedMoon from "@/components/shaded-moon.astro"
+import Stars from "@/components/stars.astro"
+import { mealQuestion } from "@/lib/meal"
+import { getPins } from "@/lib/pins"
+import ReviewRow from "@/components/review-row.astro"
+import {
+  getReviews,
+  formatScore,
+  HOME_PICKS,
+  reviewUrl,
+  tally,
+} from "@/lib/reviews"
+
+const reviews = await getReviews()
+const cities = tally(reviews, (r) => r.data.city)
+const firstYear = Math.min(...reviews.map((r) => r.data.year ?? 9999))
+
+// The newest reviews, written or updated from Alberto's Instagram posts
+const shortDate = new Intl.DateTimeFormat("es-ES", {
+  day: "numeric",
+  month: "short",
+  timeZone: "UTC",
+})
+const latest = reviews
+  .filter((r) => r.data.instagram?.date)
+  .sort((a, b) =>
+    b.data.instagram!.date!.localeCompare(a.data.instagram!.date!)
+  )
+  .slice(0, 4)
+
+const picks = HOME_PICKS.flatMap(({ id, photos }) => {
+  const review = reviews.find((r) => r.id === id)
+  return review
+    ? [{ review, photos: photos.map((p) => `/img/home/${p}.jpg`) }]
+    : []
+})
+
+// Examples on the moon scale, lit as the scroll passes each score
+// Real reviews along the scale, lit as the moon reaches their score
+const SCALE = [
+  { name: "Pajarita", slug: "pajarita", at: 4 },
+  { name: "OME", slug: "ome", at: 6 },
+  { name: "Yakiniku Rikyu", slug: "yakiniku-rikyu", at: 8 },
+  { name: "Agarimo", slug: "agarimo", at: 9 },
+  { name: "Diverxo", slug: "diverxo", at: 10 },
+]
+
+const marqueeCities = cities.slice(0, 12).map(([c]) => c.toUpperCase())
+const lineA = marqueeCities.filter((_, i) => i % 2 === 0)
+const lineB = marqueeCities.filter((_, i) => i % 2 === 1)
+
+const FILTERS = [
+  { label: "Todos", value: "all" },
+  { label: "Primera cita", value: "Para primera cita" },
+  { label: "Con amigos", value: "Para ir con amigos" },
+  { label: "Con padres", value: "Para ir con padres" },
+  { label: "De barra", value: "De barra" },
+  { label: "Menú degustación", value: "De Menú Degustación" },
+]
+
+const mapCount = (await getPins()).length
+const years = new Date().getFullYear() - firstYear
+const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera. Una opinión sin filtro, *puntuada *en *lunas.`
+---
+
+<Layout>
+  <div class="loader" data-loader aria-hidden="true">
+    <Stars seed={11} />
+    <div class="loader-moon">
+      <Moon score={0} animated class="loader-disc" />
+      <div class="loader-stamp" data-loader-stamp>
+        DIME
+      </div>
+    </div>
+    <div class="loader-count">
+      <span data-count={reviews.length}>000</span>
+      <small>restaurantes puntuados</small>
+    </div>
+    <div class="loader-who">por Alberto de Luna</div>
+  </div>
+
+  <main>
+    <section class="hero" data-hero aria-label="Portada">
+      <div class="hero-stage">
+        <Stars seed={11} />
+        <div class="hero-media" data-hero-media>
+          <img
+            src="/img/home/umiko-0.jpg"
+            alt="Ostras con caviar sobre hielo en Umiko"
+            fetchpriority="high"
+          />
+        </div>
+        <div class="hero-meta" data-hero-meta>
+          <p>La vida es demasiado corta como para no disfrutarla comiendo.</p>
+          <div class="kv">
+            {reviews.length} restaurantes
+            <br />
+            {cities.length} ciudades
+            <br />
+            Desde {firstYear}
+          </div>
+        </div>
+        <span class="scrollcue" data-hero-meta>
+          <span>Baja</span>
+        </span>
+        <h1 class="hero-word" data-hero-word aria-label="Dime">
+          {[..."DIME"].map((c) => (
+            <span class="char" aria-hidden="true">
+              {c}
+            </span>
+          ))}
+        </h1>
+      </div>
+    </section>
+
+    <section class="manifesto" aria-label="Qué es Dime">
+      <p data-words>
+        {manifesto
+          .split(" ")
+          .map((w) =>
+            w.startsWith("*") ? (
+              <span class="word red">{w.slice(1)}</span>
+            ) : (
+              <span class="word">{w}</span>
+            )
+          )}
+      </p>
+      <span class="sig">Alberto de Luna, 151.000 seguidores en Instagram</span>
+      <svg class="orbit" data-orbit viewBox="0 0 1200 200" aria-hidden="true">
+        <path
+          class="orbit-path"
+          d="M20,170 C260,170 360,30 600,30 S940,170 1180,170"
+        ></path>
+        <g class="orbit-moon" data-orbit-moon>
+          <circle r="22"></circle>
+          <path d=""></path>
+        </g>
+      </svg>
+    </section>
+
+    <section class="lunas" data-moon-scrub aria-label="Cómo puntúa">
+      <Stars seed={3} count={80} class="lunas-stars" />
+      <div class="lunas-stage">
+        <div class="lunas-left">
+          <span class="eyebrow">Cómo puntúa</span>
+          <h2>
+            En lunas,
+            <br />
+            del 0 al 10
+          </h2>
+          <div class="num">
+            <span data-score>10</span>
+            <small>lunas</small>
+          </div>
+        </div>
+        <div class="moonwrap">
+          <ShadedMoon score={10} class="big-moon" />
+        </div>
+        <ul class="examples">
+          {SCALE.map((e) => (
+            <li class="ex" data-at={e.at}>
+              <a href={`/restaurantes/${e.slug}`}>
+                <Moon score={e.at} class="ex-moon" />
+                {e.name}
+                <b>{e.at}</b>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    {latest.length > 0 && (
+      <section class="latest" aria-labelledby="latest-title">
+        <div class="latest-head">
+          <span class="eyebrow">Recién salidas de Instagram</span>
+          <h2 id="latest-title">Últimas reseñas</h2>
+        </div>
+        <ol class="latest-list">
+          {latest.map((review) => {
+            const r = review.data
+            const ig = r.instagram!
+            return (
+              <li data-reveal>
+                <a class="card" href={reviewUrl(review.id)} data-cursor="Leer">
+                  <span class="card-meta">
+                    <span>{shortDate.format(new Date(ig.date!))}</span>
+                    <span class:list={["tag", ig.kind]}>
+                      {ig.kind === "new" ? "Nueva" : "Actualizada"}
+                    </span>
+                  </span>
+                  <span class="card-score">
+                    <Moon score={r.score} class="card-moon" />
+                    <b>{formatScore(r.score)}</b>
+                    <small>lunas</small>
+                  </span>
+                  <span class="card-name">{r.name}</span>
+                  <span class="card-head">“{r.headline}”</span>
+                  <span class="card-foot">
+                    {[r.city, r.price ?? r.paid].filter(Boolean).join(" · ")}
+                  </span>
+                </a>
+              </li>
+            )
+          })}
+        </ol>
+      </section>
+    )}
+
+    <section class="cities" aria-label="Ciudades">
+      <div class="marquee" data-marquee="left">
+        {lineA.map((c, i) =>
+          i % 2 ? <span class="o">{c}</span> : <span>{c}</span>
+        )}
+      </div>
+      <div class="marquee m2" data-marquee="right">
+        {lineB.map((c, i) =>
+          i % 2 ? <span>{c}</span> : <span class="o">{c}</span>
+        )}
+      </div>
+      <span class="sticker" data-drop="-12" style="left:12%;top:16%">
+        Para primera cita
+      </span>
+      <span class="sticker" data-drop="8" style="left:58%;top:44%">
+        Para ir con padres
+      </span>
+      <span class="sticker" data-drop="-5" style="left:30%;top:70%">
+        Para cenar tarde
+      </span>
+      <span class="sticker" data-drop="14" style="left:78%;top:12%">
+        De barra
+      </span>
+      <p class="lead">
+        Cada sitio, con su plan: para una primera cita, para ir con tus padres o
+        para cuando sales tarde y la cocina sigue abierta.
+      </p>
+    </section>
+
+    <section class="reviews" aria-label="Reseñas">
+      <div class="reviews-head">
+        <h2 data-chars>Madrid</h2>
+        <p>
+          Algunas de sus notas más altas.{" "}
+          <a href="/restaurantes">Ver las {reviews.length}</a>
+        </p>
+      </div>
+      <div class="reviews-grid">
+        <nav class="filters" aria-label="Filtrar por plan">
+          <b>Planes</b>
+          {FILTERS.map((f, i) => (
+            <button
+              class="fbtn"
+              type="button"
+              data-filter={f.value}
+              aria-pressed={i === 0 ? "true" : "false"}
+            >
+              {f.label}
+            </button>
+          ))}
+        </nav>
+        <div class="rows" data-rows>
+          {picks.map(({ review, photos }, i) => (
+            <ReviewRow review={review} index={i} photos={photos} />
+          ))}
+          <p class="empty" data-empty hidden>
+            Ninguna de estas encaja. Prueba en el buscador.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="final" aria-label="Dime un restaurante">
+      <div class="final-panel" data-close>
+        <div class="final-moon" aria-hidden="true">
+          <Moon score={10} class="final-disc" />
+        </div>
+        <h2 data-meal-question>{mealQuestion()}</h2>
+        <p class="final-lede">
+          {mapCount} restaurantes en el mapa, cada uno con su luna. Busca el que
+          tienes más cerca.
+        </p>
+        <div class="final-map" data-moon-map data-home-map>
+          <div class="map" data-map></div>
+          <a class="map-open" href="/mapa">
+            Abrir el mapa de lunas →
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { gsap } from "gsap"
+  import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+
+  // Plan filters re-deal the rows
+  const buttons = [
+    ...document.querySelectorAll<HTMLButtonElement>("[data-filter]"),
+  ]
+  const rows = [
+    ...document.querySelectorAll<HTMLElement>("[data-rows] [data-row]"),
+  ]
+  const empty = document.querySelector<HTMLElement>("[data-empty]")
+  const apply = (filter: string) => {
+    rows.forEach((r) => {
+      r.hidden =
+        filter !== "all" && !(r.dataset.plans ?? "").split("|").includes(filter)
+    })
+    if (empty) empty.hidden = rows.some((r) => !r.hidden)
+    ScrollTrigger.refresh()
+  }
+  buttons.forEach((b) =>
+    b.addEventListener("click", () => {
+      buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)))
+      const filter = b.dataset.filter ?? "all"
+      if (reduce) return apply(filter)
+      gsap.to(rows, {
+        opacity: 0,
+        y: 20,
+        duration: 0.25,
+        stagger: 0.03,
+        onComplete: () => {
+          apply(filter)
+          gsap.fromTo(
+            rows.filter((r) => !r.hidden),
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.07,
+              ease: "power3.out",
+            }
+          )
+        },
+      })
+    })
+  )
+
+  // The moon map loads only when the closing panel is about to show
+  const homeMap = document.querySelector<HTMLElement>("[data-home-map]")
+  if (homeMap) {
+    const io = new IntersectionObserver(
+      async ([entry]) => {
+        if (!entry.isIntersecting) return
+        io.disconnect()
+        const [{ moonMap }, pins] = await Promise.all([
+          import("@/lib/moon-map"),
+          fetch("/mapa/lunas.json").then((r) => r.json()),
+        ])
+        moonMap(homeMap, pins, { embedded: true })
+      },
+      { rootMargin: "800px 0px" }
+    )
+    io.observe(homeMap)
+  }
+</script>
+
+<style>
+  /* Loader: only when the animations run and the intro hasn't played this session */
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--stage);
+    display: none;
+    place-items: center;
+    color: var(--on-stage);
+  }
+  :global(.motion:not(.intro-seen)) .loader {
+    display: grid;
+  }
+  /* The moon waxes with the counter, then becomes the window onto the hero photo */
+  .loader-moon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--moon-size);
+    height: var(--moon-size);
+  }
+  .loader-moon :global(.loader-disc) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .loader-stamp {
+    position: relative;
+    color: var(--ink);
+    font: 900 clamp(40px, 8vmin, 110px) / 1 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: 0.02em;
+    border: 0.06em solid currentColor;
+    padding: 0.08em 0.22em 0.02em;
+    transform: rotate(-6deg) scale(1.6);
+    opacity: 0;
+  }
+  .loader-count {
+    position: absolute;
+    left: 24px;
+    bottom: 20px;
+    font: 800 clamp(40px, 7vw, 96px) / 1 var(--font-display);
+    font-stretch: 62%;
+    font-variant-numeric: tabular-nums;
+  }
+  .loader-count small {
+    display: block;
+    font: 600 12px/1.2 var(--font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .loader-who {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    font: italic 400 clamp(18px, 2.2vw, 28px) / 1.1 var(--font-serif);
+    text-align: right;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    height: 200svh;
+    background: var(--stage);
+  }
+  .hero-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+  }
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    will-change: clip-path;
+  }
+  :global(.motion) .hero-media {
+    clip-path: circle(0px at 50% 50%);
+  }
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  :global(.motion) .hero-media img {
+    transform: scale(1.25);
+  }
+  .hero-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(0 0 0 / 35%),
+      transparent 30%,
+      transparent 55%,
+      rgb(0 0 0 / 55%)
+    );
+  }
+  .hero-word {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.06em;
+    margin: 0;
+    text-align: center;
+    font: 900 clamp(120px, 31vw, 560px) / 0.78 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: -0.045em;
+    color: var(--glow);
+    white-space: nowrap;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .hero-word .char {
+    display: inline-block;
+    will-change: transform;
+  }
+  .hero-meta {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 84px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    z-index: 3;
+    color: #fff;
+  }
+  .hero-meta p {
+    margin: 0;
+    max-width: 30ch;
+    font: italic 400 clamp(20px, 2.3vw, 30px) / 1.1 var(--font-serif);
+  }
+  .hero-meta .kv {
+    font: 600 12px/1.6 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+  .scrollcue {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    z-index: 3;
+    font: 600 11px/1 var(--font-display);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  /* Manifesto */
+  .manifesto {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 18vh 24px 16vh;
+  }
+  .manifesto p {
+    margin: 0 auto;
+    max-width: 1200px;
+    font: 800 clamp(34px, 5.6vw, 92px) / 1 var(--font-display);
+    font-stretch: 88%;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  /* Latest */
+  .latest {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 14vh 24px 16vh;
+  }
+  .latest-head {
+    max-width: 1500px;
+    margin: 0 auto 4vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .latest-head .eyebrow {
+    color: var(--glow-text);
+    order: 2;
+  }
+  .latest h2 {
+    margin: 0;
+    font: 900 clamp(44px, 6vw, 96px) / 0.9 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.035em;
+  }
+  .latest-list {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    gap: 14px;
+    padding: 22px 22px 20px;
+    border: 2px solid var(--ink);
+    border-radius: 18px;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      background 0.35s,
+      color 0.35s;
+  }
+  .card:hover,
+  .card:focus-visible {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: 700 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .tag {
+    border-radius: 99px;
+    padding: 6px 10px 5px;
+    background: var(--glow);
+    color: var(--on-glow);
+  }
+  .tag.update {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px currentColor;
+    color: inherit;
+  }
+  .card-score {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .card-score :global(.card-moon) {
+    width: 44px;
+    height: 44px;
+    align-self: center;
+    --moon-base: var(--night);
+    --moon-lit: var(--glow);
+  }
+  .card-score b {
+    font: 800 64px/0.8 var(--font-display);
+    font-stretch: 62%;
+    letter-spacing: -0.03em;
+  }
+  .card-score small {
+    font: 700 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--glow-text);
+  }
+  .card:hover .card-score small {
+    color: var(--glow);
+  }
+  .card-name {
+    align-self: end;
+    font: 900 clamp(28px, 2.6vw, 40px) / 0.92 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+  }
+  .card-head {
+    font: italic 400 19px/1.25 var(--font-serif);
+  }
+  .card-foot {
+    padding-top: 12px;
+    border-top: 1px solid currentColor;
+    font: 600 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  .word {
+    display: inline-block;
+    margin-right: 0.22em;
+  }
+  :global(.motion) .word {
+    opacity: 0.12;
+  }
+  .word.red {
+    color: var(--glow-text);
+  }
+  .sig {
+    display: block;
+    margin: 40px auto 0;
+    max-width: 1200px;
+    font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  /* A moon crossing the page on its orbit, waxing as it goes */
+  .orbit {
+    display: block;
+    width: 100%;
+    max-width: 1400px;
+    height: auto;
+    margin: 4vh auto 0;
+    overflow: visible;
+  }
+  .orbit-path {
+    fill: none;
+    stroke: var(--glow-text);
+    stroke-width: 2;
+    stroke-dasharray: 2 10;
+    stroke-linecap: round;
+  }
+  .orbit-moon circle {
+    fill: var(--ink);
+  }
+  .orbit-moon path {
+    fill: var(--glow);
+  }
+
+  /* Lunas */
+  .lunas {
+    position: relative;
+    height: 340svh;
+    background: var(--ink);
+  }
+  .lunas-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 560px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 24px;
+    padding: 0 6vw;
+  }
+  .lunas-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lunas h2 {
+    margin: 0;
+    font: 900 clamp(48px, 7vw, 120px) / 0.86 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.035em;
+  }
+  .num {
+    font: 800 clamp(120px, 20vw, 320px) / 0.8 var(--font-display);
+    font-stretch: 62%;
+    font-variant-numeric: tabular-nums;
+    color: var(--moon);
+    letter-spacing: -0.03em;
+  }
+  /* As wide as "0,5" whatever the value, so "lunas" doesn't slide about as
+     the number changes */
+  .num [data-score] {
+    display: inline-block;
+    min-width: 2.35ch;
+  }
+  .num small {
+    font: 700 max(13px, 0.075em) / 1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--glow);
+    margin-left: 0.6em;
+  }
+  .moonwrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .lunas :global(.lunas-stars) {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
+  }
+  .moonwrap :global(.big-moon) {
+    width: min(42vw, 520px);
+    height: auto;
+  }
+  .examples {
+    position: absolute;
+    right: 6vw;
+    bottom: 8vh;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: right;
+  }
+  .ex {
+    font: 700 14px/1.2 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--grey);
+    transition:
+      color 0.3s,
+      opacity 0.3s;
+    opacity: 0.55;
+  }
+  .ex a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .ex a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .ex :global(.ex-moon) {
+    width: 14px;
+    height: 14px;
+    --moon-base: transparent;
+    --moon-ring: currentColor;
+    --moon-lit: currentColor;
+  }
+  .ex b {
+    font-variant-numeric: tabular-nums;
+    margin-left: 10px;
+  }
+  .ex:global(.is-on) {
+    color: var(--paper);
+    opacity: 1;
+  }
+  .ex:global(.is-on) b {
+    color: var(--glow);
+  }
+
+  /* Cities */
+  .cities {
+    position: relative;
+    background: var(--glow);
+    color: var(--ink);
+    padding: 14vh 0 16vh;
+    overflow: hidden;
+  }
+  .marquee {
+    display: flex;
+    gap: 0.3em;
+    width: max-content;
+    white-space: nowrap;
+    font: 900 clamp(90px, 17vw, 300px) / 0.84 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: -0.04em;
+    will-change: transform;
+  }
+  .marquee .o {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+  }
+  .m2 {
+    margin-top: 2vh;
+  }
+  .cities .sticker {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .lead {
+    position: relative;
+    z-index: 2;
+    max-width: 46ch;
+    margin: 6vh 24px 0 auto;
+    padding-right: 6vw;
+    font: italic 400 clamp(20px, 2.2vw, 30px) / 1.15 var(--font-serif);
+  }
+
+  /* Reviews */
+  .reviews {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 14vh 24px 18vh;
+  }
+  .reviews-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    flex-wrap: wrap;
+    max-width: 1500px;
+    margin: 0 auto 6vh;
+  }
+  .reviews-head h2 {
+    margin: 0;
+    font: 900 clamp(56px, 9vw, 150px) / 0.85 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.04em;
+  }
+  .reviews-head p {
+    margin: 0;
+    max-width: 36ch;
+    font: italic 400 22px/1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  .reviews-head a {
+    color: var(--glow-text);
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 40px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  .filters {
+    position: sticky;
+    top: 90px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .filters b {
+    font: 800 13px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .fbtn {
+    all: unset;
+    cursor: pointer;
+    font: 600 17px/1.7 var(--font-display);
+    color: var(--grey);
+    transition:
+      color 0.2s,
+      transform 0.2s;
+  }
+  .fbtn:hover {
+    color: var(--ink);
+    transform: translateX(4px);
+  }
+  .fbtn[aria-pressed="true"] {
+    color: var(--glow-text);
+  }
+  .fbtn[aria-pressed="true"]::before {
+    content: "● ";
+    font-size: 0.7em;
+    vertical-align: 2px;
+  }
+  .fbtn:focus-visible {
+    outline: 2px solid var(--glow-text);
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+  .rows :global([hidden]) {
+    display: none;
+  }
+  .empty {
+    font: italic 400 24px/1.2 var(--font-serif);
+    color: var(--grey);
+  }
+
+  /* Final */
+  .final {
+    position: relative;
+    background: var(--ink);
+    padding: 10vh 16px 0;
+  }
+  .final-panel {
+    position: relative;
+    overflow: hidden;
+    background: var(--glow);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 12vh 6vw 10vh;
+    transform-origin: center top;
+    text-align: center;
+  }
+  /* A large faint moon rising behind the question */
+  .final-moon {
+    position: absolute;
+    right: -12vw;
+    top: -8vw;
+    width: 48vw;
+    max-width: 720px;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .final-moon :global(.final-disc) {
+    width: 100%;
+    height: auto;
+    --moon-base: transparent;
+    --moon-lit: var(--paper);
+  }
+  .final h2 {
+    position: relative;
+  }
+  .final h2 {
+    margin: 0;
+    font: 900 clamp(56px, 10vw, 190px) / 0.84 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+  .final-lede {
+    position: relative;
+    max-width: 34ch;
+    margin: 4vh auto 0;
+    font: italic 400 clamp(20px, 2.2vw, 30px) / 1.15 var(--font-serif);
+  }
+  .final-map {
+    position: relative;
+    height: min(72vh, 680px);
+    min-height: 420px;
+    margin: 6vh auto 0;
+    max-width: 1400px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--ink);
+    text-align: left;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 25%);
+  }
+  .final-map .map {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s;
+  }
+  .final-map[data-ready] .map {
+    opacity: 1;
+  }
+  .map-open {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 2;
+    padding: 14px 20px 13px;
+    border-radius: 99px;
+    background: var(--glow);
+    color: var(--on-glow);
+    font: 900 13px/1 var(--font-display);
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: transform 0.25s;
+  }
+  .map-open:hover {
+    transform: scale(1.05) rotate(-2deg);
+  }
+
+  @media (max-width: 800px) {
+    .lunas-stage {
+      grid-template-columns: 1fr;
+      padding: 12vh 24px 0;
+      align-content: start;
+    }
+    .moonwrap :global(.big-moon) {
+      width: 62vw;
+    }
+    .examples {
+      position: static;
+      text-align: left;
+      margin-top: 10px;
+    }
+    .reviews-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .filters {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+    }
+    .filters b {
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .hero-meta {
+      flex-direction: column;
+    }
+    .hero-meta .kv {
+      text-align: left;
+    }
+  }
+</style>

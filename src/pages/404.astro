@@ -1,0 +1,93 @@
+---
+import Layout from "@/layouts/main.astro"
+import Moon from "@/components/moon.astro"
+import Stars from "@/components/stars.astro"
+---
+
+<Layout
+  title="Página no encontrada · Dime un restaurante"
+  description="Esta página no existe."
+>
+  <main class="lost">
+    <Stars seed={404} class="lost-stars" />
+    <div class="lost-inner">
+      <Moon score={0} class="lost-moon" />
+      <span class="eyebrow">Error 404</span>
+      <h1>Esta luna no ha salido</h1>
+      <p>La página que buscas no existe, o se ha movido.</p>
+      <nav class="lost-links" aria-label="Sigue por aquí">
+        <a href="/">Inicio</a>
+        <a href="/restaurantes">Restaurantes</a>
+        <a href="/mapa">Mapa de lunas</a>
+      </nav>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .lost {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 110px 24px 80px;
+    background: var(--stage);
+    color: var(--paper);
+    text-align: center;
+  }
+  .lost :global(.lost-stars) {
+    position: absolute;
+    inset: 0;
+  }
+  .lost-inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+  }
+  .lost :global(.lost-moon) {
+    width: clamp(120px, 18vw, 200px);
+    height: auto;
+    margin-bottom: 12px;
+    --moon-base: var(--night);
+    --moon-ring: color-mix(in srgb, var(--moon) 35%, transparent);
+  }
+  h1 {
+    margin: 0;
+    font: 900 clamp(44px, 7vw, 110px) / 0.88 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  p {
+    margin: 0;
+    font: italic 400 clamp(20px, 2vw, 26px) / 1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  .lost-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .lost-links a {
+    border: 1.5px solid color-mix(in srgb, var(--paper) 35%, transparent);
+    border-radius: 99px;
+    padding: 10px 16px 9px;
+    color: inherit;
+    font: 800 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .lost-links a:hover {
+    background: var(--glow);
+    border-color: var(--glow);
+    color: var(--on-glow);
+  }
+</style>

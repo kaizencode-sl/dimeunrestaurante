@@ -1,0 +1,39 @@
+---
+import Moon from "@/components/moon.astro"
+import { formatScore } from "@/lib/reviews"
+
+interface Props {
+  score: number | null
+  class?: string
+}
+
+const { score, class: className } = Astro.props
+---
+
+<span class:list={["stamp", className]} data-stamp data-score={score ?? 0}>
+  <Moon score={score} class="stamp-moon" />
+  {formatScore(score)} lunas
+</span>
+
+<style>
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--glow-text);
+    border: 2px solid var(--glow-text);
+    border-radius: 99px;
+    padding: 6px 14px 6px 8px;
+    font: 900 15px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .stamp :global(.stamp-moon) {
+    width: 22px;
+    height: 22px;
+    --moon-base: transparent;
+    --moon-ring: var(--glow-text);
+    --moon-lit: var(--glow-text);
+  }
+</style>

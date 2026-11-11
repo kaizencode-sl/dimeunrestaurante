@@ -1,0 +1,30 @@
+---
+import Moon from "@/components/moon.astro"
+
+/** The lunar cycle in a row, from new to full; the moons wax one after another as it comes into view */
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+const PHASES = [0, 1.25, 2.5, 3.75, 5, 6.25, 7.5, 8.75, 10]
+---
+
+<div class:list={["phases", className]} data-phases aria-hidden="true">
+  {PHASES.map((p) => (
+    <Moon score={p} class="phase" />
+  ))}
+</div>
+
+<style>
+  .phases {
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 2vw, 28px);
+  }
+  .phases :global(.phase) {
+    width: clamp(18px, 2.4vw, 34px);
+    height: auto;
+    --moon-base: color-mix(in srgb, var(--moon) 10%, transparent);
+  }
+</style>

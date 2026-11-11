@@ -1,0 +1,72 @@
+---
+/**
+ * The big moon with volume: a WebGL sphere (see lib/moon-gl.ts) over the flat
+ * SVG moon, which stays as the fallback when WebGL is missing. A script can
+ * drive both by the phase; on its own it shows the given score.
+ */
+import Moon from "@/components/moon.astro"
+
+interface Props {
+  score: number
+  class?: string
+}
+
+const { score, class: className } = Astro.props
+---
+
+<div class:list={["shaded", className]} data-moon-gl-wrap>
+  <Moon score={score} glow class="shaded-flat" />
+  <canvas
+    class="shaded-gl"
+    data-moon-gl
+    data-score={score}
+    data-scale="1.7"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  import { moonGL } from "@/lib/moon-gl"
+
+  document
+    .querySelectorAll<HTMLCanvasElement>("[data-moon-gl]")
+    .forEach((canvas) => {
+      const gl = moonGL(canvas)
+      // Only the first frame; an animation takes over from here if there is one
+      gl?.render(Number(canvas.dataset.score) / 10)
+    })
+</script>
+
+<style>
+  .shaded {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .shaded :global(.shaded-flat) {
+    width: 100%;
+    height: auto;
+  }
+  .shaded-gl {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 170%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    pointer-events: none;
+    display: none;
+  }
+  .shaded:global(.is-gl) .shaded-gl {
+    display: block;
+    animation: moon-in 0.8s ease-out;
+  }
+  @keyframes moon-in {
+    from {
+      opacity: 0;
+    }
+  }
+  .shaded:global(.is-gl) :global(.shaded-flat) {
+    visibility: hidden;
+  }
+</style>

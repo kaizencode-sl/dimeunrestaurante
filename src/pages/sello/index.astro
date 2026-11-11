@@ -1,0 +1,162 @@
+---
+import Layout from "@/layouts/main.astro"
+import { getReviews, formatScore } from "@/lib/reviews"
+import { SEAL_MIN, sealUrl } from "@/lib/seal"
+
+const fold = (s: string) =>
+  s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+
+const sealed = (await getReviews())
+  .filter((r) => (r.data.score ?? 0) >= SEAL_MIN)
+  .sort(
+    (a, b) =>
+      b.data.score! - a.data.score! || a.data.name.localeCompare(b.data.name)
+  )
+---
+
+<Layout
+  title="Sello para restaurantes · Dime un restaurante"
+  description={`Los ${sealed.length} restaurantes con ${SEAL_MIN} lunas o más pueden lucir el sello de Dime un restaurante en su puerta y en su web.`}
+>
+  <main class="page">
+    <header class="intro">
+      <span class="eyebrow">Sello para restaurantes</span>
+      <h1>Luce tus lunas</h1>
+      <p class="lede">
+        Si tu restaurante tiene {SEAL_MIN} lunas o más, tiene sello. Para la
+        puerta, la carta o tu web, y siempre enlazado a la reseña.
+      </p>
+      <label class="search">
+        <span class="sr-only">Busca tu restaurante</span>
+        <input
+          type="search"
+          data-q
+          placeholder="Busca tu restaurante…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </label>
+    </header>
+
+    <ul class="grid" data-grid>
+      {sealed.map((r) => (
+        <li data-text={fold(`${r.data.name} ${r.data.city}`)}>
+          <a href={`/sello/${r.id}`}>
+            <img
+              src={sealUrl(r.id)}
+              alt=""
+              width="400"
+              height="400"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="name">{r.data.name}</span>
+            <span class="meta">
+              {r.data.city} · {formatScore(r.data.score)}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="empty" data-empty hidden>
+      Ninguno coincide. El sello es para restaurantes con {SEAL_MIN} lunas o
+      más.
+    </p>
+  </main>
+</Layout>
+
+<script>
+  const fold = (s: string) =>
+    s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+  const q = document.querySelector<HTMLInputElement>("[data-q]")!
+  const items = document.querySelectorAll<HTMLElement>("[data-grid] li")
+  const empty = document.querySelector<HTMLElement>("[data-empty]")!
+  q.addEventListener("input", () => {
+    const terms = fold(q.value).split(/\s+/).filter(Boolean)
+    let shown = 0
+    items.forEach((li) => {
+      const hit = terms.every((t) => li.dataset.text!.includes(t))
+      li.hidden = !hit
+      if (hit) shown++
+    })
+    empty.hidden = shown > 0
+  })
+</script>
+
+<style>
+  .page {
+    min-height: 100svh;
+    padding: 110px 24px 12vh;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .intro {
+    max-width: 900px;
+  }
+  h1 {
+    margin: 12px 0 0;
+    font: 900 clamp(56px, 10vw, 160px) / 0.84 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+  }
+  .lede {
+    max-width: 50ch;
+    margin: 20px 0 0;
+    font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  .search input {
+    width: min(100%, 520px);
+    margin-top: 40px;
+    padding: 14px 0;
+    border: 0;
+    border-bottom: 2px solid var(--paper);
+    background: transparent;
+    color: inherit;
+    font: 700 clamp(20px, 2vw, 26px) / 1 var(--font-display);
+    outline: none;
+  }
+  .search input::placeholder {
+    color: var(--dim);
+  }
+  .search input:focus {
+    border-color: var(--glow);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+    gap: 40px 24px;
+    margin: 64px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .grid a {
+    display: grid;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .grid img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .grid a:hover img {
+    transform: rotate(-8deg) scale(1.04);
+  }
+  .name {
+    font: 800 15px/1.1 var(--font-display);
+  }
+  .meta {
+    font: 600 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grey);
+  }
+  .empty {
+    margin-top: 40px;
+    color: var(--grey);
+  }
+</style>

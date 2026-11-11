@@ -1,0 +1,312 @@
+---
+import type { GetStaticPaths } from "astro"
+import Layout from "@/layouts/main.astro"
+import { getReviews, reviewUrl, formatScore, type Review } from "@/lib/reviews"
+import { SEAL_MIN, sealSvg, sealUrl, type SealTheme } from "@/lib/seal"
+
+export const getStaticPaths = (async () => {
+  const reviews = await getReviews()
+  return reviews
+    .filter((r) => (r.data.score ?? 0) >= SEAL_MIN)
+    .map((review) => ({ params: { slug: review.id }, props: { review } }))
+}) satisfies GetStaticPaths
+
+interface Props {
+  review: Review
+}
+
+const { review } = Astro.props
+const r = review.data
+const score = r.score!
+const site = Astro.site ?? new URL("https://dimeunrestaurante.com")
+const absolute = (path: string) => new URL(path, site).href
+
+const THEMES: { theme: SealTheme; label: string }[] = [
+  { theme: "noche", label: "Noche" },
+  { theme: "claro", label: "Claro" },
+]
+const embed = (theme: SealTheme) =>
+  `<a href="${absolute(reviewUrl(review.id))}" title="${r.name} en Dime un restaurante"><img src="${absolute(sealUrl(review.id, theme))}" alt="${formatScore(score)} lunas en Dime un restaurante" width="160" height="160"></a>`
+---
+
+<Layout
+  title={`Sello de ${r.name} · Dime un restaurante`}
+  description={`${r.name} tiene ${formatScore(score)} lunas. Descarga su sello de Dime un restaurante o insértalo en tu web.`}
+>
+  <main class="page" data-seal-page>
+    <header class="intro">
+      <a class="back" href={reviewUrl(review.id)}>
+        ← Volver a la reseña
+      </a>
+      <span class="eyebrow">Sello para restaurantes</span>
+      <h1>{r.name}</h1>
+      <p class="lede">
+        {formatScore(score)} lunas de Alberto de Luna. Cuélgalo en la puerta,
+        ponlo en tu carta o insértalo en tu web: enlaza directamente a la
+        reseña.
+      </p>
+    </header>
+
+    <div class="seals">
+      {THEMES.map(({ theme, label }) => (
+        <section class:list={["seal", `seal-${theme}`]} aria-label={label}>
+          <div
+            class="seal-art"
+            set:html={sealSvg({ name: r.name, score, year: r.year, theme })}
+          />
+          <div class="seal-actions">
+            <span class="seal-label">{label}</span>
+            <a
+              class="btn"
+              href={sealUrl(review.id, theme)}
+              download={`sello-${review.id}${theme === "claro" ? "-claro" : ""}.svg`}
+            >
+              SVG
+            </a>
+            <button
+              class="btn"
+              type="button"
+              data-png={sealUrl(review.id, theme)}
+              data-name={`sello-${review.id}${theme === "claro" ? "-claro" : ""}.png`}
+            >
+              PNG para imprimir
+            </button>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <section class="embed" aria-labelledby="embed-title">
+      <h2 id="embed-title">Para tu web</h2>
+      <p>Copia este código y pégalo donde quieras que aparezca el sello.</p>
+      <div class="embed-tabs" role="group" aria-label="Versión del sello">
+        {THEMES.map(({ theme, label }, i) => (
+          <button
+            type="button"
+            data-embed-tab={theme}
+            data-code={embed(theme)}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div class="code">
+        <code data-embed-code>{embed("noche")}</code>
+        <button class="btn" type="button" data-copy>
+          Copiar
+        </button>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  // PNG at print size, drawn from the SVG in the browser
+  document.querySelectorAll<HTMLButtonElement>("[data-png]").forEach((btn) =>
+    btn.addEventListener("click", async () => {
+      const img = new Image()
+      img.src = btn.dataset.png!
+      await img.decode()
+      const size = 2000
+      const canvas = Object.assign(document.createElement("canvas"), {
+        width: size,
+        height: size,
+      })
+      canvas.getContext("2d")!.drawImage(img, 0, 0, size, size)
+      canvas.toBlob((blob) => {
+        if (!blob) return
+        const a = Object.assign(document.createElement("a"), {
+          href: URL.createObjectURL(blob),
+          download: btn.dataset.name,
+        })
+        a.click()
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+      }, "image/png")
+    })
+  )
+
+  const code = document.querySelector<HTMLElement>("[data-embed-code]")!
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-embed-tab]")
+  tabs.forEach((tab) =>
+    tab.addEventListener("click", () => {
+      code.textContent = tab.dataset.code ?? ""
+      tabs.forEach((t) => t.setAttribute("aria-pressed", String(t === tab)))
+    })
+  )
+
+  const copy = document.querySelector<HTMLButtonElement>("[data-copy]")!
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(code.textContent ?? "")
+      copy.textContent = "Copiado"
+    } catch {
+      getSelection()?.selectAllChildren(code)
+      copy.textContent = "Selecciónalo y cópialo"
+    }
+    setTimeout(() => (copy.textContent = "Copiar"), 2000)
+  })
+</script>
+
+<style>
+  .page {
+    min-height: 100svh;
+    padding: 110px 24px 12vh;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .intro {
+    max-width: 900px;
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: 40px;
+    font: 600 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: inherit;
+    text-decoration: none;
+  }
+  .intro .eyebrow {
+    display: block;
+  }
+  .back:hover {
+    text-decoration: underline;
+  }
+  h1 {
+    margin: 12px 0 0;
+    font: 900 clamp(48px, 8vw, 128px) / 0.86 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+  .lede {
+    max-width: 52ch;
+    margin: 20px 0 0;
+    font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  .seals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 6px;
+    margin-top: 64px;
+  }
+  .seal {
+    display: grid;
+    gap: 28px;
+    justify-items: center;
+    padding: clamp(32px, 6vw, 72px) 24px 24px;
+    border-radius: 4px;
+  }
+  .seal-noche {
+    background: var(--night);
+  }
+  .seal-claro {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .seal-art {
+    width: min(100%, 380px);
+    aspect-ratio: 1;
+    filter: drop-shadow(0 18px 40px rgb(0 0 0 / 35%));
+  }
+  .seal-art :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .seal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .seal-label {
+    margin-right: 8px;
+    font: 700 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .btn {
+    cursor: pointer;
+    border: 1.5px solid currentColor;
+    border-radius: 99px;
+    padding: 9px 15px 8px;
+    background: transparent;
+    color: inherit;
+    font: 800 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .btn:hover {
+    background: var(--glow);
+    border-color: var(--glow);
+    color: var(--on-glow);
+  }
+  .embed {
+    max-width: 900px;
+    margin-top: 12vh;
+  }
+  h2 {
+    margin: 0;
+    font: 900 clamp(32px, 4vw, 56px) / 0.9 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .embed p {
+    margin: 14px 0 24px;
+    color: var(--grey);
+  }
+  .embed-tabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    margin-bottom: 10px;
+    border-radius: 99px;
+    border: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
+  }
+  .embed-tabs button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 99px;
+    padding: 8px 14px 7px;
+    background: transparent;
+    color: inherit;
+    font: 800 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .embed-tabs button[aria-pressed="true"] {
+    background: var(--glow);
+    color: var(--on-glow);
+  }
+  .code {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 18px;
+    border-radius: 4px;
+    background: var(--night);
+  }
+  .code code {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font:
+      13px/1.6 ui-monospace,
+      "SF Mono",
+      Menlo,
+      monospace;
+    color: var(--moon);
+  }
+  .code .btn {
+    flex-shrink: 0;
+  }
+</style>

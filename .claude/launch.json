@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dime-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "/Users/josemariamartinez/y/kaizencode/dimeunrestaurante", "dev", "--port", "4329"],
+      "port": 4329
+    }
+  ]
+}

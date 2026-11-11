@@ -1,0 +1,180 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+
+/*
+ * DIME: night, moonlight and one accent. Huge wide grotesk type, photos first,
+ * the scroll as narrator and the moon as the thread through every page. The
+ * site lives in a single visual world, so there is no light/dark switch.
+ */
+
+@theme inline {
+  --font-heading: var(--font-display);
+  --font-sans: "Archivo Variable", system-ui, sans-serif;
+  --font-display: "Archivo Variable", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --color-glow: var(--glow);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-grey: var(--grey);
+  --color-moon: var(--moon);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  /*
+   * "Luna": black night, moonlight paper and a harvest-moon gold. His surname
+   * and his scores are moons, so the whole site lives under one.
+   */
+  --ink: #0a0a0a;
+  --paper: #ece7db;
+  --grey: #8d8a84;
+  --moon: #f7ecd0;
+  --night: #1c1b1a;
+  /* The accent: fills and text on the night; a deeper tone for text on paper */
+  --glow: #f2b33d;
+  --glow-text: #8f5a06;
+  --on-glow: var(--ink);
+  /* Behind the loader and the photo heroes */
+  --stage: var(--ink);
+  --on-stage: var(--moon);
+  /* Supporting tones */
+  --photo-bg: #dcd5c4;
+  --dim: #474440;
+  --ink-soft: #57544f;
+  --muted: #e2dccd;
+
+  /* shadcn tokens mapped onto the palette */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--glow);
+  --primary-foreground: var(--on-glow);
+  --secondary: var(--ink);
+  --secondary-foreground: var(--paper);
+  --muted-foreground: var(--grey);
+  --accent: var(--glow);
+  --accent-foreground: var(--on-glow);
+  --destructive: #d8432b;
+  --border: color-mix(in srgb, var(--ink) 14%, transparent);
+  --input: color-mix(in srgb, var(--ink) 20%, transparent);
+  --ring: var(--glow-text);
+  --radius: 0.25rem;
+
+  /* The loader moon and the window the hero photo opens through */
+  --moon-size: min(46vmin, 420px);
+
+  color-scheme: dark;
+}
+
+/* "Sello": the first direction, one saturated red. Kept to compare (?paleta=sello) */
+:root[data-palette="sello"] {
+  --ink: #0e0d0c;
+  --paper: #f3f1ec;
+  --grey: #8d8a84;
+  --moon: #fff1d6;
+  --night: #1d1b19;
+  --glow: #ff2a12;
+  --glow-text: #ff2a12;
+  --stage: #ff2a12;
+  --on-stage: #0e0d0c;
+  --photo-bg: #ddd8cf;
+  --dim: #4a4642;
+  --ink-soft: #5b5853;
+  --muted: #e6e3dc;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    background: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    /* clip, not hidden: hidden would make body a scroller and break sticky */
+    overflow-x: clip;
+  }
+  /* body's overflow is handed to the viewport, which can still be panned
+     sideways on a phone; clipping main stops wide art (moons, marquees) from
+     widening the page at all */
+  main {
+    overflow-x: clip;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+  }
+  :focus-visible {
+    outline: 2px solid var(--glow-text);
+    outline-offset: 3px;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Shared pieces */
+.eyebrow {
+  font: 700 12px/1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--glow);
+}
+.sticker {
+  position: absolute;
+  z-index: 4;
+  background: var(--paper);
+  color: var(--glow-text);
+  border: 2px solid var(--glow-text);
+  font: 800 12px/1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 11px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.wide {
+  font-stretch: 125%;
+}

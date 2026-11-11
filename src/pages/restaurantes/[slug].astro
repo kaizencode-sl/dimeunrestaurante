@@ -1,0 +1,568 @@
+---
+import type { GetStaticPaths } from "astro"
+import Layout from "@/layouts/main.astro"
+import Moon from "@/components/moon.astro"
+import ReviewRow from "@/components/review-row.astro"
+import RollingScore from "@/components/rolling-score.astro"
+import { SEAL_MIN, sealUrl } from "@/lib/seal"
+import geo from "@/data/geo.json"
+import {
+  getReviews,
+  formatScore,
+  shortPlan,
+  HOME_PICKS,
+  type Review,
+} from "@/lib/reviews"
+
+export const getStaticPaths = (async () => {
+  const reviews = await getReviews()
+  return reviews.map((review) => ({
+    params: { slug: review.id },
+    props: { review, reviews },
+  }))
+}) satisfies GetStaticPaths
+
+interface Props {
+  review: Review
+  reviews: Review[]
+}
+
+const { review, reviews } = Astro.props
+const r = review.data
+
+// The homepage picks have local photos; the rest still come from the old site
+const local = HOME_PICKS.find((p) => p.id === review.id)
+const photos = local ? local.photos.map((p) => `/img/home/${p}.jpg`) : r.images
+const [cover, ...gallery] = photos
+
+const visit = r.visit
+  ? r.visit.toLowerCase().replace(/^./, (c) => c.toUpperCase())
+  : null
+const chips = [...r.plans.map(shortPlan), ...r.venue, ...r.cuisine]
+
+const related = reviews
+  .filter(
+    (o) =>
+      o.id !== review.id && o.data.city === r.city && o.data.images.length >= 4
+  )
+  .sort((a, b) => (b.data.score ?? 0) - (a.data.score ?? 0))
+  .slice(0, 3)
+
+const point = (geo as Record<string, { approx?: boolean }>)[review.id]
+const onMap = point && !point.approx && r.score !== null
+const hasSeal = (r.score ?? 0) >= SEAL_MIN
+
+// Reviews written or updated from Instagram say so, with the posts
+const ig = r.instagram
+const igDate = ig?.date
+  ? new Intl.DateTimeFormat("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(ig.date))
+  : null
+
+const description =
+  r.excerpt || `${r.name}: ${r.headline}. ${formatScore(r.score)} lunas.`
+---
+
+<Layout
+  title={`${r.name}, ${r.city} · Dime un restaurante`}
+  description={description}
+>
+  <main>
+    <header class="head" data-review-head data-score={r.score ?? ""}>
+      <div class="media" data-review-media>
+        {cover ? (
+          <img src={cover} alt={`Plato en ${r.name}`} fetchpriority="high" />
+        ) : (
+          <div class="no-photo">
+            <Moon score={r.score ?? 10} glow class="no-photo-moon" />
+          </div>
+        )}
+      </div>
+      <div class="head-inner">
+        <a class="back" href="/restaurantes">
+          ← Todas las reseñas
+        </a>
+        <div class="head-bottom">
+          <div class="title">
+            <span class="eyebrow">{r.city}</span>
+            <h1 data-review-name class:list={{ long: r.name.length > 16 }}>
+              {r.name}
+            </h1>
+            {r.headline && <p class="headline">“{r.headline}”</p>}
+          </div>
+          {r.score === null ? (
+            <div class="score unscored">
+              <Moon score={0} class="score-moon" />
+              <span class="score-num">
+                <small>Sin puntuar</small>
+              </span>
+            </div>
+          ) : (
+            <div class="score" aria-label={`${formatScore(r.score)} lunas`}>
+              <Moon score={r.score} animated class="score-moon" />
+              <span class="score-num">
+                <RollingScore score={r.score} />
+                <small>lunas</small>
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <dl class="facts" data-review-meta>
+      {r.paid && (
+        <div>
+          <dt>Yo pagué</dt>
+          <dd>{r.paid}</dd>
+        </div>
+      )}
+      {r.avgPrice && (
+        <div>
+          <dt>Precio medio</dt>
+          <dd>{r.avgPrice}</dd>
+        </div>
+      )}
+      {visit && (
+        <div>
+          <dt>Visita</dt>
+          <dd>{visit}</dd>
+        </div>
+      )}
+      {r.address.length > 0 && (
+        <div class="wide-fact">
+          <dt>Dónde</dt>
+          <dd>
+            {r.address.map((line) => (
+              <span>{line}</span>
+            ))}
+            {onMap && (
+              <a class="map-link" href={`/mapa?r=${review.id}`}>
+                Ver en el mapa →
+              </a>
+            )}
+          </dd>
+        </div>
+      )}
+    </dl>
+
+    <article class="body">
+      {chips.length > 0 && (
+        <ul class="chips" aria-label="Etiquetas">
+          {chips.map((c) => (
+            <li>{c}</li>
+          ))}
+        </ul>
+      )}
+      <div class="text">
+        {r.body.map((block) =>
+          block.type === "p" ? (
+            <p data-reveal>{block.text}</p>
+          ) : block.type === "h" ? (
+            <h2 class="update" data-reveal>
+              {block.text}
+            </h2>
+          ) : (
+            <ol class="dishes" data-reveal>
+              {block.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ol>
+          )
+        )}
+        {ig && (
+          <p class="ig-note">
+            {ig.kind === "new" ? "Publicada" : "Actualizada"} desde Instagram
+            {igDate && ` el ${igDate}`}:{" "}
+            {ig.posts.map((p, i) => (
+              <>
+                {i > 0 && " · "}
+                <a href={p.url} target="_blank" rel="noopener">
+                  {ig.posts.length > 1 ? `post ${i + 1}` : "ver post"}
+                </a>
+              </>
+            ))}
+          </p>
+        )}
+      </div>
+    </article>
+
+    {gallery.length > 0 && (
+      <section class="gallery" data-gallery aria-label="Fotos">
+        {gallery.slice(0, 12).map((src, i) => (
+          <figure data-wipe class={i % 5 === 0 ? "big" : ""}>
+            <img src={src} alt="" loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </section>
+    )}
+
+    {hasSeal && (
+      <aside class="seal-cta">
+        <img
+          src={sealUrl(review.id)}
+          alt=""
+          width="400"
+          height="400"
+          loading="lazy"
+        />
+        <div>
+          <span class="eyebrow">¿Es tu restaurante?</span>
+          <p>Luce tus {formatScore(r.score)} lunas en la puerta y en tu web.</p>
+          <a href={`/sello/${review.id}`}>Consigue el sello →</a>
+        </div>
+      </aside>
+    )}
+
+    {related.length > 0 && (
+      <section class="related" aria-label={`Más en ${r.city}`}>
+        <h2 data-chars>Más en {r.city}</h2>
+        <div class="rows">
+          {related.map((o, i) => (
+            <ReviewRow review={o} index={i} photos={o.data.images} />
+          ))}
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>
+
+<style>
+  .head {
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    background: var(--stage);
+    overflow: hidden;
+  }
+  .media {
+    position: absolute;
+    inset: 0;
+  }
+  .media img,
+  .no-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* No photo: a night sky with the restaurant's moon hanging in it */
+  .no-photo {
+    position: relative;
+    background:
+      radial-gradient(circle at 70% 32%, #2a2620, transparent 45%), var(--stage);
+  }
+  .no-photo :global(.no-photo-moon) {
+    position: absolute;
+    top: 14%;
+    left: 62%;
+    width: min(34vmin, 320px);
+    height: auto;
+    opacity: 0.85;
+  }
+  .unscored :global(.score-moon) {
+    --moon-base: transparent;
+    --moon-ring: rgb(255 255 255 / 45%);
+  }
+  .media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(0 0 0 / 30%),
+      transparent 30%,
+      rgb(0 0 0 / 70%)
+    );
+  }
+  .head-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 84px 24px 40px;
+    color: #fff;
+  }
+  .back {
+    align-self: flex-start;
+    font: 600 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: inherit;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+  }
+  .head-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 32px;
+  }
+  .title {
+    min-width: 0;
+  }
+  .title .eyebrow {
+    color: #fff;
+  }
+  h1 {
+    margin: 10px 0 0;
+    font: 900 clamp(56px, 11vw, 200px) / 0.82 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+  h1.long {
+    font-size: clamp(44px, 7.5vw, 140px);
+  }
+  .headline {
+    margin: 16px 0 0;
+    max-width: 40ch;
+    font: italic 400 clamp(22px, 2.4vw, 34px) / 1.1 var(--font-serif);
+  }
+  .score {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .score :global(.score-moon) {
+    width: clamp(90px, 10vw, 150px);
+    height: auto;
+    --moon-base: rgb(0 0 0 / 45%);
+  }
+  .score-num {
+    font: 800 clamp(64px, 8vw, 130px) / 0.8 var(--font-display);
+    font-stretch: 62%;
+    font-variant-numeric: tabular-nums;
+    color: var(--moon);
+  }
+  .score-num small {
+    display: block;
+    margin-top: 6px;
+    font: 700 12px/1 var(--font-display);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 56px;
+    margin: 0;
+    padding: 28px 24px;
+    background: var(--glow);
+    color: var(--ink);
+  }
+  .facts dt {
+    font: 700 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .facts dd {
+    margin: 8px 0 0;
+    font: 800 clamp(22px, 2.2vw, 32px) / 1.05 var(--font-display);
+    font-stretch: 88%;
+  }
+  .facts dd span {
+    display: block;
+  }
+  .wide-fact dd {
+    font-size: clamp(17px, 1.4vw, 20px);
+    font-stretch: 100%;
+    font-weight: 600;
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(0, 680px) 1fr;
+    gap: 40px;
+    padding: 12vh 24px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .chips {
+    grid-column: 1;
+    align-self: start;
+    position: sticky;
+    top: 90px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chips li {
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    padding: 6px 11px 5px;
+    font: 700 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .text {
+    grid-column: 2;
+    font: 400 clamp(18px, 1.35vw, 21px) / 1.6 var(--font-sans);
+  }
+  .text p {
+    margin: 0 0 1.1em;
+  }
+  .text .update {
+    margin: 2.2em 0 0.9em;
+    padding-top: 1.1em;
+    border-top: 2px solid var(--ink);
+    font: 900 clamp(22px, 2vw, 30px) / 1.05 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.01em;
+  }
+  .text .ig-note {
+    margin-top: 2.4em;
+    font: 600 13px/1.5 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  .ig-note a {
+    color: var(--glow-text);
+  }
+  .text p:first-child::first-letter {
+    float: left;
+    margin: 0.06em 0.08em 0 0;
+    font: 900 4.6em/0.8 var(--font-display);
+    font-stretch: 118%;
+    color: var(--glow-text);
+  }
+  .dishes {
+    margin: 1.4em 0 1.6em;
+    padding: 0;
+    list-style: none;
+    counter-reset: dish;
+    border-top: 2px solid var(--ink);
+  }
+  .dishes li {
+    counter-increment: dish;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .dishes li::before {
+    content: counter(dish, decimal-leading-zero);
+    font: 800 14px/1.9 var(--font-display);
+    color: var(--glow-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 22vw;
+    gap: 6px;
+    padding: 0 6px 6px;
+    background: var(--paper);
+  }
+  .gallery figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--photo-bg);
+  }
+  .gallery .big {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: 8px;
+    font: 800 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: inherit;
+  }
+  .seal-cta {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 4vw, 48px);
+    padding: 8vh 24px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .seal-cta img {
+    width: clamp(110px, 14vw, 180px);
+    height: auto;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .seal-cta:hover img {
+    transform: rotate(-10deg);
+  }
+  .seal-cta p {
+    margin: 10px 0 14px;
+    font: 900 clamp(24px, 3vw, 44px) / 0.95 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .seal-cta a {
+    font: 800 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--glow);
+  }
+  .related {
+    padding: 14vh 24px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .related h2 {
+    max-width: 1500px;
+    margin: 0 auto 6vh;
+    font: 900 clamp(48px, 8vw, 130px) / 0.85 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: -0.04em;
+  }
+  .related .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    .head-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    .chips {
+      position: static;
+    }
+    .chips,
+    .text {
+      grid-column: 1;
+    }
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 44vw;
+    }
+  }
+</style>

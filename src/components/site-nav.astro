@@ -1,0 +1,213 @@
+---
+import Moon from "@/components/moon.astro"
+---
+
+<header class="nav" data-nav>
+  <a class="logo" href="/" aria-label="Dime un restaurante, inicio" data-tone>
+    DIME
+  </a>
+  <span class="when" data-tone>
+    <span class="progress" data-progress-moon>
+      <Moon score={0} class="progress-moon" />
+    </span>
+    <span class="clock" data-clock>
+      Madrid
+    </span>
+    <script is:inline>
+      // Filled in before the first paint so the nav doesn't shift once the
+      // module script runs (it keeps it up to date after that)
+      ;(() => {
+        const el = document.querySelector("[data-clock]")
+        const now = new Date()
+        const opts = { timeZone: "Europe/Madrid" }
+        const time = now.toLocaleTimeString("es-ES", {
+          ...opts,
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+        const hour = Number(
+          now.toLocaleString("es-ES", {
+            ...opts,
+            hour: "numeric",
+            hourCycle: "h23",
+          })
+        )
+        const meal = hour >= 6 && hour < 17 ? "comemos" : "cenamos"
+        el.textContent = `Madrid ${time} · ¿Dónde ${meal} hoy?`
+      })()
+    </script>
+  </span>
+  <nav class="links" data-tone>
+    <a class="link" href="/mapa">
+      Mapa
+    </a>
+    <a class="link" href="/restaurantes">
+      Restaurantes
+    </a>
+  </nav>
+</header>
+
+<script>
+  import { mealQuestion } from "@/lib/meal"
+
+  const clock = document.querySelector<HTMLElement>("[data-clock]")
+  const format = new Intl.DateTimeFormat("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Madrid",
+  })
+  // The clock and any heading marked data-meal-question ask about lunch or
+  // dinner depending on the time in Madrid
+  const tick = () => {
+    const now = new Date()
+    const question = mealQuestion(now)
+    if (clock) clock.textContent = `Madrid ${format.format(now)} · ${question}`
+    document.querySelectorAll("[data-meal-question]").forEach((el) => {
+      if (el.textContent !== question) el.textContent = question
+    })
+  }
+  tick()
+  setInterval(tick, 15000)
+
+  // The nav has no colour of its own: each part takes ink or paper from
+  // whatever is under it (photo, gold, paper, night), and once the page
+  // scrolls it gets a backing in that colour so text never runs under it.
+  const nav = document.querySelector<HTMLElement>("[data-nav]")!
+  const parts = [...nav.querySelectorAll<HTMLElement>("[data-tone]")]
+  type Under = { dark: boolean; bg: string | null }
+  const MEDIA = new Set(["IMG", "CANVAS", "VIDEO", "PICTURE"])
+  const luminance = (rgb: number[]) =>
+    (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255
+  const under = (x: number, y: number): Under => {
+    for (const el of document.elementsFromPoint(x, y)) {
+      if (nav.contains(el) || el.closest("[data-nav-ignore]")) continue
+      for (let a: Element | null = el; a; a = a.parentElement) {
+        if (MEDIA.has(a.tagName)) return { dark: true, bg: null }
+        const cs = getComputedStyle(a)
+        if (cs.backgroundImage !== "none" && a !== document.body)
+          return { dark: true, bg: null }
+        const m = cs.backgroundColor.match(/[\d.]+/g)?.map(Number)
+        if (m && (m[3] ?? 1) > 0.5)
+          return { dark: luminance(m) < 0.5, bg: cs.backgroundColor }
+      }
+    }
+    return { dark: true, bg: null }
+  }
+  let queued = false
+  const paint = () => {
+    queued = false
+    const y = nav.offsetHeight / 2
+    const mid = under(innerWidth / 2, y)
+    const solid = scrollY > 80 && mid.bg !== null
+    nav.classList.toggle("is-solid", solid)
+    if (mid.bg) nav.style.setProperty("--nav-bg", mid.bg)
+    // On its backing the whole nav follows the backing; bare, each part
+    // follows whatever is right under it
+    for (const part of parts) {
+      const r = part.getBoundingClientRect()
+      const dark = solid ? mid.dark : under(r.left + r.width / 2, y).dark
+      part.dataset.tone = dark ? "light" : "dark"
+    }
+  }
+  const queue = () => {
+    if (!queued) {
+      queued = true
+      requestAnimationFrame(paint)
+    }
+  }
+  addEventListener("scroll", queue, { passive: true })
+  addEventListener("resize", queue)
+  // intros and loaders change what's under the nav without any scrolling
+  for (const ms of [0, 400, 1200, 2500, 4500]) setTimeout(queue, ms)
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    transition:
+      background-color 0.3s,
+      backdrop-filter 0.3s;
+  }
+  .nav.is-solid {
+    background: color-mix(in srgb, var(--nav-bg) 88%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  [data-tone] {
+    color: #fff;
+    transition: color 0.25s;
+  }
+  [data-tone="dark"] {
+    color: var(--ink);
+  }
+  .logo {
+    font: 900 15px/1 var(--font-display);
+    font-stretch: 118%;
+    letter-spacing: 0.08em;
+    border: 2px solid currentColor;
+    padding: 5px 8px 4px;
+    text-decoration: none;
+  }
+  .clock,
+  .link {
+    font: 600 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: inherit;
+  }
+  .clock {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .when {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+  .progress {
+    flex-shrink: 0;
+    display: grid;
+  }
+  .progress :global(.progress-moon) {
+    width: 13px;
+    height: 13px;
+    --moon-base: transparent;
+    --moon-ring: currentColor;
+    --moon-lit: currentColor;
+  }
+  .links {
+    display: flex;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+  .link {
+    flex-shrink: 0;
+    text-decoration: none;
+    padding: 6px 0;
+  }
+  .link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  @media (max-width: 640px) {
+    .nav {
+      padding: 14px 16px;
+    }
+  }
+  /* With two links there's no room for the clock on a phone: keep the moon */
+  @media (max-width: 480px) {
+    .clock {
+      display: none;
+    }
+  }
+</style>

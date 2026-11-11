@@ -1,0 +1,682 @@
+---
+import Layout from "@/layouts/main.astro"
+import Moon from "@/components/moon.astro"
+import {
+  getReviews,
+  reviewUrl,
+  formatScore,
+  shortPlan,
+  tally,
+  HOME_PICKS,
+} from "@/lib/reviews"
+
+const reviews = await getReviews()
+const cities = tally(reviews, (r) => r.data.city)
+const plans = tally(reviews, (r) => r.data.plans)
+const PRICES = ["Menos de 50€", "Más de 50€", "Más de 100€"]
+
+const fold = (s: string) =>
+  s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+
+// Name, place, tags and the dishes he lists, so a search for a dish finds it
+const searchText = ({ data: r }: (typeof reviews)[number]) => {
+  const dishes = r.body
+    .flatMap((b) => (b.type === "list" ? b.items : []))
+    .join(" ")
+  return fold(
+    [
+      r.name,
+      r.headline,
+      r.city,
+      r.address.join(" "),
+      ...r.cuisine,
+      ...r.venue,
+      dishes.slice(0, 800),
+    ].join(" ")
+  )
+}
+
+const cover = (id: string, images: string[]) => {
+  const local = HOME_PICKS.find((p) => p.id === id)
+  return local ? `/img/home/${local.photos[0]}.jpg` : images[0]
+}
+---
+
+<Layout
+  title="Restaurantes · Dime un restaurante"
+  description={`Busca entre las ${reviews.length} reseñas de Alberto de Luna por ciudad, plan, precio y lunas.`}
+>
+  <main class="page">
+    <header class="top">
+      <span class="eyebrow">El archivo</span>
+      <h1 data-chars>Las {reviews.length}</h1>
+      <label class="search">
+        <span class="sr-only">Buscar restaurante, plato o zona</span>
+        <input
+          type="search"
+          data-q
+          placeholder="Busca un sitio, un plato, un barrio…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </label>
+    </header>
+
+    <div class="layout">
+      <aside class="filters" aria-label="Filtros">
+        <div class="group">
+          <label class="label" for="city">
+            Ciudad
+          </label>
+          <select id="city" data-city>
+            <option value="">Todas</option>
+            {cities.map(([c, n]) => (
+              <option value={c}>
+                {c} ({n})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <fieldset class="group">
+          <legend class="label">Plan</legend>
+          <div class="chips">
+            {plans.map(([p]) => (
+              <button
+                type="button"
+                class="chip"
+                data-plan={p}
+                aria-pressed="false"
+              >
+                {shortPlan(p)}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="label">Precio</legend>
+          <div class="chips">
+            {PRICES.map((p) => (
+              <button
+                type="button"
+                class="chip"
+                data-price={p}
+                aria-pressed="false"
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="group">
+          <label class="label" for="min">
+            Lunas mínimas <output data-min-out>0</output>
+          </label>
+          <div class="range">
+            <Moon score={0} class="range-moon" />
+            <input
+              id="min"
+              type="range"
+              min="0"
+              max="10"
+              step="0.5"
+              value="0"
+              data-min
+            />
+          </div>
+        </div>
+
+        <div class="group">
+          <label class="label" for="sort">
+            Orden
+          </label>
+          <select id="sort" data-sort>
+            <option value="recent">Más recientes</option>
+            <option value="score">Más lunas</option>
+            <option value="name">A–Z</option>
+          </select>
+        </div>
+
+        <button type="button" class="reset" data-reset>
+          Quitar filtros
+        </button>
+      </aside>
+
+      <section class="results" aria-label="Resultados">
+        <p class="count" aria-live="polite">
+          <b data-count-out>{reviews.length}</b> restaurantes
+        </p>
+        <ol class="grid" data-grid>
+          {reviews.map((review, i) => {
+            const r = review.data
+            const src = cover(review.id, r.images)
+            return (
+              <li
+                class="card"
+                data-card
+                data-i={i}
+                data-text={searchText(review)}
+                data-city={r.city}
+                data-plans={r.plans.join("|")}
+                data-price={r.price ?? ""}
+                data-score={r.score ?? -1}
+                data-name={fold(r.name)}
+                hidden={i >= 36}
+              >
+                <a href={reviewUrl(review.id)} data-cursor="Leer">
+                  <figure>
+                    {src ? (
+                      <img src={src} alt="" loading="lazy" decoding="async" />
+                    ) : (
+                      <span class="placeholder">
+                        <Moon score={r.score} class="ph-moon" />
+                      </span>
+                    )}
+                    <span class="badge">
+                      <Moon score={r.score} class="badge-moon" />
+                      {formatScore(r.score)}
+                    </span>
+                  </figure>
+                  <span class="meta">
+                    {r.city}
+                    {r.year && ` · ${r.year}`}
+                  </span>
+                  <h2>{r.name}</h2>
+                  <p>{r.headline}</p>
+                </a>
+              </li>
+            )
+          })}
+        </ol>
+        <p class="none" data-none hidden>
+          Nada por aquí. Prueba con menos filtros o{" "}
+          <button type="button" data-reset>
+            empieza de nuevo
+          </button>
+          .
+        </p>
+        <button type="button" class="more" data-more>
+          Ver más
+        </button>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { gsap } from "gsap"
+  import { ScrollTrigger } from "gsap/ScrollTrigger"
+  import { moonPath } from "@/lib/moon"
+
+  const PAGE = 36
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+  const fold = (s: string) =>
+    s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+
+  const grid = document.querySelector<HTMLElement>("[data-grid]")!
+  const cards = [...grid.querySelectorAll<HTMLElement>("[data-card]")]
+  const q = document.querySelector<HTMLInputElement>("[data-q]")!
+  const city = document.querySelector<HTMLSelectElement>("[data-city]")!
+  const sort = document.querySelector<HTMLSelectElement>("[data-sort]")!
+  const min = document.querySelector<HTMLInputElement>("[data-min]")!
+  const minOut = document.querySelector<HTMLOutputElement>("[data-min-out]")!
+  const rangeMoon = document.querySelector<SVGPathElement>(".range [data-moon]")
+  const countOut = document.querySelector<HTMLElement>("[data-count-out]")!
+  const none = document.querySelector<HTMLElement>("[data-none]")!
+  const more = document.querySelector<HTMLButtonElement>("[data-more]")!
+  const planBtns = [
+    ...document.querySelectorAll<HTMLButtonElement>("[data-plan]"),
+  ]
+  const priceBtns = [
+    ...document.querySelectorAll<HTMLButtonElement>("[data-price]"),
+  ]
+
+  let shown = PAGE
+  let matches: HTMLElement[] = []
+
+  const pressed = (btns: HTMLButtonElement[], key: "plan" | "price") =>
+    btns
+      .filter((b) => b.getAttribute("aria-pressed") === "true")
+      .map((b) => b.dataset[key]!)
+
+  function compute() {
+    const words = fold(q.value).split(/\s+/).filter(Boolean)
+    const wantPlans = pressed(planBtns, "plan")
+    const wantPrices = pressed(priceBtns, "price")
+    const minScore = Number(min.value)
+    matches = cards.filter((c) => {
+      const d = c.dataset
+      if (words.some((w) => !d.text!.includes(w))) return false
+      if (city.value && d.city !== city.value) return false
+      if (
+        wantPlans.length &&
+        !wantPlans.every((p) => d.plans!.split("|").includes(p))
+      )
+        return false
+      if (wantPrices.length && !wantPrices.includes(d.price!)) return false
+      if (minScore > 0 && Number(d.score) < minScore) return false
+      return true
+    })
+    const by = sort.value
+    matches.sort((a, b) =>
+      by === "score"
+        ? Number(b.dataset.score) - Number(a.dataset.score) ||
+          Number(a.dataset.i) - Number(b.dataset.i)
+        : by === "name"
+          ? a.dataset.name!.localeCompare(b.dataset.name!)
+          : Number(a.dataset.i) - Number(b.dataset.i)
+    )
+  }
+
+  function render(animate = true) {
+    const visible = matches.slice(0, shown)
+    const set = new Set(visible)
+    cards.forEach((c) => (c.hidden = !set.has(c)))
+    // Reorder only what is shown; the rest stays hidden where it is
+    visible.forEach((c) => grid.appendChild(c))
+    countOut.textContent = String(matches.length)
+    none.hidden = matches.length > 0
+    more.hidden = matches.length <= shown
+    ScrollTrigger.refresh()
+    if (animate && !reduce)
+      gsap.fromTo(
+        visible.slice(0, 12),
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.04,
+          ease: "power3.out",
+          overwrite: true,
+        }
+      )
+  }
+
+  function update() {
+    shown = PAGE
+    compute()
+    render()
+    syncUrl()
+  }
+
+  function syncUrl() {
+    const params = new URLSearchParams()
+    if (q.value.trim()) params.set("q", q.value.trim())
+    if (city.value) params.set("ciudad", city.value)
+    const qs = params.toString()
+    history.replaceState(null, "", qs ? `?${qs}` : location.pathname)
+  }
+
+  function paintMoon() {
+    const v = Number(min.value)
+    minOut.textContent = v ? String(v).replace(".", ",") : "0"
+    rangeMoon?.setAttribute("d", moonPath(v / 10))
+  }
+
+  let typing: number | undefined
+  q.addEventListener("input", () => {
+    clearTimeout(typing)
+    typing = window.setTimeout(update, 160)
+  })
+  city.addEventListener("change", update)
+  sort.addEventListener("change", update)
+  min.addEventListener("input", paintMoon)
+  min.addEventListener("change", update)
+  ;[...planBtns, ...priceBtns].forEach((b) =>
+    b.addEventListener("click", () => {
+      b.setAttribute(
+        "aria-pressed",
+        String(b.getAttribute("aria-pressed") !== "true")
+      )
+      update()
+    })
+  )
+  document.querySelectorAll("[data-reset]").forEach((b) =>
+    b.addEventListener("click", () => {
+      q.value = ""
+      city.value = ""
+      min.value = "0"
+      sort.value = "recent"
+      ;[...planBtns, ...priceBtns].forEach((x) =>
+        x.setAttribute("aria-pressed", "false")
+      )
+      paintMoon()
+      update()
+    })
+  )
+  more.addEventListener("click", () => {
+    const from = shown
+    shown += PAGE
+    render(false)
+    if (!reduce)
+      gsap.fromTo(
+        matches.slice(from, shown),
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.03, ease: "power3.out" }
+      )
+  })
+
+  // Arrive with a search from a link: /restaurantes?q=sushi&ciudad=Madrid
+  const params = new URLSearchParams(location.search)
+  q.value = params.get("q") ?? ""
+  if (params.get("ciudad")) city.value = params.get("ciudad")!
+  paintMoon()
+  compute()
+  render(false)
+</script>
+
+<style>
+  .page {
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100svh;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .top {
+    padding: 120px 24px 40px;
+    background: var(--glow);
+    color: var(--ink);
+  }
+  .top .eyebrow {
+    color: var(--ink);
+  }
+  h1 {
+    margin: 12px 0 28px;
+    font: 900 clamp(80px, 17vw, 300px) / 0.8 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: -0.05em;
+  }
+  .search input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid var(--ink);
+    padding: 10px 0 14px;
+    font: 800 clamp(26px, 4vw, 56px) / 1 var(--font-display);
+    font-stretch: 88%;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    border-radius: 0;
+  }
+  .search input::placeholder {
+    color: color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+  .search input:focus {
+    outline: none;
+    border-bottom-color: var(--paper);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 48px;
+    padding: 48px 24px 14vh;
+    max-width: 1700px;
+    margin: 0 auto;
+  }
+  .filters {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0;
+    font: 800 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .label output {
+    color: var(--glow-text);
+  }
+  select {
+    width: 100%;
+    appearance: none;
+    background: transparent
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230e0d0c'/%3E%3C/svg%3E")
+      no-repeat right 4px center / 10px;
+    border: 0;
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 20px 8px 0;
+    font: 600 17px/1.2 var(--font-display);
+    color: var(--ink);
+    border-radius: 0;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    cursor: pointer;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    padding: 7px 12px 6px;
+    font: 700 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    transition:
+      background 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .chip:hover {
+    border-color: var(--glow-text);
+    color: var(--glow-text);
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--glow);
+    border-color: var(--glow);
+    color: var(--on-glow);
+  }
+  .range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .range :global(.range-moon) {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    --moon-base: var(--photo-bg);
+    --moon-lit: var(--glow-text);
+  }
+  input[type="range"] {
+    flex: 1;
+    accent-color: var(--glow-text);
+  }
+  .reset {
+    align-self: flex-start;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: 600 13px/1 var(--font-display);
+    color: var(--grey);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .reset:hover {
+    color: var(--glow-text);
+  }
+
+  .count {
+    margin: 0 0 20px;
+    font: 600 13px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grey);
+  }
+  .count b {
+    color: var(--glow-text);
+    font-size: 1.3em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 40px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  figure {
+    position: relative;
+    margin: 0 0 14px;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--photo-bg);
+  }
+  figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  .card a:hover img {
+    transform: scale(1.06);
+  }
+  .placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: var(--ink);
+  }
+  .placeholder :global(.ph-moon) {
+    width: 46%;
+    height: auto;
+  }
+  .badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 99px;
+    background: var(--glow);
+    color: var(--on-glow);
+    font: 800 16px/1 var(--font-display);
+    font-stretch: 75%;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge :global(.badge-moon) {
+    width: 18px;
+    height: 18px;
+    --moon-base: transparent;
+    --moon-ring: var(--on-glow);
+    --moon-lit: var(--on-glow);
+  }
+  .meta {
+    display: block;
+    font: 700 11px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--glow-text);
+  }
+  .card h2 {
+    margin: 8px 0 6px;
+    font: 900 clamp(22px, 2vw, 30px) / 0.95 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+  .card p {
+    margin: 0;
+    font: italic 400 19px/1.15 var(--font-serif);
+    color: var(--ink-soft);
+  }
+  .none {
+    font: italic 400 26px/1.2 var(--font-serif);
+    color: var(--grey);
+  }
+  .none button {
+    all: unset;
+    cursor: pointer;
+    color: var(--glow-text);
+    text-decoration: underline;
+  }
+  .more {
+    display: block;
+    margin: 64px auto 0;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    border-radius: 99px;
+    padding: 18px 30px;
+    font: 900 15px/1 var(--font-display);
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: transform 0.25s;
+  }
+  .more:hover {
+    transform: scale(1.05) rotate(-2deg);
+  }
+  .more[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+      padding-top: 28px;
+    }
+    .filters {
+      position: static;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px 16px;
+    }
+    .filters fieldset,
+    .reset {
+      grid-column: 1 / -1;
+    }
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 12px;
+    }
+    .card p {
+      font-size: 16px;
+    }
+    .badge {
+      font-size: 14px;
+    }
+  }
+</style>

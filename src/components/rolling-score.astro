@@ -1,0 +1,66 @@
+---
+/**
+ * A score whose whole part rolls up like an odometer: a column of digits
+ * slides continuously behind a one-line window, and a ",5" settles in at the
+ * end. The window is as wide as "10", so nothing beside it moves.
+ * Without the animations (or before they start) it simply shows the score.
+ */
+interface Props {
+  score: number
+}
+
+const { score } = Astro.props
+const whole = Math.floor(score)
+const half = score - whole >= 0.5
+const DIGITS = Array.from({ length: 11 }, (_, i) => i)
+---
+
+<span
+  class="roll"
+  data-roll-score
+  data-whole={whole}
+  style={`--final:${whole}`}
+>
+  <span class="window" aria-hidden="true">
+    <span class="strip">
+      {DIGITS.map((d) => (
+        <span>{d}</span>
+      ))}
+    </span>
+  </span>
+  {half && (
+    <span class="half" data-roll-half aria-hidden="true">
+      ,5
+    </span>
+  )}
+</span>
+
+<style>
+  .roll {
+    display: inline-flex;
+    align-items: flex-start;
+    line-height: 1;
+  }
+  .window {
+    display: inline-block;
+    height: 1em;
+    overflow: hidden;
+  }
+  .strip {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    transform: translateY(calc(var(--n, var(--final)) * -1em));
+    will-change: transform;
+  }
+  .strip > span {
+    height: 1em;
+  }
+  /* The animation starts the column at 0; GSAP then drives --n inline */
+  :global(.motion) .roll {
+    --n: 0;
+  }
+  :global(.motion) .half {
+    opacity: 0;
+  }
+</style>
