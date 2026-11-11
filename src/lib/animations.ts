@@ -125,7 +125,7 @@ function intro(lenis: Lenis) {
     })
   }
   tl.to(
-    "[data-hero-media] img",
+    "[data-hero-frame]",
     { scale: 1.05, duration: 2.2, ease: "expo.out" },
     "<"
   )
@@ -167,7 +167,7 @@ function intro(lenis: Lenis) {
       },
       0
     )
-    .to("[data-hero-media] img", { scale: 1.3, ease: "none" }, 0)
+    .to("[data-hero-frame]", { scale: 1.3, ease: "none" }, 0)
     .to("[data-hero-meta]", { opacity: 0, y: -40, ease: "none" }, 0)
 }
 
