@@ -56,6 +56,7 @@ const cover = (id: string, images: string[]) => {
           type="search"
           data-q
           placeholder="Busca un sitio, un plato, un barrio…"
+          data-placeholder-short="Sitio, plato o barrio…"
           autocomplete="off"
           spellcheck="false"
         />
@@ -218,6 +219,13 @@ const cover = (id: string, images: string[]) => {
   const grid = document.querySelector<HTMLElement>("[data-grid]")!
   const cards = [...grid.querySelectorAll<HTMLElement>("[data-card]")]
   const q = document.querySelector<HTMLInputElement>("[data-q]")!
+  // The full hint doesn't fit a phone at this size: a shorter one there
+  const longHint = q.placeholder
+  const narrow = matchMedia("(max-width: 640px)")
+  const setHint = () =>
+    (q.placeholder = narrow.matches ? q.dataset.placeholderShort! : longHint)
+  setHint()
+  narrow.addEventListener("change", setHint)
   const city = document.querySelector<HTMLSelectElement>("[data-city]")!
   const sort = document.querySelector<HTMLSelectElement>("[data-sort]")!
   const min = document.querySelector<HTMLInputElement>("[data-min]")!
