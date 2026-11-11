@@ -285,9 +285,6 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
 
     <section class="final" aria-label="Dime un restaurante">
       <div class="final-panel" data-close>
-        <div class="final-moon" aria-hidden="true">
-          <Moon score={10} class="final-disc" />
-        </div>
         <h2 data-meal-question>{mealQuestion()}</h2>
         <p class="final-lede">
           {mapCount} restaurantes en el mapa, cada uno con su luna. Busca el que
@@ -996,22 +993,6 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     padding: 12vh 6vw 10vh;
     transform-origin: center top;
     text-align: center;
-  }
-  /* A large faint moon rising behind the question */
-  .final-moon {
-    position: absolute;
-    right: -12vw;
-    top: -8vw;
-    width: 48vw;
-    max-width: 720px;
-    opacity: 0.22;
-    pointer-events: none;
-  }
-  .final-moon :global(.final-disc) {
-    width: 100%;
-    height: auto;
-    --moon-base: transparent;
-    --moon-lit: var(--paper);
   }
   .final h2 {
     position: relative;
