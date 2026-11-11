@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro"
 import Layout from "@/layouts/main.astro"
 import { getReviews, reviewUrl, formatScore, type Review } from "@/lib/reviews"
-import { SEAL_MIN, sealSvg, sealUrl, type SealTheme } from "@/lib/seal"
+import { SEAL_MIN, sealSvg, sealUrl, signUrl, type SealTheme } from "@/lib/seal"
 
 export const getStaticPaths = (async () => {
   const reviews = await getReviews()
@@ -76,6 +76,44 @@ const embed = (theme: SealTheme) =>
       ))}
     </div>
 
+    <section class="signs" aria-labelledby="signs-title">
+      <h2 id="signs-title">Para la puerta</h2>
+      <p>
+        El sello con un QR que lleva a la reseña. Imprímelo en A6 o en pegatina.
+      </p>
+      <div class="signs-grid">
+        {THEMES.map(({ theme, label }) => (
+          <figure class:list={["sign", `seal-${theme}`]}>
+            <img
+              src={signUrl(review.id, theme)}
+              alt={`Cartel ${label.toLowerCase()} de ${r.name} con QR a la reseña`}
+              width="600"
+              height="850"
+              loading="lazy"
+            />
+            <figcaption class="seal-actions">
+              <span class="seal-label">{label}</span>
+              <a
+                class="btn"
+                href={signUrl(review.id, theme)}
+                download={`cartel-${review.id}${theme === "claro" ? "-claro" : ""}.svg`}
+              >
+                SVG
+              </a>
+              <button
+                class="btn"
+                type="button"
+                data-png={signUrl(review.id, theme)}
+                data-name={`cartel-${review.id}${theme === "claro" ? "-claro" : ""}.png`}
+              >
+                PNG para imprimir
+              </button>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
     <section class="embed" aria-labelledby="embed-title">
       <h2 id="embed-title">Para tu web</h2>
       <p>Copia este código y pégalo donde quieras que aparezca el sello.</p>
@@ -108,12 +146,16 @@ const embed = (theme: SealTheme) =>
       const img = new Image()
       img.src = btn.dataset.png!
       await img.decode()
-      const size = 2000
+      // 2000px wide, at the design's own proportions (seal or sign)
+      const width = 2000
+      const height = Math.round(
+        (width * (img.naturalHeight || 1)) / (img.naturalWidth || 1)
+      )
       const canvas = Object.assign(document.createElement("canvas"), {
-        width: size,
-        height: size,
+        width,
+        height,
       })
-      canvas.getContext("2d")!.drawImage(img, 0, 0, size, size)
+      canvas.getContext("2d")!.drawImage(img, 0, 0, width, height)
       canvas.toBlob((blob) => {
         if (!blob) return
         const a = Object.assign(document.createElement("a"), {
@@ -248,6 +290,31 @@ const embed = (theme: SealTheme) =>
     background: var(--glow);
     border-color: var(--glow);
     color: var(--on-glow);
+  }
+  .signs {
+    margin-top: 12vh;
+  }
+  .signs > p {
+    margin: 14px 0 28px;
+    color: var(--grey);
+  }
+  .signs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 6px;
+  }
+  .sign {
+    display: grid;
+    gap: 28px;
+    justify-items: center;
+    margin: 0;
+    padding: clamp(32px, 6vw, 72px) 24px 24px;
+    border-radius: 4px;
+  }
+  .sign img {
+    width: min(100%, 340px);
+    height: auto;
+    box-shadow: 0 18px 40px rgb(0 0 0 / 35%);
   }
   .embed {
     max-width: 900px;
