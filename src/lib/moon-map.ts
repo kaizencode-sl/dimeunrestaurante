@@ -8,8 +8,6 @@ import {
 } from "maplibre-gl"
 // Vite pre-bundles MapLibre away from its worker file, so point at it directly
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"
-import "maplibre-gl/dist/maplibre-gl.css"
-import "@/styles/moon-map.css"
 import { moonPath } from "@/lib/moon"
 
 import type { Pin } from "@/lib/pins"

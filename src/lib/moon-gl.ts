@@ -103,6 +103,10 @@ export function moonGL(canvas: HTMLCanvasElement): MoonGL | null {
   return instance
 }
 
+/** The canvas's renderer if it has been created already, without creating it */
+export const mountedMoonGL = (canvas: HTMLCanvasElement) =>
+  mounted.get(canvas) ?? null
+
 function rgb(value: string): [number, number, number] {
   const hex = value.trim().replace("#", "")
   const full = hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex

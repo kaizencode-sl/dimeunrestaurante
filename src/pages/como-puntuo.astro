@@ -1,0 +1,459 @@
+---
+import Layout from "@/layouts/main.astro"
+import Moon from "@/components/moon.astro"
+import { breadcrumbs, INSTAGRAM } from "@/lib/seo"
+import { HANDLE } from "@/lib/seal"
+import { getReviews, reviewUrl, formatScore } from "@/lib/reviews"
+
+/**
+ * How Alberto scores and who he is, in his own words from the old site's
+ * "Quién soy" page, with the scale drawn from the reviews themselves.
+ */
+
+const reviews = await getReviews()
+const scored = reviews.filter((r) => r.data.score !== null)
+
+// How many restaurants got each whole number of lunas (6,5 counts as 6)
+const SCALE = Array.from({ length: 11 }, (_, n) => n)
+const counts = SCALE.map(
+  (n) => scored.filter((r) => Math.floor(r.data.score ?? 0) === n).length
+)
+const most = Math.max(...counts)
+const steps = SCALE.map((n, i) => ({ n, count: counts[i] ?? 0 }))
+const tens = scored.filter((r) => r.data.score === 10)
+
+// His own examples of pleasure for the price
+const byId = (id: string) => reviews.find((r) => r.id === id)
+const PAIRS = [
+  ["la-primera", "coque"],
+  ["manolita-chen", "santceloni"],
+]
+  .map((ids) => ids.map(byId))
+  .filter((pair) => pair.every(Boolean)) as (typeof reviews)[number][][]
+
+const PLUSES = [
+  "Que abra todos los días",
+  "Que tenga terraza",
+  "Cocina ininterrumpida",
+  "Un local chulo y con buen ambiente",
+]
+---
+
+<Layout
+  title="Cómo puntúo · Dime un restaurante"
+  description="Alberto de Luna puntúa en lunas, del 1 al 10: la comida, la relación placer-precio y todo lo que suma. Quién es y cómo elige la nota."
+  jsonLd={breadcrumbs([
+    ["Inicio", "/"],
+    ["Cómo puntúo", "/como-puntuo/"],
+  ])}
+>
+  <main class="page">
+    <header class="top">
+      <span class="eyebrow">Alberto de Luna</span>
+      <h1 data-chars>Cómo puntúo</h1>
+      <p class="lead" data-reveal>
+        En lunas, del 1 al 10. La máxima la reservo, exclusivamente, para los
+        restaurantes que uno no puede morir sin conocer.
+      </p>
+    </header>
+
+    <section class="scale" aria-labelledby="scale-title">
+      <div class="section-head">
+        <span class="kicker">La escala</span>
+        <h2 id="scale-title" data-reveal>
+          {scored.length} restaurantes, nota a nota
+        </h2>
+      </div>
+      <ol class="bars">
+        {steps.map(({ n, count }) => (
+          <li
+            class:list={{ best: n === 10 }}
+            style={`--h: ${count / most}`}
+            data-reveal
+          >
+            <span class="count">{count}</span>
+            <span class="bar" aria-hidden="true" />
+            <Moon score={n} class="phase" />
+            <span class="n">
+              {n}
+              <span class="sr-only">
+                {n === 1 ? " luna" : " lunas"}: {count} restaurantes
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="tens" data-reveal>
+        <strong>{tens.length} con 10 lunas:</strong>{" "}
+        {tens.map((r, i) => (
+          <>
+            {i > 0 && ", "}
+            <a href={reviewUrl(r.id)}>{r.data.name}</a>
+          </>
+        ))}
+        .
+      </p>
+    </section>
+
+    <section class="price" aria-labelledby="price-title">
+      <div class="section-head">
+        <span class="kicker">Relación placer-precio</span>
+        <h2 id="price-title" data-reveal>
+          No solo puntúo la cocina
+        </h2>
+      </div>
+      <div class="price-text" data-reveal>
+        <p>
+          La comida es, obviamente, lo más importante. Pero también cuenta su
+          precio, en lo que yo llamo relación placer-precio, y la categoría a la
+          que pertenece: cómo destaca dentro de ella.
+        </p>
+        <p>
+          Por eso habrá restaurantes que, teniendo una cocina menos buena que la
+          de otros, tengan una puntuación más alta en total.
+        </p>
+      </div>
+      <div class="pairs">
+        {PAIRS.map(([a, b]) => (
+          <div class="pair" data-reveal>
+            {[a!, b!].map((r) => (
+              <a class="side" href={reviewUrl(r.id)}>
+                <Moon score={r.data.score} class="pair-moon" />
+                <span class="pair-score">
+                  {formatScore(r.data.score)}
+                  <em>lunas</em>
+                </span>
+                <span class="pair-name">{r.data.name}</span>
+                {r.data.price && <span class="pair-price">{r.data.price}</span>}
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+      <blockquote class="quote" data-reveal>
+        Nadie duda de que la cocina de Coque o Santceloni es muchísimo mejor.
+        Pero La Primera cuesta 50 € y Coque 300 €: el nivel de exigencia debe
+        ser diferente.
+      </blockquote>
+    </section>
+
+    <section class="plus" aria-labelledby="plus-title">
+      <div class="section-head">
+        <span class="kicker">Lo que suma</span>
+        <h2 id="plus-title" data-reveal>
+          Y lo que siempre hace sumar
+        </h2>
+      </div>
+      <ul class="pluses">
+        {PLUSES.map((p, i) => (
+          <li data-reveal>
+            <span class="plus-n">+{i + 1}</span>
+            {p}
+          </li>
+        ))}
+      </ul>
+      <p class="note" data-reveal>
+        Nunca voy a cenar solo y me importa mucho la opinión de mis
+        acompañantes, así que todas las puntuaciones están consensuadas.
+      </p>
+    </section>
+
+    <section class="about" aria-labelledby="about-title">
+      <span class="kicker">Quién soy</span>
+      <h2 id="about-title" data-reveal>
+        Ni me vendo ni me caso con nadie
+      </h2>
+      <div class="about-text" data-reveal>
+        <p>
+          Soy Alberto de Luna y comer es uno de mis grandes placeres en la vida.
+          Me viene de mis padres, a los que les encanta la gastronomía y que me
+          llevaban a restaurantes desde niño.
+        </p>
+        <p>
+          Para opinar con criterio hay que ir al máximo número posible de
+          sitios, sean buenos, reguleros o malos: una media de cien al año. Mi
+          estilo es directo, sincero y algo provocativo, y cuento lo que le
+          importa a la gente.
+        </p>
+        <p>
+          Esto es una afición, no una profesión. Salvo alguna invitación, todas
+          las cuentas las pago de mi bolsillo, que es lo fundamental para ser lo
+          más objetivo posible.
+        </p>
+      </div>
+      <p data-reveal>
+        <a class="follow" href={INSTAGRAM} target="_blank" rel="noopener">
+          Sígueme en {HANDLE} <span aria-hidden="true">↗</span>
+        </a>
+      </p>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  /* On paper the moons light up in gold, or the full ones would vanish */
+  .scale,
+  .pairs {
+    --moon: var(--glow);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .top {
+    padding: 120px 24px 56px;
+    background: var(--glow);
+    color: var(--ink);
+  }
+  .top .eyebrow {
+    color: var(--ink);
+  }
+  h1 {
+    margin: 12px 0 0.25em;
+    font: 900 clamp(56px, 12.5vw, 240px) / 0.82 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: -0.05em;
+  }
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 20vw;
+    }
+  }
+  .lead {
+    max-width: 22em;
+    margin: 0;
+    font: italic 400 clamp(24px, 3vw, 44px) / 1.1 var(--font-serif);
+  }
+
+  section {
+    padding: clamp(64px, 10vw, 140px) 24px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-head {
+    margin-bottom: 36px;
+    padding-top: 14px;
+    border-top: 2px solid var(--ink);
+  }
+  .kicker {
+    font: 700 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--glow-text);
+  }
+  h2 {
+    margin: 12px 0 0;
+    font: 900 clamp(32px, 5vw, 72px) / 0.95 var(--font-display);
+    font-stretch: 115%;
+    letter-spacing: -0.03em;
+  }
+
+  /* The scale: one column per number of lunas, as tall as its count */
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    align-items: end;
+    gap: clamp(4px, 1vw, 14px);
+    height: clamp(240px, 34vw, 400px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bars li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    height: 100%;
+  }
+  .count {
+    font: 700 clamp(10px, 1.2vw, 14px) / 1 var(--font-display);
+    color: var(--ink-soft);
+  }
+  .bar {
+    width: 100%;
+    height: calc(var(--h) * 62%);
+    min-height: 3px;
+    background: var(--ink);
+  }
+  .best .bar {
+    background: var(--glow);
+  }
+  .bars :global(.phase) {
+    width: clamp(16px, 3vw, 34px);
+    height: auto;
+    --moon-base: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .n {
+    font: 900 clamp(14px, 2vw, 26px) / 1 var(--font-display);
+    font-stretch: 115%;
+  }
+  .tens {
+    max-width: 60em;
+    margin: 36px 0 0;
+    font: 400 15px/1.6 var(--font-display);
+    color: var(--ink-soft);
+  }
+  .tens strong {
+    color: var(--ink);
+  }
+  .tens a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+  .tens a:hover {
+    color: var(--glow-text);
+  }
+
+  .price-text {
+    max-width: 36em;
+    font: 400 clamp(17px, 1.4vw, 20px) / 1.55 var(--font-display);
+  }
+  .price-text p {
+    margin: 0 0 1em;
+  }
+  .pairs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 2px solid var(--ink);
+  }
+  .side {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    padding: 22px 20px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .side + .side {
+    border-left: 2px solid var(--ink);
+  }
+  .side:hover,
+  .side:focus-visible {
+    background: var(--muted);
+  }
+  .side :global(.pair-moon) {
+    width: 44px;
+    height: auto;
+    margin-bottom: 6px;
+    --moon-base: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .pair-score {
+    font: 900 clamp(40px, 5vw, 64px) / 0.9 var(--font-display);
+    font-stretch: 115%;
+    letter-spacing: -0.03em;
+  }
+  .pair-score em {
+    margin-left: 6px;
+    font: italic 400 0.4em/1 var(--font-serif);
+    letter-spacing: 0;
+    color: var(--glow-text);
+  }
+  .pair-name {
+    font: 800 18px/1.15 var(--font-display);
+  }
+  .pair-price {
+    font: 600 12px/1.4 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  .quote {
+    max-width: 24em;
+    margin: 56px 0 0;
+    font: italic 400 clamp(26px, 3.4vw, 48px) / 1.12 var(--font-serif);
+  }
+
+  .pluses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--ink);
+  }
+  .pluses li {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--ink);
+    font: 800 clamp(20px, 2vw, 26px) / 1.15 var(--font-display);
+    font-stretch: 110%;
+  }
+  .plus-n {
+    font: 700 13px/1 var(--font-display);
+    color: var(--glow-text);
+  }
+  .note {
+    max-width: 36em;
+    margin: 32px 0 0;
+    font: 400 clamp(17px, 1.4vw, 20px) / 1.55 var(--font-display);
+    color: var(--ink-soft);
+  }
+
+  /* Who he is, at night, like the rest of the site's dark moments */
+  .about {
+    max-width: none;
+    margin-top: clamp(64px, 10vw, 140px);
+    padding: clamp(64px, 10vw, 140px) 24px;
+    background: var(--ink);
+    color: var(--moon);
+  }
+  .about > * {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .about .kicker {
+    display: block;
+    color: var(--glow);
+  }
+  .about h2 {
+    max-width: 1200px;
+    margin-bottom: 40px;
+  }
+  .about-text {
+    columns: 2 22em;
+    column-gap: 48px;
+    font: 400 clamp(17px, 1.4vw, 20px) / 1.6 var(--font-display);
+  }
+  .about-text p {
+    margin: 0 0 1em;
+    break-inside: avoid;
+  }
+  .follow {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 16px 22px;
+    background: var(--glow);
+    color: var(--on-glow);
+    font: 800 15px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .follow:hover,
+  .follow:focus-visible {
+    background: var(--moon);
+  }
+</style>

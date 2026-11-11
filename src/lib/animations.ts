@@ -3,7 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
 import Lenis from "lenis"
 import { moonPath } from "@/lib/moon"
-import { moonGL } from "@/lib/moon-gl"
+import { mountedMoonGL } from "@/lib/moon-gl"
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -224,12 +224,15 @@ function moonScrub() {
   $$("[data-moon-scrub]").forEach((section) => {
     const paths = $$<SVGPathElement>(".moonwrap [data-moon]", section)
     const canvas = $<HTMLCanvasElement>("[data-moon-gl]", section)
-    const sphere = canvas ? moonGL(canvas) : null
     const score = $("[data-score]:not([data-moon-gl])", section)
     const examples = $$("[data-at]", section)
     const set = (v: number) => {
       paths.forEach((p) => p.setAttribute("d", moonPath(v / 10)))
-      sphere?.render(v / 10)
+      // The sphere exists once it nears the screen (shaded-moon.astro)
+      if (canvas) {
+        canvas.dataset.phase = String(v)
+        mountedMoonGL(canvas)?.render(v / 10)
+      }
       if (score) score.textContent = formatScore(v)
       examples.forEach((e) =>
         e.classList.toggle("is-on", Math.abs(Number(e.dataset.at) - v) < 0.5)

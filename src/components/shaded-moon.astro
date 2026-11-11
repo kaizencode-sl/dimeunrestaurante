@@ -28,13 +28,25 @@ const { score, class: className } = Astro.props
 <script>
   import { moonGL } from "@/lib/moon-gl"
 
+  // The sphere is set up only when it is about to come into view: compiling
+  // its shaders and loading its texture would otherwise hold up the first
+  // screen. Until then the flat moon shows.
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach(({ isIntersecting, target }) => {
+        if (!isIntersecting) return
+        io.unobserve(target)
+        // The canvas stays hidden until it draws, so its box is watched
+        const canvas = target.querySelector<HTMLCanvasElement>("canvas")!
+        // At the phase an animation left it in, or at its own score
+        const phase = canvas.dataset.phase ?? canvas.dataset.score
+        moonGL(canvas)?.render(Number(phase) / 10)
+      }),
+    { rootMargin: "100% 0px" }
+  )
   document
-    .querySelectorAll<HTMLCanvasElement>("[data-moon-gl]")
-    .forEach((canvas) => {
-      const gl = moonGL(canvas)
-      // Only the first frame; an animation takes over from here if there is one
-      gl?.render(Number(canvas.dataset.score) / 10)
-    })
+    .querySelectorAll("[data-moon-gl-wrap]")
+    .forEach((wrap) => io.observe(wrap))
 </script>
 
 <style>

@@ -146,9 +146,23 @@ const jsonLd = reviewGraph(review, {
         )}
       </div>
       <div class="head-inner">
-        <a class="back" href={url("/restaurantes")}>
-          ← Todas las reseñas
-        </a>
+        <div class="head-top">
+          <a class="back" href={url("/restaurantes")}>
+            ← Todas las reseñas
+          </a>
+          <button
+            type="button"
+            class="share"
+            data-share
+            data-title={`${r.name} · ${formatScore(r.score)} lunas`}
+            data-text={r.headline ? `“${r.headline}”` : r.name}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" />
+            </svg>
+            <span data-share-label>Compartir</span>
+          </button>
+        </div>
         <div class="head-bottom">
           <div class="title">
             <span class="eyebrow">{r.city}</span>
@@ -169,7 +183,11 @@ const jsonLd = reviewGraph(review, {
               <Moon score={r.score} animated class="score-moon" />
               <span class="score-num">
                 <RollingScore score={r.score} />
-                <small>lunas</small>
+                <small>
+                  <a href={url("/como-puntuo")} title="Cómo puntúo">
+                    lunas
+                  </a>
+                </small>
               </span>
             </div>
           )}
@@ -394,6 +412,52 @@ const jsonLd = reviewGraph(review, {
 </Layout>
 
 <script>
+  // Share opens the phone's own share sheet; where there is none (most
+  // desktops) it copies the link instead
+  const share = document.querySelector<HTMLButtonElement>("[data-share]")
+  if (share) {
+    const label = share.querySelector("[data-share-label]")!
+    let reset = 0
+    const say = (text: string) => {
+      label.textContent = text
+      clearTimeout(reset)
+      reset = window.setTimeout(() => (label.textContent = "Compartir"), 2200)
+    }
+    // The clipboard API, or the old way where it is blocked
+    const copy = async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text)
+        return true
+      } catch {
+        const area = document.createElement("textarea")
+        area.value = text
+        area.setAttribute("readonly", "")
+        area.style.cssText = "position:fixed;opacity:0"
+        document.body.append(area)
+        area.select()
+        const ok = document.execCommand("copy")
+        area.remove()
+        return ok
+      }
+    }
+    share.addEventListener("click", async () => {
+      const data = {
+        title: share.dataset.title,
+        text: share.dataset.text,
+        url: location.href.split("#")[0],
+      }
+      if (navigator.share) {
+        try {
+          await navigator.share(data)
+        } catch {
+          // closed without sharing
+        }
+        return
+      }
+      say((await copy(data.url)) ? "Enlace copiado" : "No se pudo copiar")
+    })
+  }
+
   // A dish thumbnail opens its photo full size; a click anywhere or Esc closes it
   const viewer = document.querySelector<HTMLDialogElement>("[data-viewer]")
   if (viewer) {
@@ -472,6 +536,7 @@ const jsonLd = reviewGraph(review, {
   }
   .back {
     align-self: flex-start;
+    white-space: nowrap;
     font: 600 12px/1 var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -480,6 +545,44 @@ const jsonLd = reviewGraph(review, {
   }
   .back:hover {
     text-decoration: underline;
+  }
+  .head-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .share {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin: -12px -12px -12px 0;
+    padding: 0 12px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: 600 12px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .share svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .share:hover span {
+    text-decoration: underline;
+  }
+  .share:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -4px;
   }
   .head-bottom {
     display: flex;
@@ -525,6 +628,11 @@ const jsonLd = reviewGraph(review, {
     font-stretch: 62%;
     font-variant-numeric: tabular-nums;
     color: var(--moon);
+  }
+  .score-num small a {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-underline-offset: 0.3em;
   }
   .score-num small {
     display: block;

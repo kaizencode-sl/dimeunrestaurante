@@ -408,6 +408,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
           fetch(
             `${import.meta.env.BASE_URL.replace(/\/$/, "")}/mapa/lunas.json`
           ).then((r) => r.json()),
+          import("@/lib/moon-map-styles").then((m) => m.loadMapStyles()),
         ])
         moonMap(homeMap, pins, { embedded: true })
       },
@@ -747,7 +748,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     margin: 40px auto 0;
     max-width: 1200px;
     font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
-    color: var(--grey);
+    color: var(--ink-soft);
   }
   .sig a {
     color: inherit;
@@ -961,10 +962,13 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     margin: 0;
     max-width: 36ch;
     font: italic 400 22px/1.2 var(--font-serif);
-    color: var(--grey);
+    color: var(--ink-soft);
   }
   .reviews-head a {
     color: var(--glow-text);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
   }
   .reviews-grid {
     display: grid;

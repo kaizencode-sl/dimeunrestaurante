@@ -109,6 +109,7 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
     <footer class="site-footer">
       <PhaseStrip class="footer-phases" />
       <span>Dime un restaurante · Alberto de Luna</span>
+      <a href={url("/como-puntuo")}>Cómo puntúo</a>
       <span>Demo de Kaizencode</span>
     </footer>
     <script>
@@ -163,6 +164,13 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
   .site-footer .footer-phases {
     flex-basis: 100%;
     margin-bottom: 28px;
+  }
+  .site-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--moon);
   }
   .site-footer {
     display: flex;
