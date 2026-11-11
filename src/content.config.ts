@@ -35,11 +35,15 @@ const reviews = defineCollection({
       .object({
         kind: z.enum(["new", "update"]),
         date: z.string().nullable(),
+        /** The restaurant's own Instagram account, without the @ */
+        handle: z.string().nullable().optional(),
         posts: z.array(
           z.object({
             id: z.string(),
             url: z.string(),
             date: z.string().nullable(),
+            /** The review itself, or the photos of each dish */
+            kind: z.enum(["opinion", "dishes"]).nullable().optional(),
           })
         ),
       })

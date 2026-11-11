@@ -115,6 +115,9 @@ export function reviewGraph(
     },
     ...(place.phone && { telephone: place.phone }),
     ...(place.web && { url: place.web }),
+    ...(r.instagram?.handle && {
+      sameAs: [`https://www.instagram.com/${r.instagram.handle}/`],
+    }),
     ...(r.cuisine.length && { servesCuisine: r.cuisine }),
     ...(r.price && { priceRange: r.price }),
     ...(geo && {

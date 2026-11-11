@@ -1,7 +1,7 @@
 ---
 import { url } from "@/lib/url"
 import Layout from "@/layouts/main.astro"
-import { homeGraph } from "@/lib/seo"
+import { INSTAGRAM, homeGraph } from "@/lib/seo"
 import Moon from "@/components/moon.astro"
 import ShadedMoon from "@/components/shaded-moon.astro"
 import Stars from "@/components/stars.astro"
@@ -141,7 +141,12 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
             )
           )}
       </p>
-      <span class="sig">Alberto de Luna, 151.000 seguidores en Instagram</span>
+      <span class="sig">
+        Alberto de Luna,{" "}
+        <a href={INSTAGRAM} target="_blank" rel="noopener" data-cursor="Seguir">
+          151.000 seguidores en Instagram
+        </a>
+      </span>
       <svg class="orbit" data-orbit viewBox="0 0 1200 200" aria-hidden="true">
         <path
           class="orbit-path"
@@ -743,6 +748,17 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     max-width: 1200px;
     font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
     color: var(--grey);
+  }
+  .sig a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    transition: color 0.2s;
+  }
+  .sig a:hover,
+  .sig a:focus-visible {
+    color: var(--glow-text);
   }
   /* A moon crossing the page on its orbit, waxing as it goes */
   .orbit {

@@ -91,16 +91,19 @@
   "instagram": {
    "kind": "new",
    "date": "2026-11-10",
+   "handle": "yakinikurikyu",
    "posts": [
     {
      "id": "Dfj5Am4iJXY",
      "url": "https://www.instagram.com/alberto_deluna/p/Dfj5Am4iJXY/",
-     "date": "2026-11-10"
+     "date": "2026-11-10",
+     "kind": "opinion"
     },
     {
      "id": "DfjyJ_ICM89",
      "url": "https://www.instagram.com/alberto_deluna/p/DfjyJ_ICM89/",
-     "date": "2026-11-10"
+     "date": "2026-11-10",
+     "kind": "dishes"
     }
    ]
   }
@@ -223,16 +226,19 @@
   "instagram": {
    "kind": "new",
    "date": "2026-11-05",
+   "handle": "omerestaurante",
    "posts": [
     {
      "id": "DfW-cBHCHib",
      "url": "https://www.instagram.com/alberto_deluna/p/DfW-cBHCHib/",
-     "date": "2026-11-05"
+     "date": "2026-11-05",
+     "kind": "opinion"
     },
     {
      "id": "DfW8bXJiL4U",
      "url": "https://www.instagram.com/alberto_deluna/p/DfW8bXJiL4U/",
-     "date": "2026-11-05"
+     "date": "2026-11-05",
+     "kind": "dishes"
     }
    ]
   }
@@ -332,16 +338,19 @@
   "instagram": {
    "kind": "new",
    "date": "2026-10-26",
+   "handle": "agarimomadrid",
    "posts": [
     {
      "id": "De9KvXoCL5U",
      "url": "https://www.instagram.com/alberto_deluna/p/De9KvXoCL5U/",
-     "date": "2026-10-26"
+     "date": "2026-10-26",
+     "kind": "opinion"
     },
     {
      "id": "De9HvddCMoO",
      "url": "https://www.instagram.com/alberto_deluna/p/De9HvddCMoO/",
-     "date": "2026-10-26"
+     "date": "2026-10-26",
+     "kind": "dishes"
     }
    ]
   }
@@ -62499,11 +62508,13 @@
   "instagram": {
    "kind": "update",
    "date": "2026-11-03",
+   "handle": "puerta57_oficial",
    "posts": [
     {
      "id": "DfRwzZOCDnb",
      "url": "https://www.instagram.com/alberto_deluna/p/DfRwzZOCDnb/",
-     "date": "2026-11-03"
+     "date": "2026-11-03",
+     "kind": "opinion"
     }
    ]
   }
