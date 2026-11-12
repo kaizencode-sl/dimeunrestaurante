@@ -40,15 +40,19 @@ const picks = HOME_PICKS.flatMap(({ id, photos }) => {
     : []
 })
 
-// Examples on the moon scale, lit as the scroll passes each score
-// Real reviews along the scale, lit as the moon reaches their score
-const SCALE = [
-  { name: "Pajarita", slug: "pajarita", at: 4 },
-  { name: "OME", slug: "ome", at: 6 },
-  { name: "Yakiniku Rikyu", slug: "yakiniku-rikyu", at: 8 },
-  { name: "Agarimo", slug: "agarimo", at: 9 },
-  { name: "Diverxo", slug: "diverxo", at: 10 },
-]
+// How many reviews got each whole score, shown under the number as it climbs
+const scored = reviews.filter((r) => r.data.score !== null)
+const DIST = Array.from({ length: 11 }, (_, n) => ({
+  n,
+  count: scored.filter((r) => Math.floor(r.data.score!) === n).length,
+}))
+const most = Math.max(...DIST.map((d) => d.count))
+const distText = ({ n, count }: { n: number; count: number }) => {
+  if (n === 10) return `Solo ${count} de ${scored.length} han llegado al 10`
+  const who = count === 1 ? "restaurante ha" : "restaurantes han"
+  const text = `${count} ${who} sacado un ${n}`
+  return count === most ? `${text}, su nota más repetida` : text
+}
 
 const marqueeCities = cities.slice(0, 12).map(([c]) => c.toUpperCase())
 const lineA = marqueeCities.filter((_, i) => i % 2 === 0)
@@ -173,19 +177,19 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
             <span data-score>10</span>
             <small>lunas</small>
           </div>
-          {/* A real review at the score the number lands on, one at a time */}
-          <p class="as">
-            {SCALE.map((e) => (
-              <a
-                href={url(`/restaurantes/${e.slug}`)}
-                class:list={["ex", { "is-on": e.at === 10 }]}
-                data-at={e.at}
-              >
-                como <em>{e.name}</em>
-                <span aria-hidden="true">→</span>
-              </a>
-            ))}
-          </p>
+          {/* How many reviews share the score the number is on */}
+          <div class="dist" data-dist>
+            <div class="bars" aria-hidden="true">
+              {DIST.map((d) => (
+                <i
+                  class:list={{ "is-on": d.n === 10 }}
+                  style={`--h: ${Math.max(d.count / most, 0.03)}`}
+                  data-text={distText(d)}
+                />
+              ))}
+            </div>
+            <p data-dist-text>{distText(DIST[10]!)}</p>
+          </div>
         </div>
         <div class="moonwrap">
           <ShadedMoon score={10} class="big-moon" />
@@ -849,48 +853,37 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     width: min(42vw, 520px);
     height: auto;
   }
-  .as {
+  .dist {
+    margin-top: 0.9em;
+    width: min(100%, 420px);
+  }
+  .bars {
     display: grid;
-    margin: 0.4em 0 0;
-    min-height: 1.3em;
-    font: italic 400 clamp(24px, 2.6vw, 40px) / 1.2 var(--font-serif);
+    grid-template-columns: repeat(11, 1fr);
+    align-items: end;
+    gap: 4px;
+    height: 56px;
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
   }
-  .ex {
-    grid-area: 1 / 1;
-    justify-self: start;
-    color: var(--paper);
-    text-decoration: none;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(0.4em);
+  .bars i {
+    height: calc(var(--h) * 100%);
+    background: color-mix(in srgb, var(--paper) 22%, transparent);
+    border-radius: 2px 2px 0 0;
     transition:
-      opacity 0.35s ease,
-      transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-      visibility 0s 0.45s;
+      background-color 0.3s ease,
+      transform 0.3s ease;
+    transform-origin: bottom;
   }
-  .ex em {
-    color: var(--glow);
+  .bars i:global(.is-on) {
+    background: var(--glow);
+    transform: scaleY(1.06);
   }
-  .ex span {
-    display: inline-block;
-    margin-left: 0.25em;
-    font-style: normal;
-    font-size: 0.7em;
-    transition: transform 0.25s ease;
-  }
-  .ex:hover span {
-    transform: translateX(4px);
-  }
-  .ex:hover em {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.15em;
-  }
-  .ex:global(.is-on) {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition-delay: 0s;
+  .dist p {
+    margin: 12px 0 0;
+    /* Room for two lines, so the scene doesn't jump as the text changes */
+    min-height: 2.4em;
+    font: italic 400 clamp(20px, 2vw, 30px) / 1.2 var(--font-serif);
+    color: var(--paper);
   }
 
   /* Cities */

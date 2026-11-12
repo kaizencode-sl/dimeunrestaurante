@@ -225,7 +225,9 @@ function moonScrub() {
     const paths = $$<SVGPathElement>(".moonwrap [data-moon]", section)
     const canvas = $<HTMLCanvasElement>("[data-moon-gl]", section)
     const score = $("[data-score]:not([data-moon-gl])", section)
-    const examples = $$("[data-at]", section)
+    const bars = $$("[data-dist] i", section)
+    const distText = $("[data-dist-text]", section)
+    let bucket = -1
     const set = (v: number) => {
       paths.forEach((p) => p.setAttribute("d", moonPath(v / 10)))
       // The sphere exists once it nears the screen (shaded-moon.astro)
@@ -234,9 +236,22 @@ function moonScrub() {
         mountedMoonGL(canvas)?.render(v / 10)
       }
       if (score) score.textContent = formatScore(v)
-      examples.forEach((e) =>
-        e.classList.toggle("is-on", Math.abs(Number(e.dataset.at) - v) < 0.5)
-      )
+      // The bar for the whole score lights up, and the line says how many
+      const n = Math.min(10, Math.floor(v + 0.001))
+      if (n !== bucket && bars.length) {
+        bucket = n
+        bars.forEach((b, i) => b.classList.toggle("is-on", i === n))
+        if (distText) {
+          distText.textContent = bars[n]!.dataset.text ?? ""
+          distText.animate(
+            [
+              { opacity: 0, transform: "translateY(6px)" },
+              { opacity: 1, transform: "none" },
+            ],
+            { duration: 300, easing: "ease-out" }
+          )
+        }
+      }
     }
     const state = { v: 0 }
     set(0)
