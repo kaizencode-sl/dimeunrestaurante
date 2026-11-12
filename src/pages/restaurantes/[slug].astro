@@ -117,7 +117,10 @@ const description =
   r.excerpt || `${r.name}: ${r.headline}. ${formatScore(r.score)} lunas.`
 
 // Shared as its cover photo, or a card with its moon when it has none
-const shareImage = cover ?? `/og/${review.id}.png`
+// (as a JPG for the Instagram photos: some apps won't preview WebP)
+const shareImage = cover
+  ? cover.replace(/(\/img\/ig\/[^/]+)\.webp$/, "$1.jpg")
+  : `/og/${review.id}.png`
 const jsonLd = reviewGraph(review, {
   image: cover,
   geo: point && !point.approx ? point : null,

@@ -237,7 +237,8 @@ function moonScrub() {
       }
       if (score) score.textContent = formatScore(v)
       // The bar for the whole score lights up, and the line says how many
-      const n = Math.min(10, Math.floor(v + 0.001))
+      // (by the number as shown, which goes in halves: 2,5 counts as a 2)
+      const n = Math.min(10, Math.floor(Math.round(v * 2) / 2))
       if (n !== bucket && bars.length) {
         bucket = n
         bars.forEach((b, i) => b.classList.toggle("is-on", i === n))
