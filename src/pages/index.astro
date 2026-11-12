@@ -173,21 +173,23 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
             <span data-score>10</span>
             <small>lunas</small>
           </div>
+          {/* A real review at the score the number lands on, one at a time */}
+          <p class="as">
+            {SCALE.map((e) => (
+              <a
+                href={url(`/restaurantes/${e.slug}`)}
+                class:list={["ex", { "is-on": e.at === 10 }]}
+                data-at={e.at}
+              >
+                como <em>{e.name}</em>
+                <span aria-hidden="true">→</span>
+              </a>
+            ))}
+          </p>
         </div>
         <div class="moonwrap">
           <ShadedMoon score={10} class="big-moon" />
         </div>
-        <ul class="examples">
-          {SCALE.map((e) => (
-            <li class="ex" data-at={e.at}>
-              <a href={url(`/restaurantes/${e.slug}`)}>
-                <Moon score={e.at} class="ex-moon" />
-                {e.name}
-                <b>{e.at}</b>
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
 
@@ -847,56 +849,48 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     width: min(42vw, 520px);
     height: auto;
   }
-  .examples {
-    position: absolute;
-    right: 6vw;
-    bottom: 8vh;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    text-align: right;
+  .as {
+    display: grid;
+    margin: 0.4em 0 0;
+    min-height: 1.3em;
+    font: italic 400 clamp(24px, 2.6vw, 40px) / 1.2 var(--font-serif);
   }
   .ex {
-    font: 700 14px/1.2 var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--grey);
-    transition:
-      color 0.3s,
-      opacity 0.3s;
-    opacity: 0.55;
-  }
-  .ex a {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: inherit;
+    grid-area: 1 / 1;
+    justify-self: start;
+    color: var(--paper);
     text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.4em);
+    transition:
+      opacity 0.35s ease,
+      transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+      visibility 0s 0.45s;
   }
-  .ex a:hover {
+  .ex em {
+    color: var(--glow);
+  }
+  .ex span {
+    display: inline-block;
+    margin-left: 0.25em;
+    font-style: normal;
+    font-size: 0.7em;
+    transition: transform 0.25s ease;
+  }
+  .ex:hover span {
+    transform: translateX(4px);
+  }
+  .ex:hover em {
     text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .ex :global(.ex-moon) {
-    width: 14px;
-    height: 14px;
-    --moon-base: transparent;
-    --moon-ring: currentColor;
-    --moon-lit: currentColor;
-  }
-  .ex b {
-    font-variant-numeric: tabular-nums;
-    margin-left: 10px;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
   }
   .ex:global(.is-on) {
-    color: var(--paper);
     opacity: 1;
-  }
-  .ex:global(.is-on) b {
-    color: var(--glow);
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
   }
 
   /* Cities */
@@ -1114,11 +1108,6 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     }
     .moonwrap :global(.big-moon) {
       width: 62vw;
-    }
-    .examples {
-      position: static;
-      text-align: left;
-      margin-top: 10px;
     }
     .reviews-grid {
       grid-template-columns: minmax(0, 1fr);
