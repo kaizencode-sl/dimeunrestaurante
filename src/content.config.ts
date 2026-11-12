@@ -42,8 +42,8 @@ const reviews = defineCollection({
             id: z.string(),
             url: z.string(),
             date: z.string().nullable(),
-            /** The review itself, or the photos of each dish */
-            kind: z.enum(["opinion", "dishes"]).nullable().optional(),
+            /** The review itself, the photos of each dish, or the wines */
+            kind: z.enum(["opinion", "dishes", "drinks"]).nullable().optional(),
           })
         ),
       })

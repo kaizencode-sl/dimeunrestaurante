@@ -323,7 +323,9 @@ const jsonLd = reviewGraph(review, {
                         ? "La opinión"
                         : p.kind === "dishes"
                           ? "Los platos"
-                          : `Post ${i + 1}`}
+                          : p.kind === "drinks"
+                            ? "La bebida"
+                            : `Post ${i + 1}`}
                     </span>
                     <span class="ig-go">
                       Ver post <span aria-hidden="true">↗</span>

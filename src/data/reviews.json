@@ -219,10 +219,14 @@
    },
    {
     "type": "p",
+    "text": "Nosotros llevamos un champán de Romain Henin, que me encanta, y un Borgoña de Simon Bize. Tienen cristalería fina."
+   },
+   {
+    "type": "p",
     "text": "En definitiva, no me arrepiento de haberlo conocido, pero tampoco encontré motivos para recomendarlo ni para querer repetir."
    }
   ],
-  "words": 460,
+  "words": 479,
   "instagram": {
    "kind": "new",
    "date": "2026-11-05",
@@ -239,6 +243,12 @@
      "url": "https://www.instagram.com/alberto_deluna/p/DfW8bXJiL4U/",
      "date": "2026-11-05",
      "kind": "dishes"
+    },
+    {
+     "id": "DfW9e9HiMTh",
+     "url": "https://www.instagram.com/alberto_deluna/p/DfW9e9HiMTh/",
+     "date": "2026-11-05",
+     "kind": "drinks"
     }
    ]
   }
@@ -311,6 +321,14 @@
    },
    {
     "type": "p",
+    "text": "Para beber, carta de vinos exclusivamente nacional y con el foco puesto en Galicia. Nosotros optamos por Algueira Risco (Ribeira Sacra) y Valbuxan de Telmo Rodríguez, tintos de perfil ligero que me gustaron mucho. Si sois de cerveza, probad su Estrella Galicia."
+   },
+   {
+    "type": "p",
+    "text": "Y, por fin, tras mucho tiempo reclamándolo, ¡han incorporado cristalería!"
+   },
+   {
+    "type": "p",
     "text": "Mi pregunta es: ¿y ahora qué?"
    },
    {
@@ -334,7 +352,7 @@
     "text": "Mientras llega ese salto, a seguir disfrutando de esta magnífica cocina. Totalmente recomendable."
    }
   ],
-  "words": 254,
+  "words": 306,
   "instagram": {
    "kind": "new",
    "date": "2026-10-26",
@@ -351,6 +369,12 @@
      "url": "https://www.instagram.com/alberto_deluna/p/De9HvddCMoO/",
      "date": "2026-10-26",
      "kind": "dishes"
+    },
+    {
+     "id": "De9JYEViPK_",
+     "url": "https://www.instagram.com/alberto_deluna/p/De9JYEViPK_/",
+     "date": "2026-10-26",
+     "kind": "drinks"
     }
    ]
   }

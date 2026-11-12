@@ -49,7 +49,7 @@ if (instagramDir) {
       id,
       url: posts.get(id)?.url ?? `https://www.instagram.com/p/${id}/`,
       date: posts.get(id)?.date ?? null,
-      // "opinion" (the review) or "dishes" (the photos of each dish)
+      // "opinion" (the review), "dishes" (the photos of each dish) or "drinks"
       kind: posts.get(id)?.kind ?? null,
     }))
     const date = list.map((p) => p.date).filter(Boolean).sort().at(-1) ?? null
