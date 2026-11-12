@@ -253,33 +253,17 @@ function moonScrub() {
         }
       }
     }
-    // Two drivers, and the moon follows whichever is further along: the
-    // scroll, and a play of its own once the scene is on screen, so nobody
-    // has to scroll the whole way to see it fill
-    const scroll = { v: 0 }
-    const auto = { v: 0 }
-    const update = () => set(Math.max(scroll.v, auto.v))
+    const state = { v: 0 }
     set(0)
-    gsap.to(scroll, {
+    gsap.to(state, {
       v: 10,
       ease: "none",
-      onUpdate: update,
+      onUpdate: () => set(state.v),
       scrollTrigger: {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
         scrub: SCRUB,
-      },
-    })
-    gsap.to(auto, {
-      v: 10,
-      duration: 4.5,
-      ease: "power1.inOut",
-      onUpdate: update,
-      scrollTrigger: {
-        trigger: section,
-        start: "top 30%",
-        toggleActions: "play none none none",
       },
     })
     gsap.from($(".moonwrap", section), {
