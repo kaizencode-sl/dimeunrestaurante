@@ -24,27 +24,31 @@
       "/img/ig/yakiniku-rikyu-5.webp",
       "/img/ig/yakiniku-rikyu-6.webp"
     ],
-    "excerpt": "Es ya una tradición que, cada vez que mis padres vienen a Madrid, acabemos comiendo en YAKINIKU RIKYU. Esta vez, comida para 4.",
+    "excerpt": "Es ya una tradición que, cada vez que mis padres vienen a Madrid, vayamos a comer aquí.",
     "body": [
       {
         "type": "p",
-        "text": "Es ya una tradición que, cada vez que mis padres vienen a Madrid, acabemos comiendo en YAKINIKU RIKYU. Esta vez, comida para 4."
+        "text": "Comida para 4."
       },
       {
         "type": "p",
-        "text": "Mis padres siempre se alojan en el One Shot de Fortuny, que está a escasos metros, así que es la opción perfecta para una comida tranquila en familia."
+        "text": "Es ya una tradición que, cada vez que mis padres vienen a Madrid, vayamos a comer aquí."
       },
       {
         "type": "p",
-        "text": "Para quien no lo conozca, es un japonés especializado en parrilla de influencia coreana. Cada mesa tiene una parrilla en el centro y cada uno se va cocinando las carnes a su gusto."
+        "text": "Mis padres siempre se alojan en el One Shot de Fortuny, que está a escasos metros de este restaurante, por lo que es una opción perfecta para disfrutar de una comida tranquila en familia."
       },
       {
         "type": "p",
-        "text": "Ojo con esto: preguntad cuánto tiempo hay que hacer cada corte, porque el personal no siempre te da las indicaciones necesarias."
+        "text": "Se trata de un restaurante japonés de influencia coreana, con mesas que tienen una parrilla en el centro donde cada comensal va cocinando las carnes a su gusto."
       },
       {
         "type": "p",
-        "text": "Probamos varios cortes:"
+        "text": "Es importante preguntar cuánto tiempo debe cocinarse cada corte, ya que el personal no siempre te da las indicaciones necesarias."
+      },
+      {
+        "type": "p",
+        "text": "Distintos cortes de carne que te vas cocinando tú mismo:"
       },
       {
         "type": "list",
@@ -58,11 +62,23 @@
       },
       {
         "type": "p",
-        "text": "La carne más rica, y también la más cara, es el wagyu. Aunque la lengua, el hígado o la falda también merecen la pena."
+        "text": "La carne más rica, y también la más cara, es el wagyu, aunque hay otras opciones (lengua, ternera, hígado, presa, etc.) que también merecen la pena."
       },
       {
         "type": "p",
-        "text": "Para acompañar, un arroz coreano a la piedra con steak tartar y verduras y un kimchi tradicional. Y de postre, una maceta de chocolate negro."
+        "text": "Y además:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Arroz coreano a la piedra con steak tartar y verduras.",
+          "Kimchi tradicional.",
+          "Maceta de chocolate negro."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "A mediodía ofrecen varios menús que funcionan especialmente bien para quienes trabajan por la zona. Y por las noches tienen descuentos del 20% para las reservas más tempranas, sobre las 19:00."
       },
       {
         "type": "p",
@@ -70,18 +86,22 @@
       },
       {
         "type": "p",
-        "text": "La carta de vinos no tiene especial interés, pero es suficiente para el concepto de restaurante."
+        "text": "La carta de vinos no tiene especial interés, pero resulta suficiente para el concepto de restaurante."
       },
       {
         "type": "p",
-        "text": "Un par de datos prácticos: a mediodía tienen varios menús que funcionan muy bien si trabajas por la zona, y por las noches hacen un 20% de descuento en las reservas más tempranas, sobre las 19:00. Además, abre todos los días, algo que siempre se agradece."
+        "text": "Además, abre todos los días, algo que siempre se agradece."
       },
       {
         "type": "p",
         "text": "En definitiva, un restaurante cómodo, agradable y con una propuesta que funciona. Sin grandes pretensiones, pero al que siempre apetece volver."
+      },
+      {
+        "type": "p",
+        "text": "8 LUNAS."
       }
     ],
-    "words": 284,
+    "words": 283,
     "instagram": {
       "kind": "new",
       "date": "2026-11-10",
@@ -130,19 +150,23 @@
       "/img/ig/ome-9.webp",
       "/img/ig/ome-10.webp"
     ],
-    "excerpt": "Tenía ganas de conocer OME, una pequeña barra de cocina mexicana, casi clandestina, a la que se accede a través del portal de un edificio. Cena para 2.",
+    "excerpt": "Tenía ganas de conocer esta pequeña barra de cocina mexicana, casi clandestina, a la que se accede a través del portal de un edificio.",
     "body": [
       {
         "type": "p",
-        "text": "Tenía ganas de conocer OME, una pequeña barra de cocina mexicana, casi clandestina, a la que se accede a través del portal de un edificio. Cena para 2."
+        "text": "Cena para 2."
       },
       {
         "type": "p",
-        "text": "Al frente está Roberto Ortiz, que pasó por el desaparecido PUNTO MX, que en su momento fue el mejor mexicano de España y llegó a tener una estrella Michelin."
+        "text": "Tenía ganas de conocer esta pequeña barra de cocina mexicana, casi clandestina, a la que se accede a través del portal de un edificio."
       },
       {
         "type": "p",
-        "text": "Es una única barra para seis comensales con tres turnos de servicio: 18:00, 20:00 y 22:30."
+        "text": "Al frente está Roberto Ortiz, quien pasó por el desaparecido Punto MX, que en su momento fue el mejor mexicano de España, llegando a conseguir una estrella Michelin."
+      },
+      {
+        "type": "p",
+        "text": "Una única barra para seis comensales y tres turnos de servicio: 18:00, 20:00 y 22:30."
       },
       {
         "type": "p",
@@ -150,49 +174,60 @@
       },
       {
         "type": "p",
-        "text": "Solo ofrecen un menú obligatorio de 95€ que me resultó excesivamente corto. Esta fue toda la parte salada:"
+        "text": "La cocina es correcta, pero no encontré ningún plato que me sorprendiera especialmente por su sabor ni nada que no pueda disfrutar en otros mexicanos más económicos e informales como La Once Mil, Barracuda MX, Puntarena o Ticuí."
+      },
+      {
+        "type": "p",
+        "text": "Y aquí es donde entra el precio. Porque hablamos de un menú obligatorio de 95€ que, en mi opinión, resulta excesivamente corto. Tanto que acabamos añadiendo varios platos fuera del menú, elevando la cuenta de comida a unos 148€ por persona."
+      },
+      {
+        "type": "p",
+        "text": "Y por ese dinero creo que hay que exigir bastante más."
+      },
+      {
+        "type": "p",
+        "text": "Os enseño todo lo que comimos:"
       },
       {
         "type": "list",
         "items": [
-          "Guacamole con polvo de aceituna negra y granada.",
+          "Guacamole: aguacate, polvo de aceituna negra y granada.",
           "Chileatole: maíz bolita rosa, chile jalapeño, mini maíz, flor de calabaza y hoja santa.",
           "Tostada de salpicón: picaña de rubia gallega, tuétano a la brasa y mayonesa de chiles toreados.",
-          "Gordita de frijol negro, carabinero y panceta ibérica.",
-          "Taco zarandeado de lubina con chile guajillo, frijoles refritos, cebolla encurtida y hoja de capuchina."
+          "Gordita: frijol negro, carabinero y panceta ibérica.",
+          "Taco zarandeado: lubina zarandeada con chile guajillo, frijoles refritos, cebolla encurtida y hoja de capuchina."
         ]
       },
       {
         "type": "p",
-        "text": "Y hasta aquí. Tremendamente escaso para ese precio."
+        "text": "Hasta aquí la parte salada del menú de 95€. Como veis, una propuesta que me parece tremendamente escasa para ese precio."
       },
       {
         "type": "p",
-        "text": "Tanto que, al terminar lo salado, te ofrecen añadir platos fuera del menú. Lo hicimos todos los de la barra:"
+        "text": "Estos fueron los platos que añadimos fuera del menú:"
       },
       {
         "type": "list",
         "items": [
           "Chiles en nogada: piquillo de Lodosa, magret de pato, chile güero, foiegada (nogada con foie) y granada.",
-          "Flauta de pato confitado con pipián verde y crema fresca. Con diferencia, el mejor plato de la noche.",
+          "Flauta de pato confitado: pipián verde y crema fresca. Con diferencia, el mejor plato de la noche.",
           "Taco de wagyu: maíz bolita rosa y rib eye de wagyu A4."
         ]
       },
       {
         "type": "p",
-        "text": "De postre, los dos incluidos en el menú: cremoso de mamey con amaranto y aceite de calabaza, y pastel de elote con maíz tatemado, mascarpone y cajeta."
+        "text": "Y terminamos con los dos postres incluidos en el menú:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Cremoso de mamey: amaranto y aceite de calabaza.",
+          "Pastel de elote: maíz tatemado, queso mascarpone y cajeta."
+        ]
       },
       {
         "type": "p",
-        "text": "La cocina es correcta, pero todo se mueve en el «bien, sin más». No encontré ningún plato que me sorprendiera por su sabor ni nada que no pueda disfrutar en otros mexicanos más económicos e informales como La Once Mil, Barracuda MX, Puntarena o Ticuí."
-      },
-      {
-        "type": "p",
-        "text": "Y aquí es donde entra el precio: con los extras, la cuenta de comida se fue a unos 148€ por barba. Y por ese dinero hay que exigir bastante más."
-      },
-      {
-        "type": "p",
-        "text": "De hecho, nos pasó algo bastante revelador: una semana después, apenas recordábamos lo que habíamos comido. Y cuando sales de un restaurante de este precio sin ningún plato que se te quede en la memoria, algo falla."
+        "text": "De hecho, tanto a mi acompañante como a mí nos ocurrió algo bastante revelador: una semana después de la visita, apenas recordábamos lo que habíamos comido. Y cuando sales de un restaurante de este precio sin ningún plato que permanezca en la memoria, algo falla."
       },
       {
         "type": "p",
@@ -200,22 +235,30 @@
       },
       {
         "type": "p",
-        "text": "Eso sí, ojo con la ropa: el olor a fritanga que se te queda impregnado es exagerado, porque varios platos se fríen delante de los comensales."
+        "text": "Eso sí, un inconveniente importante: el olor a fritanga que se te queda impregnado en la ropa es exagerado. Y es que varios platos se fríen delante de los comensales, con las consecuencias que eso tiene."
       },
       {
         "type": "p",
-        "text": "La carta de vinos es poco interesante, aunque permiten descorche a 40€ la botella."
+        "text": "En cuanto al vino, carta con poco interés y precios algo elevados, aunque al menos permiten el descorche a 40€ por botella."
       },
       {
         "type": "p",
-        "text": "Nosotros llevamos un champán de Romain Henin, que me encanta, y un Borgoña de Simon Bize. Tienen cristalería fina."
+        "text": "Nosotros llevamos un champán de Romain Henin que me encanta y un Borgoña de Simon Bize."
+      },
+      {
+        "type": "p",
+        "text": "Tienen cristalería fina."
       },
       {
         "type": "p",
         "text": "En definitiva, no me arrepiento de haberlo conocido, pero tampoco encontré motivos para recomendarlo ni para querer repetir."
+      },
+      {
+        "type": "p",
+        "text": "6 Lunas."
       }
     ],
-    "words": 479,
+    "words": 509,
     "instagram": {
       "kind": "new",
       "date": "2026-11-05",
@@ -276,11 +319,19 @@
       "/img/ig/el-campero-madrid-14.webp",
       "/img/ig/el-campero-madrid-15.webp"
     ],
-    "excerpt": "Tenía muchas ganas de conocer el desembarco en Madrid del mítico EL CAMPERO de Barbate, considerado uno de los grandes templos del atún. Comida para 4.",
+    "excerpt": "Tenía muchas ganas de conocer el desembarco en Madrid del mítico El Campero de Barbate.",
     "body": [
       {
         "type": "p",
-        "text": "Tenía muchas ganas de conocer el desembarco en Madrid del mítico EL CAMPERO de Barbate, considerado uno de los grandes templos del atún. Comida para 4."
+        "text": "Comida para 4."
+      },
+      {
+        "type": "p",
+        "text": "Tenía muchas ganas de conocer el desembarco en Madrid del mítico El Campero de Barbate."
+      },
+      {
+        "type": "p",
+        "text": "Para poneros en situación, El Campero de Barbate está considerado uno de los grandes templos del atún."
       },
       {
         "type": "p",
@@ -288,23 +339,38 @@
       },
       {
         "type": "p",
-        "text": "Cuando un restaurante ha hecho historia en su lugar de origen, siempre surge la duda de si esa misma fórmula funcionará en otro sitio. ¿Sería lo mismo Luis Lera si, en vez de estar en Castroverde de Campos, estuviera en plena calle Serrano?"
+        "text": "Cuando un restaurante ha hecho historia en su lugar de origen, siempre surge la duda de si esa misma fórmula funcionará en otro sitio."
       },
       {
         "type": "p",
-        "text": "Evidentemente, El Campero Madrid ha perdido el encanto de Barbate para instalarse en un enorme palacete, con las dimensiones y la estructura propias de un gran grupo de restauración. Por eso creo que, aunque conserve el nombre y se haya trasladado parte del equipo de cocina, lo más justo es valorarlo como un restaurante nuevo."
+        "text": "Imaginemos, por ejemplo, a Luis Lera. ¿Sería lo mismo si, en vez de estar en Castroverde de Campos, estuviera en plena calle Serrano?"
       },
       {
         "type": "p",
-        "text": "La comida tuvo luces y sombras."
+        "text": "Evidentemente, El Campero Madrid ha perdido el encanto que le aporta su ubicación original en Barbate para instalarse en un enorme palacete de la capital, con las dimensiones y la estructura propias de un gran grupo de restauración."
       },
       {
         "type": "p",
-        "text": "Empezamos con un surtido de crudos (tartar, lomo picante, sashimi de lomo y ventresca), que fue la decepción de la comida. Nos resultaron muy insípidos, hasta el punto de que, probados a ciegas, difícilmente habríamos distinguido unos cortes de otros. Tratándose de El Campero, donde el atún en crudo debería ser uno de sus grandes atractivos, esperábamos bastante más."
+        "text": "Por eso creo que, aunque conserve el nombre y se haya trasladado parte del equipo de cocina, lo más justo es valorarlo como un restaurante nuevo, sin pretender encontrar exactamente la misma experiencia que en Barbate."
       },
       {
         "type": "p",
-        "text": "En cambio, me gustaron mucho los guisos:"
+        "text": "La comida tuvo luces y sombras. Me gustaron los guisos de atún, pero me decepcionaron los crudos y algunas elaboraciones donde las salsas y los aliños terminaban eclipsando al producto."
+      },
+      {
+        "type": "p",
+        "text": "Os enseño todo lo que comimos:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Aperitivo de ajoblanco y atún. Rico.",
+          "Surtido de crudos (tartar, lomo picante, sashimi de lomo y ventresca). Fue la decepción de la comida. Nos resultaron muy insípidos, hasta el punto de que creemos que, si los hubiéramos probado a ciegas, difícilmente habríamos distinguido unos cortes de otros. Y es que, tratándose de un restaurante como El Campero, donde el atún en crudo debería ser uno de sus grandes atractivos, esperábamos bastante más."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "En cambio, me gustaron estos dos guisos:"
       },
       {
         "type": "list",
@@ -315,27 +381,36 @@
       },
       {
         "type": "p",
-        "text": "En otros platos, las salsas y los aliños terminaban eclipsando al producto:"
+        "text": "Y además:"
       },
       {
         "type": "list",
         "items": [
-          "Gilda de tarantelo de atún, con una aceituna explosiva que se come el sabor del atún.",
-          "Tosta de atún y trufa, donde el atún vuelve a quedar en segundo plano.",
-          "Costillas de atún asadas, con una salsa barbacoa que en algunos bocados combinaba muy bien y en otros se imponía demasiado."
+          "Gilda de tarantelo de atún. Se acompaña de una aceituna explosiva que, en mi opinión, junto con el aliño del plato, termina eclipsando el sabor del atún.",
+          "Algo parecido ocurre con la tosta de atún y trufa, donde el atún vuelve a quedar en segundo plano.",
+          "Costillas de atún asadas. Acompañadas de una salsa barbacoa que, en algunos bocados, combinaba muy bien con el atún, mientras que en otros terminaba imponiéndose demasiado."
         ]
       },
       {
         "type": "p",
-        "text": "Rico el aperitivo de ajoblanco y atún. Y muy ricos los postres: mini filipinos de frutos rojos, panal de queso payoyo con miel y helado de yogur, chocolate en texturas y tocino de cielo con chantilly."
+        "text": "Y muy ricos los postres:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Mini filipinos de frutos rojos, mermelada de arándanos, helado de yogur y frambuesas.",
+          "Panal de queso payoyo, polen, miel y helado de yogur.",
+          "Chocolate en texturas.",
+          "Tocino de cielo y chantilly."
+        ]
       },
       {
         "type": "p",
-        "text": "La carta es amplísima, con más de 60 platos, así que seguramente haya muchas otras elaboraciones que merezcan la pena y otras que no tanto."
+        "text": "La carta es amplísima, con más de 60 platos, por lo que seguramente haya muchas otras elaboraciones que merezcan la pena y otras que no tanto."
       },
       {
         "type": "p",
-        "text": "Para beber, carta de vinos amplia que, aunque tiene bastante margen de mejora, cumple más o menos, con precios algo dispares. Nosotros optamos por un champán de Adrien Dhondt, que siempre gusta, y un mítico As Sortes de Rafael Palacios. Tienen cristalería fina."
+        "text": "No descarto volver para seguir probando, pero, por ahora, me quedo con esa sensación de sí y no."
       },
       {
         "type": "p",
@@ -347,14 +422,30 @@
       },
       {
         "type": "p",
-        "text": "Abre todos los días, con un horario muy amplio, lo cual siempre suma. Ojo: funcionan con turnos de dos horas."
+        "text": "Carta de vinos amplia y que, aunque tiene bastante margen de mejora, cumple más o menos. Precios algo dispares."
       },
       {
         "type": "p",
-        "text": "No descarto volver para seguir probando, pero, por ahora, me quedo con esa sensación de sí y no."
+        "text": "Nosotros optamos por un champán de Adrien Dhondt que siempre gusta, y un mítico As Sortes de Rafael Palacios."
+      },
+      {
+        "type": "p",
+        "text": "Tienen cristalería fina."
+      },
+      {
+        "type": "p",
+        "text": "Abre todos los días, con un horario muy amplio, lo cual siempre suma. Gestionar semejante bicho, con esas dimensiones y tantos servicios, no debe ser nada sencillo."
+      },
+      {
+        "type": "p",
+        "text": "Funcionan con turnos de dos horas."
+      },
+      {
+        "type": "p",
+        "text": "Con todo ello, esta primera visita la dejo en 7,5 Lunas."
       }
     ],
-    "words": 482,
+    "words": 597,
     "instagram": {
       "kind": "new",
       "date": "2026-11-11",
@@ -408,11 +499,15 @@
       "/img/ig/agarimo-8.webp",
       "/img/ig/agarimo-9.webp"
     ],
-    "excerpt": "Son ya muchas las visitas a AGARIMO, este pequeño restaurante de cocina gallega con un toque de autor, y esta ha sido la mejor de todas. Cena para 2, yendo muy fuerte.",
+    "excerpt": "Son ya muchas las visitas a este pequeño restaurante de cocina gallega con un toque de autor, y esta ha sido la mejor de todas.",
     "body": [
       {
         "type": "p",
-        "text": "Son ya muchas las visitas a AGARIMO, este pequeño restaurante de cocina gallega con un toque de autor, y esta ha sido la mejor de todas. Cena para 2, yendo muy fuerte."
+        "text": "Cena para 2, yendo muy fuerte."
+      },
+      {
+        "type": "p",
+        "text": "Son ya muchas las visitas a este pequeño restaurante de cocina gallega con un toque de autor, y esta ha sido la mejor de todas."
       },
       {
         "type": "p",
@@ -420,15 +515,26 @@
       },
       {
         "type": "p",
-        "text": "Empezamos con una carne asada y pimientos en su emulsión."
+        "text": "Os enseño todo lo que comimos:"
+      },
+      {
+        "type": "list",
+        "items": ["Carne asada y pimientos en su emulsión."]
       },
       {
         "type": "p",
-        "text": "Pero donde Guille saca matrícula de honor es en los pescados. Prueba de ello, su icónica merluza a la gallega 2.0 y una fantástica lubina de Aquanaria a la bilbaína con ajo negro."
+        "text": "Es de matrícula de honor cómo trabaja los pescados Guille. Prueba de ello estos dos platos, con su icónica merluza y una fantástica lubina:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Merluza a la gallega 2.0.",
+          "Lubina de Aquanaria bilbaína y ajo negro."
+        ]
       },
       {
         "type": "p",
-        "text": "Seguimos con:"
+        "text": "Y además:"
       },
       {
         "type": "list",
@@ -437,28 +543,37 @@
           "Navajas con escabeche templado.",
           "Berberechos, marinera de Jerez y judías.",
           "Rape curado y salpicón emulsionado.",
-          "Molleja asada, coliflor y anguila ahumada."
+          "Molleja asada, coliflor y anguila ahumada.",
+          "Tarta de queso y chocolate de Salvaje."
         ]
       },
       {
         "type": "p",
-        "text": "Y de postre, tarta de queso y chocolate de Salvaje."
+        "text": "Carta de vinos exclusivamente nacional y con el foco puesto en Galicia."
       },
       {
         "type": "p",
-        "text": "Para beber, carta de vinos exclusivamente nacional y con el foco puesto en Galicia. Nosotros optamos por Algueira Risco (Ribeira Sacra) y Valbuxan de Telmo Rodríguez, tintos de perfil ligero que me gustaron mucho. Si sois de cerveza, probad su Estrella Galicia."
+        "text": "Nosotros optamos por Algueira Risco (Ribeira Sacra) y Valbuxan de Telmo Rodríguez. Tintos de perfil ligero que me gustaron mucho."
       },
       {
         "type": "p",
-        "text": "Y, por fin, tras mucho tiempo reclamándolo, ¡han incorporado cristalería!"
+        "text": "Y, por fin, tras mucho tiempo reclamándolo, ¡¡han incorporado cristalería!!"
       },
       {
         "type": "p",
-        "text": "Mi pregunta es: ¿y ahora qué?"
+        "text": "Si sois de cerveza, probad su Estrella Galicia."
       },
       {
         "type": "p",
-        "text": "Y es que creo que la cocina de Guille ha llegado a un nivel que merece dar un salto. El local actual es muy modesto y, en mi opinión, se le ha quedado pequeño a una cocina que tiene muchísimo más recorrido."
+        "text": "Mi pregunta es, ¿y ahora qué?"
+      },
+      {
+        "type": "p",
+        "text": "Y es que creo que la cocina de Guille ha llegado a un nivel que merece dar un salto."
+      },
+      {
+        "type": "p",
+        "text": "El local actual es muy modesto y, en mi opinión, se le ha quedado pequeño a una cocina que tiene muchísimo más recorrido."
       },
       {
         "type": "p",
@@ -466,18 +581,26 @@
       },
       {
         "type": "p",
-        "text": "Porque esta cocina tiene personalidad, es divertida, está muy rica y gusta muchísimo. Además, apuesta por el aprovechamiento del producto y el desperdicio cero."
+        "text": "Porque esta cocina tiene personalidad, es divertida, está muy rica y gusta muchísimo."
       },
       {
         "type": "p",
-        "text": "El ticket medio ronda los 50-60€ por barba."
+        "text": "Creo que ha llegado el momento de dar ese paso y llevar Agarimo al siguiente nivel."
       },
       {
         "type": "p",
-        "text": "Mientras llega ese salto, a seguir disfrutando de esta magnífica cocina. Totalmente recomendable."
+        "text": "Mientras tanto, podemos seguir disfrutando de esta magnífica cocina, que además apuesta por el aprovechamiento del producto y el desperdicio cero."
+      },
+      {
+        "type": "p",
+        "text": "Ticket medio de 50-60€."
+      },
+      {
+        "type": "p",
+        "text": "9 LUNAS. Totalmente recomendable."
       }
     ],
-    "words": 306,
+    "words": 323,
     "instagram": {
       "kind": "new",
       "date": "2026-10-26",
@@ -539,15 +662,19 @@
       "/img/ig/zuara-15.webp",
       "/img/ig/zuara-16.webp"
     ],
-    "excerpt": "Llevaba más de un año echando de menos la que para mí ha sido la mejor barra de sushi de Madrid. Cena para 2, a Máximo Dolor.",
+    "excerpt": "Llevaba más de un año echando de menos la que para mí ha sido la mejor barra de sushi de Madrid.",
     "body": [
       {
         "type": "p",
-        "text": "Llevaba más de un año echando de menos la que para mí ha sido la mejor barra de sushi de Madrid. Cena para 2, a Máximo Dolor."
+        "text": "Cena para 2, a Máximo Dolor."
       },
       {
         "type": "p",
-        "text": "En 2025 se despidieron de su anterior ubicación en la calle Pensamiento, donde consiguieron una más que merecida estrella Michelin, para instalarse este verano en el hotel Hyatt Regency Hesperia (el mismo donde están Smoked Room y Leña)."
+        "text": "Llevaba más de un año echando de menos la que para mí ha sido la mejor barra de sushi de Madrid."
+      },
+      {
+        "type": "p",
+        "text": "Y es que en 2025 se despidieron de su anterior ubicación en la calle Pensamiento, donde consiguieron una más que merecida estrella Michelin, para instalarse este pasado verano 2026 en el Hyatt Regency Hesperia (el mismo hotel donde están Smoked Room y Leña)."
       },
       {
         "type": "p",
@@ -555,50 +682,88 @@
       },
       {
         "type": "p",
-        "text": "Para llegar hay que entrar por la puerta principal del hotel, atravesar todo el hall pasando por la recepción, y al fondo a la derecha está ZUARA. Un recorrido que, estéticamente, no resulta especialmente atractivo."
+        "text": "Para llegar al restaurante hay que acceder por la entrada principal del hotel, atravesar todo el hall, pasando por la recepción, y al fondo a la derecha se encuentra Zuara. Un recorrido que, estéticamente, no resulta especialmente atractivo."
       },
       {
         "type": "p",
-        "text": "Y una vez dentro, el restaurante tampoco me pareció demasiado acogedor. Acababan de abrir y seguramente tengan que darle más calidez a la decoración, pero por ahora se respira demasiado ese ambiente de restaurante de hotel."
+        "text": "Y una vez dentro, el restaurante tampoco me pareció demasiado acogedor. Es cierto que acababan de abrir y seguramente todavía tengan que darle más calidez a la decoración, pero por ahora se respira demasiado ese ambiente de restaurante de hotel."
       },
       {
         "type": "p",
-        "text": "Mantienen su formato de menú único obligatorio (195€), con todos los comensales empezando a la vez, en dos únicos horarios: 14:15 y 21:15."
+        "text": "Pasando a la experiencia gastronómica, mantienen su formato de menú único obligatorio (195€), con todos los comensales comenzando y comiendo a la vez, en dos únicos horarios: 14:15 y 21:15."
       },
       {
         "type": "p",
-        "text": "Es un concepto muy formal, que encaja con la filosofía japonesa del maestro David Arauz, pero que personalmente me resulta algo rígido en un momento en el que la restauración tiende cada vez más a experiencias flexibles. Medio en broma, medio en serio, David explica al comienzo que cada nigiri debe comerse en el momento en el que se sirve y que, si no lo haces, te lo retiran."
+        "text": "Es un concepto muy formal y estructurado, que entiendo perfectamente y que encaja con la filosofía japonesa del maestro David Arauz, pero que personalmente me resulta algo rígido en un momento en el que la restauración tiende cada vez más a ofrecer experiencias flexibles y adaptadas al cliente."
       },
       {
         "type": "p",
-        "text": "Para quienes prefieran otra cosa, han creado una zona de mesas llamada Teburu."
+        "text": "De hecho, medio en broma, medio en serio, David explica al comienzo del menú que cada nigiri debe comerse en el momento en el que se sirve y que, si no lo haces, te lo retiran."
       },
       {
         "type": "p",
-        "text": "En cuanto a la cocina, nivel sobresaliente, como era de esperar. Esto es lo que hay que destacar:"
+        "text": "Para quienes prefieran una experiencia diferente, han creado una zona de mesas llamada Teburu."
+      },
+      {
+        "type": "p",
+        "text": "En cuanto a la cocina, como era de esperar, el nivel fue sobresaliente. Aunque tuve la sensación de que todavía necesitaban algo más de rodaje para recuperar esa matrícula de honor que habían alcanzado en su anterior ubicación."
+      },
+      {
+        "type": "p",
+        "text": "Esta cena fue antes de verano, con la nueva barra recién inaugurada, donde el maestro ofrece un único menú de 195€, al que se pueden añadir algunos extras:"
       },
       {
         "type": "list",
         "items": [
-          "Torrija de pan brioche con toro y caviar: MÁXIMO DIOS.",
-          "Nigiri de toro, tuétano y caviar, que se pide como extra (18€) y hay que pedir sí o sí.",
-          "Lomo bajo Miyazaki, otro extra (80€ por persona). Muy rico, pero para un par de bocados, porque entre la potencia y la grasa acaba saturando.",
-          "Hirame no robata yaki (lenguado). Excelente.",
-          "Chawanmushi de cigala.",
+          "De la parte de entrantes, la torrija de pan brioche con toro y caviar de Caspian Pearl es MÁXIMO DIOS.",
+          "Como extra de nigiri (18€), hay que pedir el Toro-Tuétano-Caviar.",
+          "Lomo bajo Miyazaki. También es un extra del menú y cuesta 80€ por persona. Está muy rico, pero quizás para tomar solo un par de bocados, ya que entre la potencia y la grasa acaba saturando un poco.",
+          "Hirame no robata yaki (Lenguado). Excelente.",
+          "Chawanmushi de Cigala.",
           "Kaiso salad de algas."
         ]
       },
       {
         "type": "p",
-        "text": "El menú incluye unas 17 piezas de sushi: madai, hiramasa con lima, hamachi con yuzu kosho, shime saba, katsuo ahumado, bonito del norte, sardina, calamar con limón, quisquilla, lubina, langostino, akami, chu toro, akami con shio koji, anguila en tare, toro aburi y un temaki de atún y tuétano. Y de postre, helado de mantequilla (kogashi bata)."
+        "text": "Respecto al sushi, el menú incluye unas 17 piezas. Estas son las que nos sirvieron:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Madai (Pámpano).",
+          "Hiramasa con lima (Seriola).",
+          "Hamachi con yuzu kosho (Pez limón).",
+          "Shime saba (Caballa).",
+          "Katsuo kemuri (Bacoreta ahumada).",
+          "Binnaga (Bonito blanco del norte).",
+          "Iwashi (Sardina).",
+          "Ika con limón (Calamar).",
+          "Ama ebi (Quisquilla).",
+          "Suzuki (Lubina).",
+          "Kuruma ebi (Langostino).",
+          "Akami (Atún).",
+          "Chu toro (Ventresca de atún).",
+          "Akami con shio koji (Atún macerado).",
+          "Unagi kabayaki (Anguila en tare).",
+          "Toro aburi (Ventresca de atún marcada).",
+          "Temaki de atún y tuétano."
+        ]
       },
       {
         "type": "p",
-        "text": "Aun así, tuve la sensación de que todavía necesitaban algo más de rodaje para recuperar esa matrícula de honor que habían alcanzado en su anterior ubicación."
+        "text": "De postre, Kogashi bata (Helado de mantequilla)."
       },
       {
         "type": "p",
-        "text": "Para beber, magnífico el tándem que forman David en la cocina y Álvaro Prieto al frente de la sala y la bodega. Muy buena carta de vinos, con referencias de muchísimo nivel. Nosotros nos dimos un auténtico homenaje con tres pepinos, entre ellos dos de mis vinos blancos favoritos del mundo:"
+        "text": "Magnífico el tándem que forman David Arauz en la cocina y Álvaro Prieto al frente de la sala y la bodega."
+      },
+      {
+        "type": "p",
+        "text": "Muy buena carta de vinos, con referencias de muchísimo nivel y muchas cosas interesantes para disfrutar."
+      },
+      {
+        "type": "p",
+        "text": "Nosotros nos dimos un auténtico homenaje con tres pepinos, entre ellos dos de mis vinos blancos favoritos del mundo:"
       },
       {
         "type": "list",
@@ -614,10 +779,10 @@
       },
       {
         "type": "p",
-        "text": "Por ahora se queda en un 9,5, con la convicción de que tienen todo lo necesario para volver al 10."
+        "text": "Por ahora, 9,5 LUNAS, con la convicción de que tienen todo lo necesario para volver al 10."
       }
     ],
-    "words": 520,
+    "words": 642,
     "instagram": {
       "kind": "new",
       "date": "2026-10-22",
@@ -678,15 +843,23 @@
       "/img/ig/casa-lista-14.webp",
       "/img/ig/casa-lista-15.webp"
     ],
-    "excerpt": "En la esquina de Lagasca con Ortega y Gasset ha abierto al público este restaurante, situado dentro del club privado VEGA, conocido, entre otras cosas, por tener a Íñigo Onieva entre sus fundadores. Invitación. Cena…",
+    "excerpt": "En la esquina de Lagasca con Ortega y Gasset ha abierto al público este restaurante situado dentro del club privado VEGA, conocido, entre otras cosas, por tener a Íñigo Onieva, marido de Tamara Falcó, entre sus…",
     "body": [
       {
         "type": "p",
-        "text": "En la esquina de Lagasca con Ortega y Gasset ha abierto al público este restaurante, situado dentro del club privado VEGA, conocido, entre otras cosas, por tener a Íñigo Onieva entre sus fundadores. Invitación. Cena para 3."
+        "text": "Invitación. Cena para 3."
       },
       {
         "type": "p",
-        "text": "Para ir a CASA LISTA no hace falta ser socio, así que funciona como un restaurante independiente, aunque integrado en el espacio del club. Una fórmula que se está poniendo muy de moda en Madrid."
+        "text": "En la esquina de Lagasca con Ortega y Gasset ha abierto al público este restaurante situado dentro del club privado VEGA, conocido, entre otras cosas, por tener a Íñigo Onieva, marido de Tamara Falcó, entre sus fundadores."
+      },
+      {
+        "type": "p",
+        "text": "Para acceder a Casa Lista no es necesario ser miembro del club, de modo que funciona como un restaurante independiente, aunque integrado en el espacio que ocupa VEGA."
+      },
+      {
+        "type": "p",
+        "text": "Una fórmula que se está poniendo muy de moda en Madrid, con clubes privados que conviven con restaurantes abiertos al público."
       },
       {
         "type": "p",
@@ -694,38 +867,64 @@
       },
       {
         "type": "p",
-        "text": "Reconozco que tenía mis dudas sobre la comida, sobre todo después de Casa Salesas, el otro restaurante vinculado a Íñigo Onieva, que no me convenció cuando lo visité hace un par de años. Pero aquí cenamos bastante bien."
+        "text": "Reconozco que tenía mis dudas sobre la comida, especialmente después de mi experiencia en Casa Salesas, el otro restaurante vinculado a Íñigo Onieva, que no me convenció cuando lo visité hace un par de años. Pero debo decir que aquí cenamos bastante bien."
       },
       {
         "type": "p",
-        "text": "Carta amplia y variada, donde se mezclan la cocina de mercado, la española y la italiana, con platos bien ejecutados y proveedores de primer nivel como Pampeana o Discarlux."
+        "text": "Carta amplia y variada donde se mezclan la cocina de mercado, la española y la italiana, con platos pensados para todos los públicos, bien ejecutados y con proveedores de primer nivel como Pampeana o Discarlux."
       },
       {
         "type": "p",
-        "text": "Esto fue lo que probamos:"
+        "text": "Os enseño todo lo que comimos:"
       },
       {
         "type": "list",
         "items": [
-          "Paccheri genovese. De las distintas pastas, nos recomendaron esta y me gustó muchísimo.",
-          "Katsu sando de solomillo. Muy rico, con la carne tierna, el rebozado limpio y el pan ligero, algo que no siempre es fácil de conseguir.",
+          "Paccheri genovese. De entre las distintas pastas que ofrecen, nos recomendaron esta y la verdad es que me gustó muchísimo.",
+          "Katsu Sando de solomillo. Muy rico, con la carne tierna, rebozado limpio y el pan ligero, algo que no siempre es fácil de conseguir.",
           "Almejas al vino fino. Buenas almejas, bien preparadas.",
-          "Chuleta de rubia gallega, a la que le faltó algo de intensidad, y un ojo de bife de Pampeana que estaba muy bueno.",
+          "Carnes. Probamos una chuleta de rubia gallega, a la que le faltó algo de intensidad de sabor, y un ojo de bife de Pampeana que estaba muy bueno.",
           "Gilda con anchoa de Santoña 00 y salmorejo.",
-          "Tartar de atún de almadraba con carpaccio de aguacate y huevo frito."
+          "Tartar de atún de almadraba con carpaccio de aguacate y huevo frito de Cobardes y Gallinas."
         ]
       },
       {
         "type": "p",
-        "text": "Buen nivel también en los postres: helado italiano de pistacho hecho al momento, flan con chantilly, cookie con helado de vainilla, torrija en pan de flor dulce con crema inglesa y tarta de queso."
+        "text": "Y buen nivel también en los postres:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Helado italiano de pistacho elaborado al momento.",
+          "Flan con chantilly.",
+          "Cookie con helado de vainilla.",
+          "Torrija en pan de flor dulce con crema inglesa.",
+          "Tarta de queso."
+        ]
       },
       {
         "type": "p",
-        "text": "Para beber, carta de vinos bien pensada, con una selección personal de la sumiller, Rocío, con distintas chucherías que van entrando. Permiten el descorche por 50€. Nosotros optamos primero por un champán de Bérêche, que siempre cumple, y después por un Pommard de Pacalet, un productor de Borgoña que me gusta mucho. Cristalería fina y buena coctelería."
+        "text": "Carta de vinos bien pensada, que además cuenta con una selección personal de la sumiller, Rocío, con distintas chucherías que van entrando."
       },
       {
         "type": "p",
-        "text": "Abre de martes a sábado, ininterrumpidamente desde el mediodía. Y han empezado a dar desayunos, que pueden ser buena opción para una reunión de trabajo o para ir el fin de semana en familia."
+        "text": "Permiten el descorche por 50€."
+      },
+      {
+        "type": "p",
+        "text": "Nosotros optamos primero por un champán de Bérêche que siempre cumple, y después por un Pommard de Pacalet, un productor de Borgoña que me gusta mucho."
+      },
+      {
+        "type": "p",
+        "text": "Hay cristalería fina, algo que siempre se agradece. Y también tienen buena coctelería."
+      },
+      {
+        "type": "p",
+        "text": "Abre de martes a sábado, ininterrumpidamente desde el mediodía. Y me contaron que han empezado a dar desayunos, lo cual puede ser buena opción para una reunión de trabajo o ir el fin de semana en familia."
+      },
+      {
+        "type": "p",
+        "text": "Por su ubicación, el espacio y el tipo de cocina, me parece una opción interesante tanto para una comida más tranquila y formal al mediodía como para una cena con amigos por la noche, cuando la propuesta busca un ambiente más animado, con DJ los fines de semana."
       },
       {
         "type": "p",
@@ -733,10 +932,10 @@
       },
       {
         "type": "p",
-        "text": "Por ubicación, espacio y cocina, me parece una opción interesante tanto para una comida tranquila al mediodía como para una cena con amigos, cuando el ambiente se anima, con DJ los fines de semana."
+        "text": "8 LUNAS."
       }
     ],
-    "words": 413,
+    "words": 491,
     "instagram": {
       "kind": "new",
       "date": "2026-10-19",
@@ -797,27 +996,27 @@
       "/img/ig/amparito-roca-14.webp",
       "/img/ig/amparito-roca-15.webp"
     ],
-    "excerpt": "Este clásico del bulevar de Juan Bravo cambia de manos y ahora se pone al frente Zoilo, el creador de Roostiq.",
+    "excerpt": "Este clásico del bulevar de Juan Bravo cambia de manos y ahora se pone al frente Zoilo (creador de Roostiq).",
     "body": [
       {
         "type": "p",
-        "text": "Este clásico del bulevar de Juan Bravo cambia de manos y ahora se pone al frente Zoilo, el creador de Roostiq."
+        "text": "Este clásico del bulevar de Juan Bravo cambia de manos y ahora se pone al frente Zoilo (creador de Roostiq)."
       },
       {
         "type": "p",
-        "text": "El local se ha reformado por completo y ahora es mucho más elegante, bonito y acogedor, con una agradable terraza en pleno bulevar."
+        "text": "El local se ha reformado por completo, quedando ahora mucho más elegante, bonito y acogedor, con una agradable terraza en pleno bulevar."
       },
       {
         "type": "p",
-        "text": "La propuesta mantiene su esencia, con una cocina tradicional y de producto, pero dando un salto en calidad."
+        "text": "La propuesta gastronómica mantiene su esencia, con una cocina tradicional y de producto, pero dando un salto en calidad."
       },
       {
         "type": "p",
-        "text": "Y, como era de esperar, la bodega ha crecido exponencialmente, con Borgoña y champán como grandes protagonistas. Además, tienen cristalería fina, algo que siempre se agradece."
+        "text": "Y, como era de esperar, la bodega ha crecido exponencialmente, con Borgoña y champán como grandes protagonistas. Además, cuentan con cristalería fina, algo que siempre se agradece."
       },
       {
         "type": "p",
-        "text": "Esta cena fue invitación. Para compartir entre 4, probamos lo siguiente, con un nivel general muy bueno y varios platos que me parecieron imprescindibles:"
+        "text": "Esta cena fue invitación y, para compartir, probamos lo siguiente, con un nivel general muy bueno y varios platos que me parecieron imprescindibles:"
       },
       {
         "type": "list",
@@ -833,27 +1032,39 @@
           "Cocochas de merluza.",
           "Ajoblanco con crujiente de torrezno, sardina ahumada y sorbete de tempranillo.",
           "Tarta de queso (imprescindible).",
-          "Hojaldre de manzana templado con helado de vainilla Bourbon y toffee de reineta."
+          "Hojaldre de manzana templado con helado de vainilla Bourbon y toffe de reineta."
         ]
       },
       {
         "type": "p",
-        "text": "El ticket medio estará alrededor de los 80€. Abre todos los días excepto los domingos."
+        "text": "El ticket medio estará alrededor de los 80€."
       },
       {
         "type": "p",
-        "text": "Ya sabéis que, cuando una comida es invitación, siempre intento valorarla con cierta perspectiva. Pero lo cierto es que disfrutamos mucho de la cena: una cocina clásica, reconocible y bien ejecutada, una bodega de mucho nivel y un espacio que, tras la reforma, resulta especialmente agradable."
+        "text": "Abre todos los días excepto domingos."
       },
       {
         "type": "p",
-        "text": "Esta nueva etapa acaba de arrancar y estoy convencido de que, a medida que el equipo vaya rodando, el restaurante seguirá creciendo. Y esa terraza en pleno Juan Bravo es un auténtico plus."
+        "text": "Ya sabéis que cuando una comida es invitación siempre intento valorar la experiencia con cierta perspectiva. Pero lo cierto es que disfrutamos mucho de la cena."
       },
       {
         "type": "p",
-        "text": "Muy recomendado."
+        "text": "Una cocina clásica, reconocible y bien ejecutada, una bodega de mucho nivel y un espacio que, tras la reforma, resulta especialmente agradable."
+      },
+      {
+        "type": "p",
+        "text": "Además, esta nueva etapa acaba de arrancar y estoy convencido de que, a medida que el equipo vaya rodando y ajustando detalles, el restaurante seguirá creciendo."
+      },
+      {
+        "type": "p",
+        "text": "Y esa terraza en pleno bulevar de Juan Bravo es un auténtico plus."
+      },
+      {
+        "type": "p",
+        "text": "8,5 LUNAS. Muy recomendado."
       }
     ],
-    "words": 296,
+    "words": 304,
     "instagram": {
       "kind": "new",
       "date": "2026-10-15",

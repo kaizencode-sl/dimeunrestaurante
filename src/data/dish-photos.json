@@ -29,11 +29,11 @@
   },
   "zuara": {
     "torrija": "/img/ig/zuara-0.webp",
-    "nigiri de toro": "/img/ig/zuara-12.webp",
     "miyazaki": "/img/ig/zuara-13.webp",
     "hirame": "/img/ig/zuara-14.webp",
     "chawanmushi": "/img/ig/zuara-15.webp",
-    "kaiso": "/img/ig/zuara-16.webp"
+    "kaiso": "/img/ig/zuara-16.webp",
+    "extra de nigiri": "/img/ig/zuara-12.webp"
   },
   "casa-lista": {
     "paccheri": "/img/ig/casa-lista-0.webp",
