@@ -19,5 +19,41 @@
   "yakiniku-rikyu": {
     "karubi": "/img/ig/yakiniku-rikyu-4.webp",
     "wagyu lomo": "/img/ig/yakiniku-rikyu-1.webp"
+  },
+  "el-campero-madrid": {
+    "atún con tomate": "/img/ig/el-campero-madrid-0.webp",
+    "mormo": "/img/ig/el-campero-madrid-12.webp",
+    "gilda de tarantelo": "/img/ig/el-campero-madrid-13.webp",
+    "tosta de atún": "/img/ig/el-campero-madrid-14.webp",
+    "costillas de atún": "/img/ig/el-campero-madrid-15.webp"
+  },
+  "zuara": {
+    "torrija": "/img/ig/zuara-0.webp",
+    "nigiri de toro": "/img/ig/zuara-12.webp",
+    "miyazaki": "/img/ig/zuara-13.webp",
+    "hirame": "/img/ig/zuara-14.webp",
+    "chawanmushi": "/img/ig/zuara-15.webp",
+    "kaiso": "/img/ig/zuara-16.webp"
+  },
+  "casa-lista": {
+    "paccheri": "/img/ig/casa-lista-0.webp",
+    "katsu sando": "/img/ig/casa-lista-11.webp",
+    "almejas": "/img/ig/casa-lista-12.webp",
+    "chuleta de rubia": "/img/ig/casa-lista-13.webp",
+    "gilda con anchoa": "/img/ig/casa-lista-14.webp",
+    "tartar de atún": "/img/ig/casa-lista-15.webp"
+  },
+  "amparito-roca": {
+    "salpicón": "/img/ig/amparito-roca-0.webp",
+    "garbanzos": "/img/ig/amparito-roca-6.webp",
+    "torreznos": "/img/ig/amparito-roca-7.webp",
+    "tartar de atún": "/img/ig/amparito-roca-8.webp",
+    "tomate amparito": "/img/ig/amparito-roca-9.webp",
+    "huevos rotos": "/img/ig/amparito-roca-10.webp",
+    "solomillo": "/img/ig/amparito-roca-11.webp",
+    "merluza ligeramente": "/img/ig/amparito-roca-12.webp",
+    "cocochas": "/img/ig/amparito-roca-13.webp",
+    "ajoblanco": "/img/ig/amparito-roca-14.webp",
+    "hojaldre": "/img/ig/amparito-roca-15.webp"
   }
 }
