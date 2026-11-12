@@ -1,4 +1,4 @@
-import { getReviews, HOME_PICKS } from "@/lib/reviews"
+import { getReviews, HOME_PICKS, smallPhoto } from "@/lib/reviews"
 import geo from "@/data/geo.json"
 import { url } from "@/lib/url"
 
@@ -36,7 +36,9 @@ export async function getPins(): Promise<Pin[]> {
         headline: r.headline,
         photo: local
           ? url(`/img/home/${local.photos[0]}.jpg`)
-          : (r.images[0] ?? null),
+          : r.images[0]
+            ? smallPhoto(r.images[0])
+            : null,
         lon: g.lon,
         lat: g.lat,
       },

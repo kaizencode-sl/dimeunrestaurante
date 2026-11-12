@@ -27,7 +27,7 @@ const sealed = (await getReviews())
   <main class="page">
     <header class="intro">
       <span class="eyebrow">Sello para restaurantes</span>
-      <h1>Luce tus lunas</h1>
+      <h1 class="flush">Luce tus lunas</h1>
       <p class="lede">
         Si tu restaurante tiene {SEAL_MIN} lunas o más, tiene sello. Para la
         puerta, la carta o tu web, y siempre enlazado a la reseña.
@@ -124,7 +124,7 @@ const sealed = (await getReviews())
     outline: none;
   }
   .search input::placeholder {
-    color: var(--dim);
+    color: var(--grey);
   }
   .search input:focus {
     border-color: var(--glow);

@@ -14,6 +14,7 @@ import {
   HOME_PICKS,
   reviewUrl,
   tally,
+  srcset,
 } from "@/lib/reviews"
 
 const reviews = await getReviews()
@@ -134,7 +135,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     </section>
 
     <section class="manifesto" aria-label="Qué es Dime">
-      <p data-words>
+      <p class="flush" data-words>
         {manifesto
           .split(" ")
           .map((w) =>
@@ -168,12 +169,12 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
       <div class="lunas-stage">
         <div class="lunas-left">
           <span class="eyebrow">Cómo puntúa</span>
-          <h2>
+          <h2 class="flush">
             En lunas,
             <br />
             del 0 al 10
           </h2>
-          <div class="num">
+          <div class="num flush">
             <span data-score>10</span>
             <small>lunas</small>
           </div>
@@ -201,7 +202,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
       <section class="latest" aria-labelledby="latest-title">
         <div class="latest-head">
           <span class="eyebrow">Recién salidas de Instagram</span>
-          <h2 id="latest-title">Últimas reseñas</h2>
+          <h2 class="flush" id="latest-title">Últimas reseñas</h2>
         </div>
         <ol class="latest-list">
           {latest.map((review) => {
@@ -214,6 +215,8 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
                     <span class="card-photo">
                       <img
                         src={r.images[0]}
+                        srcset={srcset(r.images[0])}
+                        sizes="(max-width: 640px) 100vw, 360px"
                         alt=""
                         loading="lazy"
                         decoding="async"
@@ -275,7 +278,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
 
     <section class="reviews" aria-label="Reseñas">
       <div class="reviews-head">
-        <h2 data-chars>Madrid</h2>
+        <h2 class="flush" data-chars>Madrid</h2>
         <p>
           Algunas de sus notas más altas.{" "}
           <a href={url("/restaurantes")}>Ver las {reviews.length}</a>
@@ -541,12 +544,17 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
   .hero-word {
     position: absolute;
-    left: 0;
+    /* Optical centre: the tracking after the last letter and the D's wider
+       side bearing push the ink right; starting the box a little left of
+       the screen pulls it back without making it overflow */
+    left: -0.085em;
     right: 0;
     bottom: -0.06em;
     margin: 0;
     text-align: center;
-    font: 900 clamp(120px, 31vw, 560px) / 0.78 var(--font-display);
+    /* 31vw keeps the word just inside the screen; a higher floor would make
+       it overflow (and sit off centre) on a phone */
+    font: 900 clamp(80px, 31vw, 560px) / 0.78 var(--font-display);
     font-stretch: 125%;
     letter-spacing: -0.045em;
     color: var(--glow);
@@ -983,7 +991,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     all: unset;
     cursor: pointer;
     font: 600 17px/1.7 var(--font-display);
-    color: var(--grey);
+    color: var(--ink-soft);
     transition:
       color 0.2s,
       transform 0.2s;
@@ -1013,7 +1021,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
   .empty {
     font: italic 400 24px/1.2 var(--font-serif);
-    color: var(--grey);
+    color: var(--ink-soft);
   }
 
   /* Final */
@@ -1040,6 +1048,9 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     font: 900 clamp(56px, 10vw, 190px) / 0.84 var(--font-display);
     font-stretch: 118%;
     letter-spacing: -0.045em;
+    /* Cancels the tracking after each line's last letter, which pushes
+       centred text right */
+    padding-right: 0.045em;
     text-wrap: balance;
   }
   .final-lede {

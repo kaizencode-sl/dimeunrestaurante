@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T10:32:19.623243+00:00",
+  "title": "Design System: Dime un restaurante",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#0a0a0a",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Deep Night",
+        "canonical": "#1c1b1a",
+        "tonalRamp": [
+          "#282625",
+          "#464341",
+          "#64615d",
+          "#827e79",
+          "#9f9b97",
+          "#bbb8b5",
+          "#d7d5d4",
+          "#f3f2f2"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Moonlight Paper",
+        "canonical": "#ece7db",
+        "tonalRamp": [
+          "#322b1a",
+          "#584c2f",
+          "#7e6d43",
+          "#a58e57",
+          "#baa87c",
+          "#cec1a2",
+          "#e2dac8",
+          "#f6f4ee"
+        ]
+      },
+      "moon": {
+        "role": "neutral",
+        "displayName": "Full Moon",
+        "canonical": "#f7ecd0",
+        "tonalRamp": [
+          "#41320b",
+          "#735814",
+          "#a57e1c",
+          "#d7a525",
+          "#e2ba54",
+          "#eace86",
+          "#f3e2b7",
+          "#fbf6e9"
+        ]
+      },
+      "glow": {
+        "role": "primary",
+        "displayName": "Harvest Moon Gold",
+        "canonical": "#f2b33d",
+        "tonalRamp": [
+          "#483005",
+          "#7e5508",
+          "#b57a0c",
+          "#ec9f10",
+          "#f2b543",
+          "#f6cb7a",
+          "#fae0b0",
+          "#fdf6e7"
+        ]
+      },
+      "glow-text": {
+        "role": "primary",
+        "displayName": "Burnt Gold",
+        "canonical": "#8f5a06",
+        "tonalRamp": [
+          "#492e03",
+          "#815105",
+          "#b97508",
+          "#f1980a",
+          "#f7b03f",
+          "#f9c777",
+          "#fcdeaf",
+          "#fef5e7"
+        ]
+      },
+      "grey": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "#8d8a84",
+        "tonalRamp": [
+          "#282725",
+          "#464441",
+          "#64625d",
+          "#827f79",
+          "#9f9c97",
+          "#bbb9b5",
+          "#d7d6d4",
+          "#f3f2f2"
+        ]
+      },
+      "dim": {
+        "role": "neutral",
+        "displayName": "Ember",
+        "canonical": "#474440",
+        "tonalRamp": [
+          "#282724",
+          "#474440",
+          "#66615c",
+          "#847f77",
+          "#a09c96",
+          "#bcb8b4",
+          "#d7d5d3",
+          "#f3f2f2"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#57544f",
+        "tonalRamp": [
+          "#282724",
+          "#474440",
+          "#65625c",
+          "#847f78",
+          "#a09c96",
+          "#bbb9b5",
+          "#d7d6d3",
+          "#f3f2f2"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Linen",
+        "canonical": "#e2dccd",
+        "tonalRamp": [
+          "#302b1c",
+          "#554b31",
+          "#7a6c47",
+          "#9f8c5c",
+          "#b5a680",
+          "#cbc0a5",
+          "#e0daca",
+          "#f6f4ef"
+        ]
+      },
+      "photo-bg": {
+        "role": "neutral",
+        "displayName": "Photo Sand",
+        "canonical": "#dcd5c4",
+        "tonalRamp": [
+          "#302a1c",
+          "#554b32",
+          "#796b48",
+          "#9e8b5e",
+          "#b4a581",
+          "#cac0a6",
+          "#e0daca",
+          "#f6f4ef"
+        ]
+      },
+      "destructive": {
+        "role": "error",
+        "displayName": "Brick",
+        "canonical": "#d8432b",
+        "tonalRamp": [
+          "#41130c",
+          "#722215",
+          "#a3301e",
+          "#d43f27",
+          "#e06956",
+          "#e99587",
+          "#f2c0b8",
+          "#fbece9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The hero word only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section and review titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Restaurant names in rows and cards."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Scores and counters, condensed and tabular."
+      },
+      "aside": {
+        "displayName": "Aside",
+        "purpose": "The critic's voice: quotes, ledes, sign-offs."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Review text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Nav, footer, meta lines."
+      },
+      "eyebrow": {
+        "displayName": "Eyebrow",
+        "purpose": "Gold section kickers."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-map",
+        "value": "0 30px 80px rgb(0 0 0 / 25%)",
+        "purpose": "Map window floating in the gold final panel."
+      },
+      {
+        "name": "overlay",
+        "value": "0 20px 50px rgb(0 0 0 / 50%)",
+        "purpose": "Photo viewer and map popups."
+      },
+      {
+        "name": "outline-inset",
+        "value": "inset 0 0 0 1.5px currentColor",
+        "purpose": "Sizeless outline for the update tag."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-photo",
+        "value": "cubic-bezier(0.2, 0.7, 0.1, 1)",
+        "purpose": "Photo zoom on row and card hover (0.8–0.9s)."
+      },
+      {
+        "name": "ease-out",
+        "value": "power3.out",
+        "purpose": "Default GSAP reveal easing."
+      },
+      {
+        "name": "ease-expo",
+        "value": "expo.out",
+        "purpose": "Big entrances: loader, hero reveal."
+      },
+      {
+        "name": "ease-scrub",
+        "value": "none",
+        "purpose": "Scroll-scrubbed timelines."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "480px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "800px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Pill CTA",
+      "kind": "button",
+      "refersTo": "pill-cta",
+      "description": "The one loud call to action: gold pill, wide uppercase, tilts on hover.",
+      "html": "<a class=\"ds-pill-cta\" href=\"#\">Abrir el mapa</a>",
+      "css": ".ds-pill-cta{display:inline-block;padding:14px 20px 13px;border-radius:99px;background:var(--glow,#f2b33d);color:var(--ink,#0a0a0a);font:900 13px/1 'Archivo Variable',system-ui,sans-serif;font-stretch:112%;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;transition:transform .25s}.ds-pill-cta:hover{transform:scale(1.05) rotate(-2deg)}.ds-pill-cta:focus-visible{outline:2px solid var(--glow-text,#8f5a06);outline-offset:3px}"
+    },
+    {
+      "name": "Filter Button",
+      "kind": "button",
+      "refersTo": "filter",
+      "description": "Text-only list filter; pressed state turns burnt gold with a dot.",
+      "html": "<div class=\"ds-filters\"><button class=\"ds-fbtn\" aria-pressed=\"true\">Todos</button><button class=\"ds-fbtn\" aria-pressed=\"false\">Cena</button></div>",
+      "css": ".ds-filters{display:flex;flex-direction:column;align-items:flex-start;background:var(--paper,#ece7db);padding:16px}.ds-fbtn{all:unset;cursor:pointer;font:600 17px/1.7 'Archivo Variable',system-ui,sans-serif;color:var(--grey,#8d8a84);transition:color .2s,transform .2s}.ds-fbtn:hover{color:var(--ink,#0a0a0a);transform:translateX(4px)}.ds-fbtn[aria-pressed=true]{color:var(--glow-text,#8f5a06)}.ds-fbtn[aria-pressed=true]::before{content:'● ';font-size:.7em;vertical-align:2px}.ds-fbtn:focus-visible{outline:2px solid var(--glow-text,#8f5a06)}"
+    },
+    {
+      "name": "Score Stamp",
+      "kind": "chip",
+      "refersTo": "score-stamp",
+      "description": "A score as an outlined pill: moon at the score's phase plus 'N lunas'.",
+      "html": "<span class=\"ds-stamp\"><svg viewBox=\"-110 -110 220 220\" width=\"22\" height=\"22\"><circle r=\"100\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"12\"/><path d=\"M0,-100 A100,100 0 0 1 0,100 A50,100 0 0 0 0,-100Z\" fill=\"currentColor\"/></svg>7,5 lunas</span>",
+      "css": ".ds-stamp{display:inline-flex;align-items:center;gap:10px;color:var(--glow-text,#8f5a06);border:2px solid currentColor;border-radius:99px;padding:6px 14px 6px 8px;font:900 15px/1 'Archivo Variable',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:var(--paper,#ece7db)}"
+    },
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Gold pill label on cards; outline variant for updates.",
+      "html": "<span class=\"ds-tag\">Nueva</span> <span class=\"ds-tag ds-tag-update\">Actualizada</span>",
+      "css": ".ds-tag{display:inline-block;border-radius:99px;padding:6px 10px 5px;background:var(--glow,#f2b33d);color:var(--ink,#0a0a0a);font:700 12px/1 'Archivo Variable',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em}.ds-tag-update{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor;color:var(--ink,#0a0a0a)}"
+    },
+    {
+      "name": "Review Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Outlined paper card that inverts to ink on hover.",
+      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-card-name\">Zuara</span><span class=\"ds-card-head\">“Un arroz para volver”</span><span class=\"ds-card-foot\">Madrid · Cena</span></a>",
+      "css": ".ds-card{display:grid;gap:14px;max-width:300px;padding:22px 22px 20px;border:2px solid var(--ink,#0a0a0a);border-radius:18px;background:var(--paper,#ece7db);color:var(--ink,#0a0a0a);text-decoration:none;transition:background .35s,color .35s}.ds-card:hover,.ds-card:focus-visible{background:var(--ink,#0a0a0a);color:var(--paper,#ece7db)}.ds-card-name{font:900 36px/.92 'Archivo Variable',system-ui,sans-serif;font-stretch:112%;letter-spacing:-.02em}.ds-card-head{font:italic 400 19px/1.25 'Instrument Serif',Georgia,serif}.ds-card-foot{padding-top:12px;border-top:1px solid currentColor;font:600 12px/1 'Archivo Variable',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;opacity:.7}"
+    },
+    {
+      "name": "Sticker",
+      "kind": "custom",
+      "refersTo": "sticker",
+      "description": "Paper label stuck over photos and bands.",
+      "html": "<span class=\"ds-sticker\">Desde 2010</span>",
+      "css": ".ds-sticker{display:inline-block;background:var(--paper,#ece7db);color:var(--glow-text,#8f5a06);border:2px solid currentColor;border-radius:4px;padding:8px 11px 7px;font:800 12px/1 'Archivo Variable',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;transform:rotate(-4deg)}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Colourless fixed nav: boxed DIME logo, moon, Madrid clock, two links.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-logo\" href=\"#\">DIME</a><span class=\"ds-clock\">Madrid 21:40 · ¿Dónde cenamos hoy?</span><nav class=\"ds-links\"><a href=\"#\">Mapa</a><a href=\"#\">Restaurantes</a></nav></header>",
+      "css": ".ds-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 24px;background:var(--ink,#0a0a0a);color:#fff}.ds-logo{font:900 15px/1 'Archivo Variable',system-ui,sans-serif;font-stretch:118%;letter-spacing:.08em;border:2px solid currentColor;padding:5px 8px 4px;color:inherit;text-decoration:none}.ds-clock,.ds-links a{font:600 12px/1 'Archivo Variable',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:inherit;text-decoration:none}.ds-links{display:flex;gap:20px}.ds-links a{padding:6px 0}.ds-links a:hover{text-decoration:underline;text-underline-offset:4px}.ds-links a:focus-visible,.ds-logo:focus-visible{outline:2px solid var(--glow,#f2b33d);outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Under One Moon",
+    "overview": "**Creative North Star: \"Under One Moon\"**\n\nAlberto de Luna's surname and his scores are moons, so the whole site lives under one. Every page is a night scene: black ink, moonlight paper and a single harvest-moon gold. A score is not a number in a badge, it is the phase of a moon, and that moon recurs as the loader, the nav's progress mark, the score stamp, the footer's phase strip and the map pins. If a new screen has no moon in it somewhere, it is probably off-brand.\n\nThe voice is a late-night food column set as a poster: huge, wide, black-weight Archivo headlines that run edge to edge, answered by Instrument Serif italics that sound like the critic talking under his breath. Photos come first and fill their frames. The scroll is the narrator: sections pin, words light up, moons wax and numbers roll as you go. There is one visual world and no light/dark switch; sections alternate between night (ink) and paper, with gold reserved for the loudest moments.\n\nDensity is low and scale is extreme. Type sizes jump from 12px uppercase labels straight to 150–560px display words with little in between, which is what makes it feel like print rather than an app.",
+    "keyCharacteristics": [
+      "Night, moonlight and one accent; no theme switch.",
+      "Variable-width grotesk: wide (112–125%) for names and headlines, condensed (62%) for numerals.",
+      "Serif italic for every human aside: headlines of reviews, ledes, signatures.",
+      "The moon phase is the score, the icon and the ornament.",
+      "Flat surfaces, outlined and stamped controls, no shadows at rest.",
+      "Motion is scroll-driven and always has a reduced-motion fallback."
+    ],
+    "rules": [
+      {
+        "name": "The One Gold Rule",
+        "body": "Gold is the only hue. Never add a second accent; when something needs emphasis, make it gold, bigger or inverted, not another colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Golds Rule",
+        "body": "#f2b33d fills and sits on ink; #8f5a06 is text and line on paper. Never put bright gold text on paper.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Only Rule",
+        "body": "Style with the CSS variables in `src/styles/global.css` (or their Tailwind aliases like `bg-glow`, `text-ink`). The only literals allowed are `#fff` over photos and black alpha gradients that keep text legible on images.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width Axis Rule",
+        "body": "Hierarchy comes from `font-stretch`, not new fonts: 125% display, 118% headline, 112% names, 88% manifesto, 62% numerals. Use `.wide` for 125%.",
+        "section": "typography"
+      },
+      {
+        "name": "The Italic Voice Rule",
+        "body": "Anything that sounds like Alberto speaking (a quote, a lede, a sign-off) is Instrument Serif italic. Labels and data never are.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "Cards, rows, stamps and buttons never carry a shadow. Hover is shown by inversion (paper → ink), scale on photos, or a small rotate, not by lifting.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put a moon on every new surface, drawn with `moon.astro` and themed through its three variables.",
+      "Do alternate scenes between ink, paper and (rarely) gold, with 14vh/16vh section padding and a 24px gutter.",
+      "Do use the width axis for hierarchy: 118–125% for headlines, 62% for numbers, tabular figures on any score.",
+      "Do write quotes, ledes and sign-offs in Instrument Serif italic.",
+      "Do use Burnt Gold (#8f5a06) for gold text and focus outlines on paper, bright gold (#f2b33d) only as fill or on ink.",
+      "Do drive motion with GSAP through `gsap.matchMedia()`, gating hidden start states behind the `.motion` class so reduced-motion visitors get the finished page."
+    ],
+    "donts": [
+      "Don't add a second accent colour or a light/dark toggle; the site is one night.",
+      "Don't add shadows to cards, rows, stamps or buttons at rest.",
+      "Don't hardcode colours outside the tokens, except `#fff` and black alpha gradients over photos.",
+      "Don't show scores as stars or plain numbers in a badge; a score is a moon phase and \"lunas\".",
+      "Don't introduce another display or body font; stretch Archivo instead.",
+      "Don't use `overflow-x: hidden` on page wrappers; use `clip` so sticky scenes keep working."
+    ]
+  }
+}

@@ -50,7 +50,7 @@ const PLUSES = [
   <main class="page">
     <header class="top">
       <span class="eyebrow">Alberto de Luna</span>
-      <h1 data-chars>Cómo puntúo</h1>
+      <h1 class="flush" data-chars>Cómo puntúo</h1>
       <p class="lead" data-reveal>
         En lunas, del 1 al 10. La máxima la reservo, exclusivamente, para los
         restaurantes que uno no puede morir sin conocer.
@@ -60,7 +60,7 @@ const PLUSES = [
     <section class="scale" aria-labelledby="scale-title">
       <div class="section-head">
         <span class="kicker">La escala</span>
-        <h2 id="scale-title" data-reveal>
+        <h2 class="flush" id="scale-title" data-reveal>
           {scored.length} restaurantes, nota a nota
         </h2>
       </div>
@@ -98,7 +98,7 @@ const PLUSES = [
     <section class="price" aria-labelledby="price-title">
       <div class="section-head">
         <span class="kicker">Relación placer-precio</span>
-        <h2 id="price-title" data-reveal>
+        <h2 class="flush" id="price-title" data-reveal>
           No solo puntúo la cocina
         </h2>
       </div>
@@ -140,7 +140,7 @@ const PLUSES = [
     <section class="plus" aria-labelledby="plus-title">
       <div class="section-head">
         <span class="kicker">Lo que suma</span>
-        <h2 id="plus-title" data-reveal>
+        <h2 class="flush" id="plus-title" data-reveal>
           Y lo que siempre hace sumar
         </h2>
       </div>
@@ -160,7 +160,7 @@ const PLUSES = [
 
     <section class="about" aria-labelledby="about-title">
       <span class="kicker">Quién soy</span>
-      <h2 id="about-title" data-reveal>
+      <h2 class="flush" id="about-title" data-reveal>
         Ni me vendo ni me caso con nadie
       </h2>
       <div class="about-text" data-reveal>
@@ -276,7 +276,7 @@ const PLUSES = [
     height: 100%;
   }
   .count {
-    font: 700 clamp(10px, 1.2vw, 14px) / 1 var(--font-display);
+    font: 700 clamp(11px, 1.2vw, 14px) / 1 var(--font-display);
     color: var(--ink-soft);
   }
   .bar {

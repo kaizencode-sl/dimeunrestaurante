@@ -10,6 +10,7 @@ import {
   shortPlan,
   tally,
   HOME_PICKS,
+  srcset,
 } from "@/lib/reviews"
 
 const reviews = await getReviews()
@@ -55,7 +56,7 @@ const cover = (id: string, images: string[]) => {
   <main class="page">
     <header class="top">
       <span class="eyebrow">El archivo · {reviews.length} reseñas</span>
-      <h1 data-chars>Elige mesa</h1>
+      <h1 class="flush" data-chars>Elige mesa</h1>
       <label class="search">
         <span class="sr-only">Buscar restaurante, plato o zona</span>
         <input
@@ -175,7 +176,14 @@ const cover = (id: string, images: string[]) => {
                 <a href={reviewUrl(review.id)} data-cursor="Leer">
                   <figure>
                     {src ? (
-                      <img src={src} alt="" loading="lazy" decoding="async" />
+                      <img
+                        src={src}
+                        srcset={srcset(src)}
+                        sizes="(max-width: 800px) 50vw, 400px"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
                     ) : (
                       <span class="placeholder">
                         <Moon score={r.score} class="ph-moon" />
@@ -433,9 +441,10 @@ const cover = (id: string, images: string[]) => {
   .search input::placeholder {
     color: color-mix(in srgb, var(--ink) 45%, transparent);
   }
-  .search input:focus {
-    outline: none;
-    border-bottom-color: var(--paper);
+  /* The global Burnt Gold ring is too faint on gold: ink instead */
+  .search input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 6px;
   }
 
   .layout {
@@ -528,6 +537,7 @@ const cover = (id: string, images: string[]) => {
   }
   input[type="range"] {
     flex: 1;
+    height: 44px;
     accent-color: var(--glow-text);
   }
   .reset {
@@ -535,7 +545,8 @@ const cover = (id: string, images: string[]) => {
     cursor: pointer;
     background: none;
     border: 0;
-    padding: 0;
+    padding: 16px 0;
+    margin: -16px 0;
     font: 600 13px/1 var(--font-display);
     color: var(--ink-soft);
     text-decoration: underline;

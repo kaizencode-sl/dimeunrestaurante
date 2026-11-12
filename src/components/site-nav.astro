@@ -88,7 +88,11 @@ import Moon from "@/components/moon.astro"
     for (const el of document.elementsFromPoint(x, y)) {
       if (nav.contains(el) || el.closest("[data-nav-ignore]")) continue
       for (let a: Element | null = el; a; a = a.parentElement) {
-        if (MEDIA.has(a.tagName)) return { dark: true, bg: null }
+        // A photo that hasn't loaded (or failed) shows its frame's colour,
+        // not a photo: look past it
+        const blank =
+          a instanceof HTMLImageElement && !(a.complete && a.naturalWidth)
+        if (MEDIA.has(a.tagName) && !blank) return { dark: true, bg: null }
         const cs = getComputedStyle(a)
         if (cs.backgroundImage !== "none" && a !== document.body)
           return { dark: true, bg: null }
@@ -123,6 +127,8 @@ import Moon from "@/components/moon.astro"
   }
   addEventListener("scroll", queue, { passive: true })
   addEventListener("resize", queue)
+  // a photo arriving under the nav changes it too (load doesn't bubble)
+  document.addEventListener("load", queue, true)
   // intros and loaders change what's under the nav without any scrolling
   for (const ms of [0, 400, 1200, 2500, 4500]) setTimeout(queue, ms)
 </script>
@@ -199,7 +205,9 @@ import Moon from "@/components/moon.astro"
   .link {
     flex-shrink: 0;
     text-decoration: none;
-    padding: 6px 0;
+    /* 44px tall to tap, same footprint as before */
+    padding: 16px 0;
+    margin: -10px 0;
   }
   .link:hover {
     text-decoration: underline;

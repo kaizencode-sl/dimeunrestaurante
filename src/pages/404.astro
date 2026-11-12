@@ -59,6 +59,9 @@ import Stars from "@/components/stars.astro"
     font: 900 clamp(44px, 7vw, 110px) / 0.88 var(--font-display);
     font-stretch: 118%;
     letter-spacing: -0.04em;
+    /* Cancels the tracking after the last letter, which pushes centred
+       text right */
+    padding-right: 0.04em;
     text-wrap: balance;
   }
   p {

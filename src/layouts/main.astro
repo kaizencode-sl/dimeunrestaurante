@@ -1,6 +1,7 @@
 ---
 import { url } from "@/lib/url"
-import { absolute } from "@/lib/seo"
+import { absolute, INSTAGRAM } from "@/lib/seo"
+import { HANDLE } from "@/lib/seal"
 import "@/styles/global.css"
 import SiteNav from "@/components/site-nav.astro"
 import PhaseStrip from "@/components/phase-strip.astro"
@@ -110,6 +111,9 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
       <PhaseStrip class="footer-phases" />
       <span>Dime un restaurante · Alberto de Luna</span>
       <a href={url("/como-puntuo")}>Cómo puntúo</a>
+      <a href={INSTAGRAM} target="_blank" rel="noopener">
+        Instagram {HANDLE}
+      </a>
       <span>Demo de Kaizencode</span>
     </footer>
     <script>
@@ -166,6 +170,8 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
     margin-bottom: 28px;
   }
   .site-footer a {
+    padding: 13px 0;
+    margin: -13px 0;
     color: inherit;
     text-decoration: none;
   }

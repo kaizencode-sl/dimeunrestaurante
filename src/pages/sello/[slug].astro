@@ -40,7 +40,7 @@ const embed = (theme: SealTheme) =>
         ← Volver a la reseña
       </a>
       <span class="eyebrow">Sello para restaurantes</span>
-      <h1>{r.name}</h1>
+      <h1 class="flush">{r.name}</h1>
       <p class="lede">
         {formatScore(score)} lunas de Alberto de Luna. Cuélgalo en la puerta,
         ponlo en tu carta o insértalo en tu web: enlaza directamente a la
@@ -203,7 +203,8 @@ const embed = (theme: SealTheme) =>
   }
   .back {
     display: inline-block;
-    margin-bottom: 40px;
+    padding: 16px 0;
+    margin: -16px 0 24px;
     font: 600 12px/1 var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -273,6 +274,7 @@ const embed = (theme: SealTheme) =>
     letter-spacing: 0.12em;
   }
   .btn {
+    position: relative;
     cursor: pointer;
     border: 1.5px solid currentColor;
     border-radius: 99px;
@@ -286,6 +288,12 @@ const embed = (theme: SealTheme) =>
     transition:
       background 0.2s,
       color 0.2s;
+  }
+  /* The pill stays small; the tap area is 44px tall */
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
   }
   .btn:hover {
     background: var(--glow);

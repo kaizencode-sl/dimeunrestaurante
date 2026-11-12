@@ -54,6 +54,8 @@ function markIntro() {
 // to the number of reviews, DIME stamps onto it, and the full moon becomes the
 // window the hero photo opens through. On a second visit in the same session
 // only the opening plays. Scrolling then shrinks the photo back into a moon.
+const SKIP_EVENTS = ["wheel", "touchstart", "keydown", "pointerdown"] as const
+
 function intro(lenis: Lenis) {
   const loader = $("[data-loader]")
   const hero = $("[data-hero]")
@@ -77,6 +79,14 @@ function intro(lenis: Lenis) {
   })
   if (loader && !seenIntro()) {
     lenis.stop()
+    // Scroll stays locked while it plays, so any attempt to move on (wheel,
+    // touch, a key, a click) jumps straight to the end
+    const skip = () => {
+      tl.progress(1)
+      for (const type of SKIP_EVENTS) removeEventListener(type, skip)
+    }
+    for (const type of SKIP_EVENTS)
+      addEventListener(type, skip, { passive: true })
     const disc = $$<SVGPathElement>(".loader-disc [data-moon]", loader)
     const counter = $("[data-count]", loader)
     const total = Number(counter?.dataset.count ?? 0)

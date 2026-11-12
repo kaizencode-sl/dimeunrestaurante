@@ -20,6 +20,18 @@ export async function getReviews() {
 }
 
 /**
+ * An Instagram photo's 800px copy (scripts/photos.mjs) for phones and
+ * thumbnails; other photos have a single size
+ */
+export const srcset = (src: string) =>
+  IG.test(src) ? `${smallPhoto(src)} 800w, ${src} 1600w` : undefined
+
+const IG = /\/img\/ig\/[^/]+\.webp$/
+/** The 800px copy where there is one, else the photo itself */
+export const smallPhoto = (src: string) =>
+  IG.test(src) ? src.replace(/\.webp$/, "-800.webp") : src
+
+/**
  * The reviews the homepage tells its story with. Their photos are kept in
  * public/img/home so the first screen never waits on the old server.
  */

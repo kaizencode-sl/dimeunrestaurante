@@ -96,6 +96,10 @@ export function parseAddress(line: string | undefined) {
   }
 }
 
+/** The restaurant's website, from whichever address line carries it */
+export const restaurantWeb = (lines: string[]) =>
+  lines.map(parseAddress).find((p) => p.web)?.web
+
 export function reviewGraph(
   review: Review,
   { image, geo }: { image?: string; geo?: { lat: number; lon: number } | null }
@@ -114,7 +118,7 @@ export function reviewGraph(
       addressLocality: r.city,
     },
     ...(place.phone && { telephone: place.phone }),
-    ...(place.web && { url: place.web }),
+    ...(restaurantWeb(r.address) && { url: restaurantWeb(r.address) }),
     ...(r.instagram?.handle && {
       sameAs: [`https://www.instagram.com/${r.instagram.handle}/`],
     }),

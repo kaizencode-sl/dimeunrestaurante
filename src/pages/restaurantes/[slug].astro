@@ -2,11 +2,11 @@
 import { url } from "@/lib/url"
 import type { GetStaticPaths } from "astro"
 import Layout from "@/layouts/main.astro"
-import { INSTAGRAM, reviewGraph } from "@/lib/seo"
+import { restaurantWeb, reviewGraph } from "@/lib/seo"
 import Moon from "@/components/moon.astro"
 import ReviewRow from "@/components/review-row.astro"
 import RollingScore from "@/components/rolling-score.astro"
-import { HANDLE, SEAL_MIN, sealUrl } from "@/lib/seal"
+import { SEAL_MIN, sealUrl } from "@/lib/seal"
 import geo from "@/data/geo.json"
 import dishPhotos from "@/data/dish-photos.json"
 import {
@@ -14,6 +14,7 @@ import {
   formatScore,
   shortPlan,
   HOME_PICKS,
+  srcset,
   type Review,
 } from "@/lib/reviews"
 
@@ -38,8 +39,8 @@ const local = HOME_PICKS.find((p) => p.id === review.id)
 const photos = local
   ? local.photos.map((p) => url(`/img/home/${p}.jpg`))
   : r.images
-// A dish that has its own photo shows it beside its line in the dish list,
-// and that photo then leaves the gallery so it isn't shown twice
+// A dish with its own photo shows it, captioned, right after its list,
+// and that photo then leaves the rest so it isn't shown twice
 const dishMap: Record<string, string> =
   (dishPhotos as Record<string, Record<string, string>>)[review.id] ?? {}
 const dishPhoto = (item: string) => {
@@ -47,41 +48,60 @@ const dishPhoto = (item: string) => {
   const key = Object.keys(dishMap).find((k) => text.includes(k))
   return key ? url(dishMap[key]!) : undefined
 }
+type Shot = { src: string; caption?: string }
+const dishShots = (items: string[]) => {
+  const seen = new Set<string>()
+  return items.flatMap((item) => {
+    const src = dishPhoto(item)
+    if (!src || seen.has(src)) return []
+    seen.add(src)
+    return [{ src, caption: item.replace(/\.$/, "") }]
+  })
+}
 const inDishes = new Set(
   r.body.flatMap((b) =>
-    b.type === "list" ? b.items.map(dishPhoto).filter(Boolean) : []
+    b.type === "list" ? dishShots(b.items).map((s) => s.src) : []
   )
 )
+// Sizes the title so no word has to break across lines
+const longestWord = Math.max(...r.name.split(/\s+/).map((w) => w.length))
 const [cover, ...gallery] = photos.filter(
   (src, i) => i === 0 || !inDishes.has(src)
 )
 
-// Photos go into the text instead of piling up at the end: roughly one
-// moment every three paragraphs, alternating a wide photo and a pair. What
-// doesn't fit in the text closes the review as a strip you can swipe.
-type Moment = { kind: "wide" | "pair"; photos: string[] }
+// Every photo lives in the text, in one format: alternating a wide photo and
+// a pair. They spread out roughly one set every two paragraphs; what doesn't
+// fit closes the text, so nothing piles up in a separate gallery.
+const sets = (shots: Shot[], startWide = true) => {
+  const out: Shot[][] = []
+  for (let i = 0, k = 0; i < shots.length; k++) {
+    const one = (k % 2 === 0) === startWide || shots.length - i < 2
+    out.push(shots.slice(i, i + (one ? 1 : 2)))
+    i += one ? 1 : 2
+  }
+  return out
+}
+const flow = sets(gallery.slice(0, 16).map((src) => ({ src })))
 const paragraphs = r.body
   .map((b, i) => (b.type === "p" && i > 0 ? i : -1))
   .filter((i) => i >= 0 && i < r.body.length - 1)
-const moments: Moment[] = []
-let used = 0
-const slots = Math.min(4, Math.floor(paragraphs.length / 3))
-for (let k = 0; k < slots && used < gallery.length; k++) {
-  const kind = k % 2 === 0 || gallery.length - used < 2 ? "wide" : "pair"
-  const take = kind === "wide" ? 1 : 2
-  moments.push({ kind, photos: gallery.slice(used, used + take) })
-  used += take
-}
-// Block index → the moment shown after it, spread evenly through the text
-const after = new Map(
-  moments.map((m, k) => [
-    paragraphs[
-      Math.floor(((k + 1) * paragraphs.length) / (moments.length + 1))
-    ],
-    m,
-  ])
+const slots = Math.min(flow.length, Math.floor(paragraphs.length / 2))
+// Block index → the photo sets shown after it
+const after = new Map<number, Shot[][]>()
+const put = (i: number, s: Shot[][]) =>
+  after.set(i, [...(after.get(i) ?? []), ...s])
+r.body.forEach((b, i) => {
+  if (b.type === "list") put(i, sets(dishShots(b.items), false))
+})
+flow.forEach((set, k) =>
+  put(
+    k < slots
+      ? paragraphs[Math.floor(((k + 1) * paragraphs.length) / (slots + 1))]!
+      : r.body.length - 1,
+    [set]
+  )
 )
-const rest = gallery.slice(used, 16)
+const hasPhotos = after.size > 0
 
 const visit = r.visit
   ? r.visit.toLowerCase().replace(/^./, (c) => c.toUpperCase())
@@ -104,14 +124,7 @@ const hasSeal = (r.score ?? 0) >= SEAL_MIN
 
 // Reviews that are also on Instagram link to Alberto's posts
 const ig = r.instagram
-const igDate = ig?.date
-  ? new Intl.DateTimeFormat("es-ES", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(ig.date))
-  : null
+const web = restaurantWeb(r.address)
 
 const description =
   r.excerpt || `${r.name}: ${r.headline}. ${formatScore(r.score)} lunas.`
@@ -141,7 +154,13 @@ const jsonLd = reviewGraph(review, {
     <header class="head" data-review-head data-score={r.score ?? ""}>
       <div class="media" data-review-media>
         {cover ? (
-          <img src={cover} alt={`Plato en ${r.name}`} fetchpriority="high" />
+          <img
+            src={cover}
+            srcset={srcset(cover)}
+            sizes="100vw"
+            alt={`Plato en ${r.name}`}
+            fetchpriority="high"
+          />
         ) : (
           <div class="no-photo">
             <Moon score={r.score ?? 10} glow class="no-photo-moon" />
@@ -169,7 +188,11 @@ const jsonLd = reviewGraph(review, {
         <div class="head-bottom">
           <div class="title">
             <span class="eyebrow">{r.city}</span>
-            <h1 data-review-name class:list={{ long: r.name.length > 16 }}>
+            <h1
+              data-review-name
+              class:list={["flush", { long: r.name.length > 16 }]}
+              style={`--chars: ${longestWord}`}
+            >
               {r.name}
             </h1>
             {r.headline && <p class="headline">“{r.headline}”</p>}
@@ -217,18 +240,59 @@ const jsonLd = reviewGraph(review, {
           <dd>{visit}</dd>
         </div>
       )}
-      {r.address.length > 0 && (
-        <div class="wide-fact">
-          <dt>Dónde</dt>
+      {ig && ig.posts.length > 0 && (
+        <div>
+          <dt>En Instagram</dt>
           <dd>
-            {r.address.map((line) => (
-              <span>{line}</span>
-            ))}
-            {onMap && (
-              <a class="map-link" href={url(`/mapa?r=${review.id}`)}>
-                Ver en el mapa →
-              </a>
-            )}
+            <ul class="links">
+              {ig.posts.map((p, i) => (
+                <li>
+                  <a href={p.url} target="_blank" rel="noopener">
+                    {p.kind === "opinion"
+                      ? "La opinión"
+                      : p.kind === "dishes"
+                        ? "Los platos"
+                        : p.kind === "drinks"
+                          ? "La bebida"
+                          : `Post ${i + 1}`}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      )}
+      {(ig?.handle || web || onMap) && (
+        <div>
+          <dt>El restaurante</dt>
+          <dd>
+            <ul class="links">
+              {ig?.handle && (
+                <li>
+                  <a
+                    href={`https://www.instagram.com/${ig.handle}/`}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    @{ig.handle}
+                  </a>
+                </li>
+              )}
+              {web && (
+                <li>
+                  <a href={web} target="_blank" rel="noopener">
+                    {new URL(web).hostname.replace(/^www\./, "")}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              )}
+              {onMap && (
+                <li>
+                  <a href={url(`/mapa?r=${review.id}`)}>Abrir en el mapa</a>
+                </li>
+              )}
+            </ul>
           </dd>
         </div>
       )}
@@ -252,127 +316,44 @@ const jsonLd = reviewGraph(review, {
             </h2>
           ) : (
             <ol class="dishes" data-reveal>
-              {block.items.map((item) => {
-                const src = dishPhoto(item)
-                return (
-                  <li class:list={{ "has-photo": src }}>
-                    <span>{item}</span>
-                    {src && (
-                      <button
-                        type="button"
-                        class="dish-photo"
-                        data-full={src}
-                        data-caption={item}
-                        aria-label={`Ampliar foto: ${item}`}
-                      >
-                        <img
-                          src={src.replace("/img/ig/", "/img/ig/thumb/")}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                          width="112"
-                          height="112"
-                        />
-                      </button>
-                    )}
-                  </li>
-                )
-              })}
+              {block.items.map((item) => (
+                <li>{item}</li>
+              ))}
             </ol>
           ),
-          after.has(i) && (
-            <div class:list={["moment", after.get(i)!.kind]}>
-              {after.get(i)!.photos.map((src) => (
-                <figure data-wipe>
-                  <img
-                    src={src}
-                    alt={`Foto de ${r.name}`}
-                    loading="lazy"
-                    decoding="async"
-                  />
+          after.get(i)?.map((set) => (
+            <div class:list={["moment", set.length > 1 ? "pair" : "single"]}>
+              {set.map((shot) => (
+                <figure>
+                  <button
+                    type="button"
+                    class="photo"
+                    data-wipe
+                    data-full={shot.src}
+                    data-caption={shot.caption ?? ""}
+                    aria-label={`Ampliar foto${shot.caption ? `: ${shot.caption}` : ""}`}
+                  >
+                    <img
+                      src={shot.src}
+                      srcset={srcset(shot.src)}
+                      sizes={
+                        set.length > 1
+                          ? "(max-width: 800px) 50vw, 340px"
+                          : "(max-width: 800px) 100vw, 680px"
+                      }
+                      alt={shot.caption ?? `Foto de ${r.name}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                  {shot.caption && <figcaption>{shot.caption}</figcaption>}
                 </figure>
               ))}
             </div>
-          ),
+          )),
         ])}
-        {ig && (
-          <aside class="ig-card" aria-label="En Instagram">
-            <p class="ig-eyebrow">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4.2" />
-                <circle cx="17.3" cy="6.7" r="1" class="dot" />
-              </svg>
-              <span>
-                También en Instagram
-                {igDate && ` · ${igDate}`}
-              </span>
-            </p>
-            <p class="ig-title">
-              Comenta la visita en{" "}
-              <a href={INSTAGRAM} target="_blank" rel="noopener">
-                {HANDLE}
-              </a>
-            </p>
-            <ul class="ig-posts">
-              {ig.posts.map((p, i) => (
-                <li>
-                  <a href={p.url} target="_blank" rel="noopener">
-                    <span class="ig-kind">
-                      {p.kind === "opinion"
-                        ? "La opinión"
-                        : p.kind === "dishes"
-                          ? "Los platos"
-                          : p.kind === "drinks"
-                            ? "La bebida"
-                            : `Post ${i + 1}`}
-                    </span>
-                    <span class="ig-go">
-                      Ver post <span aria-hidden="true">↗</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {ig.handle && (
-              <p class="ig-place">
-                {r.name} en Instagram:{" "}
-                <a
-                  href={`https://www.instagram.com/${ig.handle}/`}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  @{ig.handle}
-                </a>
-              </p>
-            )}
-          </aside>
-        )}
       </div>
     </article>
-
-    {rest.length > 0 && (
-      <section class="gallery" data-gallery aria-label="Más fotos">
-        <p class="gallery-label">
-          Más fotos <span>{rest.length}</span>
-          <span class="gallery-hint" aria-hidden="true">
-            Desliza →
-          </span>
-        </p>
-        <div class="gallery-strip">
-          {rest.map((src) => (
-            <figure data-wipe>
-              <img
-                src={src}
-                alt={`Foto de ${r.name}`}
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
-    )}
 
     {hasSeal && (
       <aside class="seal-cta">
@@ -393,7 +374,7 @@ const jsonLd = reviewGraph(review, {
 
     {related.length > 0 && (
       <section class="related" aria-label={`Más en ${r.city}`}>
-        <h2 data-chars>Más en {r.city}</h2>
+        <h2 class="flush" data-chars>Más en {r.city}</h2>
         <div class="rows">
           {related.map((o, i) => (
             <ReviewRow review={o} index={i} photos={o.data.images} />
@@ -403,14 +384,16 @@ const jsonLd = reviewGraph(review, {
     )}
   </main>
 
-  {inDishes.size > 0 && (
-    <dialog class="viewer" data-viewer aria-label="Foto del plato">
+  {hasPhotos && (
+    <dialog class="viewer" data-viewer aria-label="Foto ampliada">
       <figure>
         <img alt="" />
         <figcaption />
       </figure>
       <button type="button" class="viewer-close" aria-label="Cerrar">
-        ×
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
       </button>
     </dialog>
   )}
@@ -463,22 +446,34 @@ const jsonLd = reviewGraph(review, {
     })
   }
 
-  // A dish thumbnail opens its photo full size; a click anywhere or Esc closes it
+  // Any photo in the review opens full size; ← → step through them, and a
+  // click anywhere or Esc closes it
   const viewer = document.querySelector<HTMLDialogElement>("[data-viewer]")
   if (viewer) {
     const img = viewer.querySelector("img")!
     const caption = viewer.querySelector("figcaption")!
-    document
-      .querySelectorAll<HTMLButtonElement>(".dish-photo")
-      .forEach((button) =>
-        button.addEventListener("click", () => {
-          img.src = button.dataset.full!
-          img.alt = button.dataset.caption ?? ""
-          caption.textContent = button.dataset.caption ?? ""
-          viewer.showModal()
-        })
-      )
+    const photos = [...document.querySelectorAll<HTMLButtonElement>(".photo")]
+    let current = 0
+    const show = (i: number) => {
+      current = (i + photos.length) % photos.length
+      const { full, caption: text } = photos[current]!.dataset
+      img.src = full!
+      img.alt = text ?? ""
+      caption.textContent = text ?? ""
+    }
+    photos.forEach((button, i) =>
+      button.addEventListener("click", () => {
+        show(i)
+        viewer.showModal()
+      })
+    )
     viewer.addEventListener("click", () => viewer.close())
+    viewer.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") show(current + 1)
+      if (e.key === "ArrowLeft") show(current - 1)
+    })
+    // Back to the photo it opened from
+    viewer.addEventListener("close", () => photos[current]?.focus())
   }
 </script>
 
@@ -547,6 +542,9 @@ const jsonLd = reviewGraph(review, {
     letter-spacing: 0.08em;
     color: inherit;
     text-decoration: none;
+    /* 44px tall to tap without moving anything */
+    padding: 16px 0;
+    margin: -16px 0;
   }
   .back:hover {
     text-decoration: underline;
@@ -601,16 +599,21 @@ const jsonLd = reviewGraph(review, {
   .title .eyebrow {
     color: #fff;
   }
+  /* Capped so the longest word fits the screen on one line (a letter is
+     about 0.84em wide at this width and weight): names break between words,
+     never inside one */
   h1 {
+    --size: clamp(56px, 11vw, 200px);
     margin: 10px 0 0;
-    font: 900 clamp(56px, 11vw, 200px) / 0.82 var(--font-display);
+    font: 900 min(var(--size), calc((100vw - 48px) / var(--chars, 1) / 0.9)) /
+      0.82 var(--font-display);
     font-stretch: 118%;
     letter-spacing: -0.045em;
     text-transform: uppercase;
     overflow-wrap: break-word;
   }
   h1.long {
-    font-size: clamp(44px, 7.5vw, 140px);
+    --size: clamp(44px, 7.5vw, 140px);
   }
   .headline {
     margin: 16px 0 0;
@@ -635,6 +638,8 @@ const jsonLd = reviewGraph(review, {
     color: var(--moon);
   }
   .score-num small a {
+    /* inline: the padding only widens the tap area */
+    padding: 16px 0;
     color: inherit;
     text-decoration: underline dotted;
     text-underline-offset: 0.3em;
@@ -666,14 +671,6 @@ const jsonLd = reviewGraph(review, {
     margin: 8px 0 0;
     font: 800 clamp(22px, 2.2vw, 32px) / 1.05 var(--font-display);
     font-stretch: 88%;
-  }
-  .facts dd span {
-    display: block;
-  }
-  .wide-fact dd {
-    font-size: clamp(17px, 1.4vw, 20px);
-    font-stretch: 100%;
-    font-weight: 600;
   }
 
   .body {
@@ -719,90 +716,37 @@ const jsonLd = reviewGraph(review, {
     font-stretch: 112%;
     letter-spacing: -0.01em;
   }
-  /* Where the review came from: Alberto's posts and the restaurant's account */
-  .ig-card {
-    margin-top: 2.6em;
-    padding-top: 1.1em;
-    border-top: 2px solid var(--ink);
-  }
-  .text .ig-eyebrow {
+  /* Alberto's posts and the restaurant's own links, as facts in the band */
+  .links {
     display: flex;
-    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 8px;
-    margin: 0 0 0.7em;
-    font: 600 12px/1.5 var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-soft);
-  }
-  .ig-eyebrow svg {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: var(--glow-text);
-    stroke-width: 1.8;
-  }
-  .ig-eyebrow .dot {
-    fill: var(--glow-text);
-    stroke: none;
-  }
-  .text .ig-title {
-    margin: 0 0 1em;
-    font: 900 clamp(22px, 2vw, 30px) / 1.08 var(--font-display);
-    font-stretch: 112%;
-    letter-spacing: -0.01em;
-  }
-  .ig-title a,
-  .ig-place a {
-    color: var(--glow-text);
-    text-decoration: none;
-  }
-  .ig-title a:hover,
-  .ig-place a:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
-  }
-  .ig-posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .ig-posts a {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1.5px solid var(--ink);
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px 8px;
+    border: 2px solid var(--ink);
+    border-radius: 99px;
     color: var(--ink);
+    font: 800 15px/1 var(--font-display);
+    font-stretch: 112%;
     text-decoration: none;
     transition:
       background-color 0.2s,
       color 0.2s;
   }
-  .ig-posts a:hover,
-  .ig-posts a:focus-visible {
+  .links a:hover,
+  .links a:focus-visible {
     background: var(--ink);
-    color: var(--paper);
+    color: var(--glow);
   }
-  .ig-kind {
-    font: 800 17px/1.1 var(--font-display);
-    font-stretch: 112%;
-  }
-  .ig-go {
-    font: 600 11px/1 var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
-  .text .ig-place {
-    margin: 1em 0 0;
-    font: 600 13px/1.5 var(--font-display);
-    color: var(--ink-soft);
+  .facts :focus-visible {
+    outline-color: var(--ink);
   }
   .text p:first-child::first-letter {
     float: left;
@@ -831,31 +775,6 @@ const jsonLd = reviewGraph(review, {
     font: 800 14px/1.9 var(--font-display);
     color: var(--glow-text);
     font-variant-numeric: tabular-nums;
-  }
-  .dishes li.has-photo {
-    grid-template-columns: 44px 1fr 112px;
-    align-items: center;
-  }
-  .dishes li.has-photo::before {
-    align-self: start;
-  }
-  .dish-photo {
-    display: block;
-    padding: 0;
-    border: 0;
-    background: none;
-    border-radius: 6px;
-    cursor: zoom-in;
-  }
-  .dish-photo img {
-    transition: transform 0.3s ease;
-  }
-  .dish-photo:hover img {
-    transform: scale(1.04);
-  }
-  .dish-photo:focus-visible {
-    outline: 2px solid var(--glow-text);
-    outline-offset: 3px;
   }
   .viewer {
     max-width: none;
@@ -896,7 +815,7 @@ const jsonLd = reviewGraph(review, {
   }
   .viewer figcaption {
     max-width: 60ch;
-    color: #f3ede2;
+    color: var(--paper);
     font-size: 15px;
     text-align: center;
   }
@@ -908,26 +827,18 @@ const jsonLd = reviewGraph(review, {
     height: 44px;
     border: 0;
     background: none;
-    color: #f3ede2;
-    font-size: 34px;
-    line-height: 1;
+    color: var(--paper);
+    display: grid;
+    place-items: center;
     cursor: pointer;
   }
-  .dishes img {
-    width: 112px;
-    height: 112px;
-    object-fit: cover;
-    border-radius: 6px;
-    background: var(--photo-bg);
-  }
-  @media (max-width: 600px) {
-    .dishes li.has-photo {
-      grid-template-columns: 32px 1fr 76px;
-    }
-    .dishes img {
-      width: 76px;
-      height: 76px;
-    }
+  .viewer-close svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
   }
 
   /* Photos inside the text */
@@ -941,88 +852,47 @@ const jsonLd = reviewGraph(review, {
   }
   .moment figure {
     margin: 0;
+  }
+  .photo {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
     overflow: hidden;
     border-radius: 6px;
     background: var(--photo-bg);
+    cursor: zoom-in;
   }
-  .moment.wide figure {
+  .moment.single .photo {
     aspect-ratio: 3 / 2;
   }
-  .moment.pair figure {
+  .moment.pair .photo {
     aspect-ratio: 4 / 5;
   }
-  .moment img {
+  .photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  .photo:hover img {
+    transform: scale(1.04);
+  }
+  .moment figcaption {
+    margin-top: 10px;
+    font: 600 12px/1.4 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
   }
   /* On a wide screen the single photos reach into the empty right column */
   @media (min-width: 1200px) {
-    .moment.wide {
+    .moment.single {
       /* Up to the width of that column (text 680px, gaps and padding 128px) */
       margin-right: calc(-1 * min(340px, (100vw - 808px) / 2));
     }
   }
 
-  /* What's left, as a strip to swipe through */
-  .gallery {
-    padding: 0 0 12vh;
-    background: var(--paper);
-    color: var(--ink);
-  }
-  .gallery-label {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin: 0 24px 14px;
-    padding-top: 14px;
-    border-top: 2px solid var(--ink);
-    font: 800 13px/1 var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .gallery-label span {
-    color: var(--glow-text);
-  }
-  .gallery-label .gallery-hint {
-    margin-left: auto;
-    color: var(--ink-soft);
-    font-weight: 600;
-  }
-  .gallery-strip {
-    display: flex;
-    gap: 8px;
-    padding: 0 24px 8px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding: 0 24px;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-  }
-  .gallery-strip figure {
-    flex: 0 0 auto;
-    height: min(52vh, 460px);
-    aspect-ratio: 4 / 5;
-    margin: 0;
-    overflow: hidden;
-    border-radius: 6px;
-    background: var(--photo-bg);
-    scroll-snap-align: start;
-  }
-  .gallery-strip img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .map-link {
-    display: inline-block;
-    margin-top: 8px;
-    font: 800 12px/1 var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: inherit;
-  }
   .seal-cta {
     display: flex;
     align-items: center;
@@ -1047,6 +917,9 @@ const jsonLd = reviewGraph(review, {
     text-transform: uppercase;
   }
   .seal-cta a {
+    display: inline-block;
+    padding: 16px 0;
+    margin: -16px 0;
     font: 800 12px/1 var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1087,9 +960,6 @@ const jsonLd = reviewGraph(review, {
     .chips,
     .text {
       grid-column: 1;
-    }
-    .gallery-strip figure {
-      height: 62vw;
     }
   }
 </style>

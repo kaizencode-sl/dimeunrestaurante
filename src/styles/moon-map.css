@@ -5,7 +5,7 @@
   margin: 0 24px 24px 0;
 }
 [data-moon-map] .maplibregl-ctrl-group button + button {
-  border-top-color: #333;
+  border-top-color: var(--dim);
 }
 [data-moon-map] .maplibregl-ctrl-icon {
   filter: invert(1);
@@ -28,7 +28,7 @@
   border-top-color: var(--paper);
   border-bottom-color: var(--paper);
 }
-[data-moon-map] .map-card {
+[data-moon-map] .map-card-link {
   display: block;
   color: var(--ink);
   text-decoration: none;
@@ -46,7 +46,7 @@
   padding: 14px 16px 16px;
 }
 [data-moon-map] .map-card-city {
-  font: 700 10px/1 var(--font-display);
+  font: 700 11px/1 var(--font-display);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--glow-text);
@@ -79,9 +79,28 @@
 [data-moon-map] .map-card-score path {
   fill: var(--glow);
 }
-[data-moon-map] .map-card:hover strong {
+[data-moon-map] .map-card-link:hover strong {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+[data-moon-map] .map-card-gmaps {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 16px 12px;
+  border-top: 2px solid var(--ink);
+  color: var(--ink);
+  font: 800 12px/1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+[data-moon-map] .map-card-gmaps:hover,
+[data-moon-map] .map-card-gmaps:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
 }
 [data-moon-map] .maplibregl-cooperative-gesture-screen {
   background: rgb(10 10 10 / 55%);
@@ -92,6 +111,6 @@
 }
 @media (max-width: 640px) {
   [data-moon-map] .maplibregl-ctrl-attrib {
-    font-size: 10px;
+    font-size: 11px;
   }
 }

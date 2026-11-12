@@ -178,3 +178,11 @@ html.lenis body {
 .wide {
   font-stretch: 125%;
 }
+/* A glyph's side bearing grows with its size: at display sizes it pushes the
+   ink of a left-aligned heading in from the gutter the labels above it sit
+   on. Pull it back (relative + left, so auto margins and GSAP transforms
+   are left alone) */
+.flush {
+  position: relative;
+  left: -0.06em;
+}

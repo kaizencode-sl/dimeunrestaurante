@@ -126,17 +126,24 @@ const escape = (s: string) =>
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!
   )
 
+// Google finds the place itself (opening hours, directions) by its name and city
+const googleMaps = (p: Pin) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${p.name}, ${p.city}`)}`
+
 function card(p: Pin) {
   const score = String(p.score).replace(".", ",")
-  return `<a class="map-card" href="${url(`/restaurantes/${p.id}`)}">
-    ${p.photo ? `<img src="${escape(p.photo)}" alt="" loading="lazy" />` : ""}
-    <span class="map-card-body">
-      <span class="map-card-city">${escape(p.city)}</span>
-      <strong>${escape(p.name)}</strong>
-      ${p.headline ? `<em>“${escape(p.headline)}”</em>` : ""}
-      <span class="map-card-score"><svg viewBox="-110 -110 220 220" aria-hidden="true"><circle r="100" /><path d="${moonPath(p.score / 10)}" /></svg>${score} lunas</span>
-    </span>
-  </a>`
+  return `<div class="map-card">
+    <a class="map-card-link" href="${url(`/restaurantes/${p.id}`)}">
+      ${p.photo ? `<img src="${escape(p.photo)}" alt="" loading="lazy" />` : ""}
+      <span class="map-card-body">
+        <span class="map-card-city">${escape(p.city)}</span>
+        <strong>${escape(p.name)}</strong>
+        ${p.headline ? `<em>“${escape(p.headline)}”</em>` : ""}
+        <span class="map-card-score"><svg viewBox="-110 -110 220 220" aria-hidden="true"><circle r="100" /><path d="${moonPath(p.score / 10)}" /></svg>${score} lunas</span>
+      </span>
+    </a>
+    <a class="map-card-gmaps" href="${escape(googleMaps(p))}" target="_blank" rel="noopener">Abrir en Google Maps <span aria-hidden="true">↗</span></a>
+  </div>`
 }
 
 /**

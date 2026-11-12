@@ -1,6 +1,6 @@
 ---
 import ScoreStamp from "@/components/score-stamp.astro"
-import { reviewUrl, shortPlan, type Review } from "@/lib/reviews"
+import { reviewUrl, shortPlan, srcset, type Review } from "@/lib/reviews"
 
 interface Props {
   review: Review
@@ -32,7 +32,14 @@ const tags = [...r.plans.map(shortPlan), ...r.venue].slice(0, 2)
   <div class="strip">
     {photos.slice(0, 4).map((src) => (
       <figure data-wipe>
-        <img src={src} alt="" loading="lazy" decoding="async" />
+        <img
+          src={src}
+          srcset={srcset(src)}
+          sizes="(max-width: 800px) 25vw, 470px"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
       </figure>
     ))}
   </div>
