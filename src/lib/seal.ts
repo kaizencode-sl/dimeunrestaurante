@@ -1,4 +1,5 @@
 import qrcode from "qrcode-generator"
+import { BRAND_MOONS_MARKUP, BRAND_MOONS_VIEWBOX } from "@/lib/brand"
 import { moonPath } from "@/lib/moon"
 import { Type } from "@/lib/seal-type"
 import { url } from "@/lib/url"
@@ -17,16 +18,16 @@ const THEMES: Record<
 > = {
   noche: {
     bg: "#0a0a0a",
-    accent: "#f2b33d",
+    accent: "#4999d6",
     text: "#ece7db",
     lit: "#f7ecd0",
     base: "#3a3632",
   },
   claro: {
     bg: "#ece7db",
-    accent: "#8f5a06",
-    text: "#0a0a0a",
-    lit: "#e2a530",
+    accent: "#0b4d82",
+    text: "#02303c",
+    lit: "#4999d6",
     base: "#d6cebb",
   },
 }
@@ -128,8 +129,8 @@ function sealBody(
   </g>
   ${type.line(scoreText, x0, 270, { ...big, fill: t.text })}
   ${type.line("lunas", x0 + w1 + gap, 270, { ...small, fill: t.accent })}
-  <line x1="${C - 14}" y1="290" x2="${C + 14}" y2="290" stroke="${t.accent}" stroke-opacity="0.7"/>
-  ${type.line(HANDLE, C, 314, { face: "text", size: 12, tracking: 0.04, anchor: "middle", fill: t.text })}`
+  <svg x="${C - 16}" y="284" width="32" height="12" viewBox="${BRAND_MOONS_VIEWBOX}" fill="${t.accent}">${BRAND_MOONS_MARKUP}</svg>
+  ${type.line(HANDLE, C, 316, { face: "text", size: 12, tracking: 0.04, anchor: "middle", fill: t.text })}`
 }
 
 /**
@@ -237,6 +238,6 @@ export function signSvg({
   <rect x="${qx}" y="${qy}" width="${q + 24}" height="${q + 24}" rx="8" fill="${qrBg}"/>
   <path transform="translate(${qx + 12} ${qy + 12})" d="${qrPath(url, q)}" fill="#0a0a0a"/>
   ${lines}
-  ${sparkle(300, 790, 5, t.accent)}
+  <svg x="273" y="784" width="54" height="20" viewBox="${BRAND_MOONS_VIEWBOX}" fill="${t.accent}">${BRAND_MOONS_MARKUP}</svg>
 </svg>`.replace("__DEFS__", type.defsSvg)
 }

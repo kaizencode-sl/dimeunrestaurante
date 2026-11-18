@@ -20,20 +20,24 @@ const { score, class: className } = Astro.props
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    color: var(--glow-text);
-    border: 2px solid var(--glow-text);
+    background: var(--band);
+    color: var(--on-band);
+    border: 2px solid var(--band);
     border-radius: 99px;
     padding: 6px 14px 6px 8px;
     font: 900 15px/1 var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
+    transition:
+      background-color 0.25s,
+      border-color 0.25s;
   }
   .stamp :global(.stamp-moon) {
     width: 22px;
     height: 22px;
-    --moon-base: transparent;
-    --moon-ring: var(--glow-text);
-    --moon-lit: var(--glow-text);
+    --moon-base: rgb(2 24 32 / 45%);
+    --moon-ring: var(--moon-on-band);
+    --moon-lit: var(--moon-on-band);
   }
 </style>

@@ -21,14 +21,39 @@ const SPAIN: [[number, number], [number, number]] = [
 ]
 const FONT = ["Noto Sans Bold"]
 
+function mapPalette() {
+  const css = getComputedStyle(document.documentElement)
+  const get = (name: string, fallback: string) =>
+    css.getPropertyValue(name).trim() || fallback
+  return {
+    land: "#151413",
+    sea: "#070707",
+    building: get("--night", "#1c1b1a"),
+    boundary: "#34312d",
+    roadMajor: "#2a2825",
+    roadMinor: "#211f1d",
+    place: get("--grey", "#8d8a84"),
+    label: "#55524d",
+    glow: get("--glow", "#4999d6"),
+    moon: get("--moon", "#f7ecd0"),
+    moonBase: "#2a2826",
+  }
+}
+
+function hexRgba(hex: string, alpha: number) {
+  const h = hex.replace("#", "")
+  const n = parseInt(h.length === 3 ? h.replace(/./g, (c) => c + c) : h, 16)
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`
+}
+
 /**
- * Night palette: a black sea like the sky, land a shade lighter, streets that
- * only show up close, so the gold and the moons are the only light. Labels in
- * Spanish where OpenStreetMap has them.
+ * Night palette: a deep petrol sea like the sky, land a shade lighter, streets
+ * that only show up close, so the blue and the moons are the only light.
+ * Labels in Spanish where OpenStreetMap has them.
  */
-function retint(map: MapLibre) {
-  const LAND = "#151413"
-  const SEA = "#070707"
+function retint(map: MapLibre, p: ReturnType<typeof mapPalette>) {
+  const LAND = p.land
+  const SEA = p.sea
   const NAME_ES = ["coalesce", ["get", "name:es"], ["get", "name"]]
   for (const layer of map.getStyle().layers) {
     const { id, type } = layer
@@ -45,13 +70,13 @@ function retint(map: MapLibre) {
     if (type === "background") set("background-color", LAND)
     else if (type === "fill") {
       if (id === "water") set("fill-color", SEA)
-      else if (id === "building") set("fill-color", "#1c1b19")
+      else if (id === "building") set("fill-color", p.building)
       else set("fill-opacity", 0)
     } else if (type === "line") {
-      if (id.startsWith("boundary")) set("line-color", "#34312d")
+      if (id.startsWith("boundary")) set("line-color", p.boundary)
       else if (id === "waterway") set("line-color", SEA)
       else {
-        set("line-color", /major|motorway/.test(id) ? "#2a2825" : "#211f1d")
+        set("line-color", /major|motorway/.test(id) ? p.roadMajor : p.roadMinor)
         // fade the road web in only at city zoom
         set("line-opacity", [
           "interpolate",
@@ -64,7 +89,7 @@ function retint(map: MapLibre) {
         ])
       }
     } else if (type === "symbol") {
-      set("text-color", id.startsWith("place") ? "#8d8a84" : "#55524d")
+      set("text-color", id.startsWith("place") ? p.place : p.label)
       set("text-halo-color", id.startsWith("water") ? SEA : LAND)
       set("icon-opacity", 0)
       if (id.startsWith("place") || id.startsWith("water"))
@@ -84,7 +109,7 @@ function retint(map: MapLibre) {
 }
 
 /** One image per half-moon step: moon-0 … moon-20 */
-function addMoonIcons(map: MapLibre) {
+function addMoonIcons(map: MapLibre, p: ReturnType<typeof mapPalette>) {
   const ratio = 2
   const size = 44
   for (let step = 0; step <= 20; step++) {
@@ -96,20 +121,20 @@ function addMoonIcons(map: MapLibre) {
     const r = 13
     // soft halo that grows with the score
     const halo = ctx.createRadialGradient(0, 0, r * 0.8, 0, 0, size / 2)
-    halo.addColorStop(0, `rgba(247,236,208,${0.08 + (step / 20) * 0.22})`)
-    halo.addColorStop(1, "rgba(247,236,208,0)")
+    halo.addColorStop(0, hexRgba(p.moon, 0.08 + (step / 20) * 0.22))
+    halo.addColorStop(1, hexRgba(p.moon, 0))
     ctx.fillStyle = halo
     ctx.fillRect(-size / 2, -size / 2, size, size)
     ctx.beginPath()
     ctx.arc(0, 0, r, 0, Math.PI * 2)
-    ctx.fillStyle = "#2a2826"
+    ctx.fillStyle = p.moonBase
     ctx.fill()
     ctx.lineWidth = 1.2
-    ctx.strokeStyle = "rgba(242,179,61,.75)"
+    ctx.strokeStyle = hexRgba(p.glow, 0.75)
     ctx.stroke()
     const d = moonPath(step / 20, r)
     if (d) {
-      ctx.fillStyle = "#f7ecd0"
+      ctx.fillStyle = p.moon
       ctx.fill(new Path2D(d))
     }
     map.addImage(
@@ -217,8 +242,9 @@ export function moonMap(
   })
 
   map.on("load", () => {
-    retint(map)
-    addMoonIcons(map)
+    const pal = mapPalette()
+    retint(map, pal)
+    addMoonIcons(map, pal)
     map.addSource("pins", {
       type: "geojson",
       data: toFeatures(0),
@@ -233,9 +259,9 @@ export function moonMap(
       source: "pins",
       filter: ["has", "point_count"],
       paint: {
-        "circle-color": "#f2b33d",
+        "circle-color": pal.glow,
         "circle-opacity": 0.14,
-        "circle-stroke-color": "#f2b33d",
+        "circle-stroke-color": pal.glow,
         "circle-stroke-width": 1.2,
         "circle-radius": [
           "interpolate",
@@ -260,7 +286,7 @@ export function moonMap(
         "text-font": FONT,
         "text-size": 13,
       },
-      paint: { "text-color": "#f7ecd0" },
+      paint: { "text-color": pal.moon },
     })
     map.addLayer({
       id: "moons",

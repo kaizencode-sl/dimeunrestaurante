@@ -1,0 +1,69 @@
+---
+import { BRAND_MOONS_MARKUP, BRAND_MOONS_VIEWBOX } from "@/lib/brand"
+
+/**
+ * Alberto de Luna's personal mark: the three moon phases alone for compact
+ * slots (navbar) or stacked above his name.
+ */
+interface Props {
+  variant?: "moons" | "full"
+  class?: string
+}
+
+const { variant = "moons", class: className } = Astro.props
+---
+
+{
+  variant === "moons" ? (
+    <svg
+      class:list={["brand-moons", className]}
+      viewBox={BRAND_MOONS_VIEWBOX}
+      fill="currentColor"
+      aria-hidden="true"
+      set:html={BRAND_MOONS_MARKUP}
+    />
+  ) : (
+    <div class:list={["brand-full", className]}>
+      <svg
+        class="brand-moons"
+        viewBox={BRAND_MOONS_VIEWBOX}
+        fill="currentColor"
+        aria-hidden="true"
+        set:html={BRAND_MOONS_MARKUP}
+      />
+      <span class="brand-name">
+        <strong>ALBERTO</strong> <span class="brand-de">DE</span>{" "}
+        <strong>LUNA</strong>
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .brand-moons {
+    display: block;
+    width: auto;
+    height: 22px;
+  }
+  .brand-full {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: currentColor;
+  }
+  .brand-full .brand-moons {
+    height: 34px;
+  }
+  .brand-name {
+    font: 700 14px/1 var(--font-display);
+    font-stretch: 108%;
+    letter-spacing: 0.22em;
+    white-space: nowrap;
+  }
+  .brand-de {
+    font-weight: 400;
+    font-size: 0.72em;
+    letter-spacing: 0.16em;
+  }
+</style>

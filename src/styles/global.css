@@ -47,25 +47,44 @@
 
 :root {
   /*
-   * "Luna": black night, moonlight paper and a harvest-moon gold. His surname
-   * and his scores are moons, so the whole site lives under one.
+   * "Luna" in Alberto's blues: black & deep petrol night (#0a0a0a / #02303c),
+   * warm cream paper (#ece7db), royal cobalt bands (#115b96) with crisp white
+   * type, and luminous sky-blue glow (#58b8ff) on dark.
    */
   --ink: #0a0a0a;
+  --petrol: #02303c;
   --paper: #ece7db;
+  --card-surface: #f7f4ec;
   --grey: #8d8a84;
   --moon: #f7ecd0;
-  --night: #1c1b1a;
-  /* The accent: fills and text on the night; a deeper tone for text on paper */
-  --glow: #f2b33d;
-  --glow-text: #8f5a06;
-  --on-glow: var(--ink);
+  --night: #071e26;
+  /* The accent: luminous sky blue on the night; deep royal blue on paper */
+  --glow: #58b8ff;
+  --glow-text: #0b4d82;
+  --on-glow: #021820;
+  /* Large blue surfaces & badges: royal Alberto blue so crisp white pops */
+  --band: #115b96;
+  --band-deep: #0b4d82;
+  --band-bright: #1d74b8;
+  --sky-halo: #09354a;
+  --sky-deep: #041923;
+  --on-band: #ffffff;
+  --moon-on-band: var(--on-band);
+  --badge-bg: var(--petrol);
+  --map-open-fg: var(--petrol);
+  --hero-word: var(--band-deep);
+  --hero-stroke: 2.5px var(--glow);
+  --top-bg: var(--band);
+  --top-title: var(--on-band);
+  --top-outline-fill: transparent;
+  --top-stroke: clamp(1.4px, 0.015em, 2.5px) var(--glow);
   /* Behind the loader and the photo heroes */
   --stage: var(--ink);
   --on-stage: var(--moon);
   /* Supporting tones */
   --photo-bg: #dcd5c4;
-  --dim: #474440;
-  --ink-soft: #57544f;
+  --dim: #314a59;
+  --ink-soft: #4e565a;
   --muted: #e2dccd;
 
   /* shadcn tokens mapped onto the palette */
@@ -94,6 +113,41 @@
   color-scheme: dark;
 }
 
+/* "Lunas": the original harvest-moon gold palette. Kept to compare (?paleta=lunas) */
+:root[data-palette="lunas"] {
+  --ink: #0a0a0a;
+  --petrol: #0a0a0a;
+  --paper: #ece7db;
+  --card-surface: #ece7db;
+  --grey: #8d8a84;
+  --moon: #f7ecd0;
+  --night: #1c1b1a;
+  --glow: #f2b33d;
+  --glow-text: #8f5a06;
+  --on-glow: var(--ink);
+  --band: var(--glow);
+  --band-deep: var(--glow);
+  --band-bright: var(--glow);
+  --sky-halo: var(--ink);
+  --sky-deep: var(--ink);
+  --on-band: var(--on-glow);
+  --moon-on-band: var(--on-glow);
+  --badge-bg: var(--glow);
+  --map-open-fg: var(--glow);
+  --hero-word: var(--glow);
+  --hero-stroke: 0px transparent;
+  --top-bg: var(--glow);
+  --top-title: var(--ink);
+  --top-outline-fill: var(--ink);
+  --top-stroke: 0px transparent;
+  --stage: var(--ink);
+  --on-stage: var(--moon);
+  --photo-bg: #dcd5c4;
+  --dim: #474440;
+  --ink-soft: #57544f;
+  --muted: #e2dccd;
+}
+
 /* "Sello": the first direction, one saturated red. Kept to compare (?paleta=sello) */
 :root[data-palette="sello"] {
   --ink: #0e0d0c;
@@ -105,6 +159,16 @@
   --glow-text: #ff2a12;
   --stage: #ff2a12;
   --on-stage: #0e0d0c;
+  --band: var(--glow);
+  --on-band: var(--on-glow);
+  --moon-on-band: var(--on-glow);
+  --badge-bg: var(--glow);
+  --map-open-fg: var(--glow);
+  --hero-word: var(--glow);
+  --top-bg: var(--glow);
+  --top-title: var(--ink);
+  --top-outline-fill: var(--ink);
+  --top-stroke: 0px transparent;
   --photo-bg: #ddd8cf;
   --dim: #4a4642;
   --ink-soft: #5b5853;
@@ -185,4 +249,66 @@ html.lenis body {
 .flush {
   position: relative;
   left: -0.06em;
+}
+/* Dual-layer mechanical text swap on hover/focus */
+.swap {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  text-decoration: inherit;
+  text-underline-offset: inherit;
+  text-decoration-thickness: inherit;
+}
+.swap-line {
+  grid-area: 1 / 1;
+  display: inline-block;
+  text-decoration: inherit;
+  text-underline-offset: inherit;
+  text-decoration-thickness: inherit;
+  transition: transform 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: transform;
+}
+.swap-clone {
+  transform: translateY(120%);
+  color: var(--swap-hover, currentColor);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(a, button):hover .swap-main,
+  :is(a, button):focus-visible .swap-main,
+  .swap:hover .swap-main {
+    transform: translateY(-120%);
+  }
+  :is(a, button):hover .swap-clone,
+  :is(a, button):focus-visible .swap-clone,
+  .swap:hover .swap-clone {
+    transform: translateY(0%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swap-line {
+    transition: none;
+  }
+}
+
+/* Cross-document continuity between restaurant cards/rows and review detail */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+::view-transition-image-pair(*) {
+  isolation: isolate;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

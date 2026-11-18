@@ -82,3 +82,7 @@ export function tally(
 /** "Para primera cita" → "Primera cita" */
 export const shortPlan = (plan: string) =>
   plan.replace(/^Para (ir )?/, "").replace(/^./, (c) => c.toUpperCase())
+
+/** Stable, CSS-safe view-transition-name shared between listings and review detail. */
+export const vtName = (kind: "photo" | "title", id: string) =>
+  `vt-${kind}-${id.replace(/[^a-zA-Z0-9_-]/g, "-")}`

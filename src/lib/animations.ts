@@ -324,13 +324,50 @@ function travellingType() {
         delay: i * 0.12,
         ease: "bounce.out",
         scrollTrigger: {
-          trigger: sticker.parentElement,
+          trigger: sticker.closest(".cities") ?? sticker.parentElement,
           start: "top 55%",
           toggleActions: PLAY_ONCE,
         },
       }
     )
   })
+  const cities = $(".cities")
+  const depthWraps = $$<HTMLElement>(".sticker-wrap[data-depth]")
+  depthWraps.forEach((wrap) => {
+    const depth = Number(wrap.dataset.depth ?? 0)
+    gsap.fromTo(
+      wrap,
+      { y: -42 * depth },
+      {
+        y: 42 * depth,
+        ease: "none",
+        scrollTrigger: {
+          trigger: cities ?? wrap.parentElement,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.9,
+        },
+      }
+    )
+  })
+  if (
+    cities &&
+    depthWraps.length &&
+    matchMedia("(hover: hover) and (pointer: fine)").matches
+  ) {
+    const movers = depthWraps.map((wrap) => ({
+      depth: Number(wrap.dataset.depth ?? 0),
+      xTo: gsap.quickTo(wrap, "x", { duration: 0.65, ease: "power3.out" }),
+    }))
+    cities.addEventListener("pointermove", (e) => {
+      const r = cities.getBoundingClientRect()
+      const nx = ((e.clientX - r.left) / r.width - 0.5) * 2
+      for (const m of movers) m.xTo(nx * m.depth * 22)
+    })
+    cities.addEventListener("pointerleave", () => {
+      for (const m of movers) m.xTo(0)
+    })
+  }
 }
 
 // Display titles whose letters arrive one by one, once
@@ -352,39 +389,46 @@ function charTitles() {
   })
 }
 
-// Rows and galleries: the head rises, each photo wipes open, the score stamps
+// Rows and galleries: the head rises, each photo opens via rounded optical curtains, the score stamps
 function wipes() {
+  const desktop = matchMedia("(min-width: 800px)").matches
+  const shutterFrom = (idx: number, radius: number) =>
+    desktop && idx % 2 === 0
+      ? `inset(0% 50% 0% 50% round ${radius}px)`
+      : `inset(50% 0% 50% 0% round ${radius}px)`
+
   $$("[data-row]").forEach((row) => {
-    gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: row,
-          start: "top 88%",
-          toggleActions: PLAY_ONCE,
-        },
-      })
-      .from($("[data-row-top]", row), {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      })
-      .fromTo(
-        $$("[data-wipe]", row),
-        { clipPath: "inset(100% 0 0 0)" },
+    const photos = $$("[data-wipe]", row)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: row,
+        start: "top 88%",
+        toggleActions: PLAY_ONCE,
+      },
+    })
+    tl.from($("[data-row-top]", row), {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power3.out",
+    })
+    photos.forEach((fig, idx) => {
+      tl.fromTo(
+        fig,
+        { clipPath: shutterFrom(idx, 12) },
         {
-          clipPath: "inset(0% 0 0 0)",
-          duration: 1,
-          stagger: 0.09,
+          clipPath: "inset(0% 0% 0% 0% round 3px)",
+          duration: 1.05,
           ease: "expo.out",
         },
-        0.1
+        0.1 + idx * 0.08
       )
-      .from(
-        $$("[data-wipe] img", row),
-        { scale: 1.4, duration: 1.4, stagger: 0.09, ease: "expo.out" },
-        0.1
-      )
+    })
+    tl.from(
+      $$("[data-wipe] img", row),
+      { scale: 1.16, duration: 1.35, stagger: 0.08, ease: "expo.out" },
+      0.1
+    )
       .from(
         $("[data-stamp]", row),
         {
@@ -398,22 +442,33 @@ function wipes() {
       )
       .add(fillStamp($("[data-stamp]", row)), 0.7)
   })
+
   $$("[data-gallery]").forEach((gallery) => {
-    $$("[data-wipe]", gallery).forEach((fig) => {
+    $$("[data-wipe]", gallery).forEach((fig, idx) => {
+      const trigger = {
+        trigger: fig,
+        start: "top 92%",
+        toggleActions: PLAY_ONCE,
+      }
       gsap.fromTo(
         fig,
-        { clipPath: "inset(100% 0 0 0)" },
+        { clipPath: shutterFrom(idx, 14) },
         {
-          clipPath: "inset(0% 0 0 0)",
+          clipPath: "inset(0% 0% 0% 0% round 3px)",
           duration: 1.1,
           ease: "expo.out",
-          scrollTrigger: {
-            trigger: fig,
-            start: "top 92%",
-            toggleActions: PLAY_ONCE,
-          },
+          scrollTrigger: trigger,
         }
       )
+      const img = $("img", fig)
+      if (img) {
+        gsap.from(img, {
+          scale: 1.12,
+          duration: 1.35,
+          ease: "expo.out",
+          scrollTrigger: trigger,
+        })
+      }
     })
   })
 }

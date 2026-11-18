@@ -13,7 +13,7 @@ const H = 630
 const C = {
   bg: "#0a0a0a",
   text: "#ece7db",
-  accent: "#f2b33d",
+  accent: "#4999d6",
   lit: "#f7ecd0",
   base: "#3a3632",
 }

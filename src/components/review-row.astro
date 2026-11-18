@@ -1,15 +1,17 @@
 ---
 import ScoreStamp from "@/components/score-stamp.astro"
-import { reviewUrl, shortPlan, srcset, type Review } from "@/lib/reviews"
+import { reviewUrl, shortPlan, srcset, vtName, type Review } from "@/lib/reviews"
 
 interface Props {
   review: Review
   index: number
   /** Photo URLs; the first four are shown */
   photos: string[]
+  /** Attach shared view-transition names (skip if already shown elsewhere on the page). */
+  sharedTransition?: boolean
 }
 
-const { review, index, photos } = Astro.props
+const { review, index, photos, sharedTransition = true } = Astro.props
 const r = review.data
 const tags = [...r.plans.map(shortPlan), ...r.venue].slice(0, 2)
 ---
@@ -24,14 +26,26 @@ const tags = [...r.plans.map(shortPlan), ...r.venue].slice(0, 2)
   <div class="row-top" data-row-top>
     <span class="row-idx">{String(index + 1).padStart(2, "0")}</span>
     <h3 class="row-name">
-      {r.name}
+      <span
+        class="row-title"
+        style={sharedTransition ? `view-transition-name: ${vtName("title", review.id)}` : undefined}
+      >
+        {r.name}
+      </span>
       <span class="row-head">“{r.headline}”</span>
     </h3>
     <ScoreStamp score={r.score} />
   </div>
   <div class="strip">
-    {photos.slice(0, 4).map((src) => (
-      <figure data-wipe>
+    {photos.slice(0, 4).map((src, i) => (
+      <figure
+        data-wipe
+        style={
+          sharedTransition && i === 0
+            ? `view-transition-name: ${vtName("photo", review.id)}`
+            : undefined
+        }
+      >
         <img
           src={src}
           srcset={srcset(src)}
@@ -78,6 +92,17 @@ const tags = [...r.plans.map(shortPlan), ...r.venue].slice(0, 2)
     font-stretch: 112%;
     letter-spacing: -0.03em;
     text-transform: uppercase;
+    transition: color 0.25s;
+  }
+  .row-title {
+    display: inline-block;
+  }
+  .row:hover .row-name {
+    color: var(--band);
+  }
+  .row:hover :global(.stamp) {
+    background: var(--badge-bg);
+    border-color: var(--badge-bg);
   }
   .row-head {
     display: block;
@@ -103,10 +128,11 @@ const tags = [...r.plans.map(shortPlan), ...r.venue].slice(0, 2)
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
+    scale: 1;
+    transition: scale 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
   }
   .row:hover .strip img {
-    transform: scale(1.07);
+    scale: 1.07;
   }
   .row-foot {
     display: flex;

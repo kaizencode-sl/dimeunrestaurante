@@ -1,0 +1,13 @@
+---
+interface Props {
+  /** Visible link label duplicated cleanly for the vertical hover swap. */
+  text: string
+}
+
+const { text } = Astro.props
+---
+
+<span class="swap">
+  <span class="swap-line swap-main">{text}</span>
+  <span class="swap-line swap-clone" aria-hidden="true">{text}</span>
+</span>

@@ -4,7 +4,8 @@ import { absolute, INSTAGRAM } from "@/lib/seo"
 import { HANDLE } from "@/lib/seal"
 import "@/styles/global.css"
 import SiteNav from "@/components/site-nav.astro"
-import PhaseStrip from "@/components/phase-strip.astro"
+import BrandMark from "@/components/brand-mark.astro"
+import SwapLabel from "@/components/swap-label.astro"
 // Preloaded so the headings don't reflow when the fonts arrive
 import archivoUrl from "@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url"
 import serifItalicUrl from "@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url"
@@ -91,6 +92,14 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
     <meta name="twitter:image" content={imageUrl} />
     {ld && <script type="application/ld+json" set:html={ld} />}
     <script is:inline>
+      // Allow comparing palettes (?paleta=lunas | ?paleta=sello) before first paint
+      const p = new URLSearchParams(location.search).get("paleta")
+      if (p === "lunas" || p === "sello") {
+        document.documentElement.dataset.palette = p
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", p === "lunas" ? "#0a0a0a" : "#0e0d0c")
+      }
       // Hidden start states only apply when the animations will run
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
         document.documentElement.classList.add("motion")
@@ -108,11 +117,17 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
     </div>
     <slot />
     <footer class="site-footer">
-      <PhaseStrip class="footer-phases" />
+      <div class="footer-brand-wrap">
+        <a href={url("/")} aria-label="Dime un restaurante, inicio">
+          <BrandMark variant="full" class="footer-brand" />
+        </a>
+      </div>
       <span>Dime un restaurante · Alberto de Luna</span>
-      <a href={url("/como-puntuo")}>Cómo puntúo</a>
+      <a href={url("/como-puntuo")}>
+        <SwapLabel text="Cómo puntúo" />
+      </a>
       <a href={INSTAGRAM} target="_blank" rel="noopener">
-        Instagram {HANDLE}
+        <SwapLabel text={`Instagram ${HANDLE}`} />
       </a>
       <span>Demo de Kaizencode</span>
     </footer>
@@ -165,9 +180,20 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c") : null
       display: none;
     }
   }
-  .site-footer .footer-phases {
+  .site-footer .footer-brand-wrap {
     flex-basis: 100%;
-    margin-bottom: 28px;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+  .site-footer .footer-brand-wrap a {
+    padding: 8px;
+    margin: 0;
+    color: var(--moon);
+  }
+  .site-footer .footer-brand-wrap a:hover {
+    color: var(--glow);
   }
   .site-footer a {
     padding: 13px 0;

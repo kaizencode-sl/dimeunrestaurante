@@ -8,6 +8,8 @@ import Stars from "@/components/stars.astro"
 import { mealQuestion } from "@/lib/meal"
 import { getPins } from "@/lib/pins"
 import ReviewRow from "@/components/review-row.astro"
+import BrandMark from "@/components/brand-mark.astro"
+import SwapLabel from "@/components/swap-label.astro"
 import {
   getReviews,
   formatScore,
@@ -15,6 +17,7 @@ import {
   reviewUrl,
   tally,
   srcset,
+  vtName,
 } from "@/lib/reviews"
 
 const reviews = await getReviews()
@@ -33,6 +36,7 @@ const latest = reviews
     b.data.instagram!.date!.localeCompare(a.data.instagram!.date!)
   )
   .slice(0, 4)
+const latestIds = new Set(latest.map((r) => r.id))
 
 const picks = HOME_PICKS.flatMap(({ id, photos }) => {
   const review = reviews.find((r) => r.id === id)
@@ -146,12 +150,15 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
             )
           )}
       </p>
-      <span class="sig">
-        Alberto de Luna,{" "}
-        <a href={INSTAGRAM} target="_blank" rel="noopener" data-cursor="Seguir">
-          151.000 seguidores en Instagram
-        </a>
-      </span>
+      <div class="manifesto-foot">
+        <span class="sig">
+          Alberto de Luna,{" "}
+          <a href={INSTAGRAM} target="_blank" rel="noopener" data-cursor="Seguir">
+            151.000 seguidores en Instagram
+          </a>
+        </span>
+        <BrandMark variant="full" class="sig-brand" />
+      </div>
       <svg class="orbit" data-orbit viewBox="0 0 1200 200" aria-hidden="true">
         <path
           class="orbit-path"
@@ -212,7 +219,10 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
               <li data-reveal>
                 <a class="card" href={reviewUrl(review.id)} data-cursor="Leer">
                   {r.images[0] && (
-                    <span class="card-photo">
+                    <span
+                      class="card-photo"
+                      style={`view-transition-name: ${vtName("photo", review.id)}`}
+                    >
                       <img
                         src={r.images[0]}
                         srcset={srcset(r.images[0])}
@@ -234,7 +244,12 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
                     <b>{formatScore(r.score)}</b>
                     <small>lunas</small>
                   </span>
-                  <span class="card-name">{r.name}</span>
+                  <span
+                    class="card-name"
+                    style={`view-transition-name: ${vtName("title", review.id)}`}
+                  >
+                    {r.name}
+                  </span>
                   <span class="card-head">“{r.headline}”</span>
                   <span class="card-foot">
                     {[r.city, r.price ?? r.paid].filter(Boolean).join(" · ")}
@@ -258,17 +273,25 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
           i % 2 ? <span>{c}</span> : <span class="o">{c}</span>
         )}
       </div>
-      <span class="sticker" data-drop="-12" style="left:12%;top:16%">
-        Para primera cita
+      <span class="sticker-wrap" data-depth="1.2" style="left:12%;top:16%;z-index:4">
+        <span class="sticker" data-drop="-12">
+          Para primera cita
+        </span>
       </span>
-      <span class="sticker" data-drop="8" style="left:58%;top:44%">
-        Para ir con padres
+      <span class="sticker-wrap" data-depth="-0.9" style="left:58%;top:44%;z-index:3">
+        <span class="sticker" data-drop="8">
+          Para ir con padres
+        </span>
       </span>
-      <span class="sticker" data-drop="-5" style="left:30%;top:70%">
-        Para cenar tarde
+      <span class="sticker-wrap" data-depth="0.85" style="left:30%;top:70%;z-index:4">
+        <span class="sticker" data-drop="-5">
+          Para cenar tarde
+        </span>
       </span>
-      <span class="sticker" data-drop="14" style="left:78%;top:12%">
-        De barra
+      <span class="sticker-wrap" data-depth="-1.15" style="left:78%;top:12%;z-index:3">
+        <span class="sticker" data-drop="14">
+          De barra
+        </span>
       </span>
       <p class="lead">
         Cada sitio, con su plan: para una primera cita, para ir con tus padres o
@@ -281,7 +304,9 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         <h2 class="flush" data-chars>Madrid</h2>
         <p>
           Algunas de sus notas más altas.{" "}
-          <a href={url("/restaurantes")}>Ver las {reviews.length}</a>
+          <a href={url("/restaurantes")}>
+            <SwapLabel text={`Ver las ${reviews.length}`} />
+          </a>
         </p>
       </div>
       <div class="reviews-grid">
@@ -300,7 +325,12 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         </nav>
         <div class="rows" data-rows>
           {picks.map(({ review, photos }, i) => (
-            <ReviewRow review={review} index={i} photos={photos} />
+            <ReviewRow
+              review={review}
+              index={i}
+              photos={photos}
+              sharedTransition={!latestIds.has(review.id)}
+            />
           ))}
           <p class="empty" data-empty hidden>
             Ninguna de estas encaja. Prueba en el buscador.
@@ -319,7 +349,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
         <div class="final-map" data-moon-map data-home-map>
           <div class="map" data-map></div>
           <a class="map-open" href={url("/mapa")}>
-            Abrir el mapa de lunas →
+            <SwapLabel text="Abrir el mapa de lunas →" />
           </a>
         </div>
       </div>
@@ -536,10 +566,10 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgb(0 0 0 / 35%),
+      rgb(0 0 0 / 38%),
       transparent 30%,
-      transparent 55%,
-      rgb(0 0 0 / 55%)
+      transparent 50%,
+      rgb(0 0 0 / 66%)
     );
   }
   .hero-word {
@@ -557,7 +587,8 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     font: 900 clamp(80px, 31vw, 560px) / 0.78 var(--font-display);
     font-stretch: 125%;
     letter-spacing: -0.045em;
-    color: var(--glow);
+    color: var(--hero-word);
+    -webkit-text-stroke: var(--hero-stroke, 0px transparent);
     white-space: nowrap;
     z-index: 2;
     pointer-events: none;
@@ -653,17 +684,20 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     grid-template-rows: auto auto auto 1fr auto auto;
     gap: 14px;
     padding: 22px 22px 20px;
-    border: 2px solid var(--ink);
+    background: var(--card-surface);
+    border: 2px solid var(--petrol);
     border-radius: 18px;
     color: inherit;
     text-decoration: none;
     transition:
       background 0.35s,
+      border-color 0.35s,
       color 0.35s;
   }
   .card:hover,
   .card:focus-visible {
-    background: var(--ink);
+    background: var(--petrol);
+    border-color: var(--petrol);
     color: var(--paper);
   }
   .card-photo {
@@ -694,8 +728,8 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .tag {
     border-radius: 99px;
     padding: 6px 10px 5px;
-    background: var(--glow);
-    color: var(--on-glow);
+    background: var(--band);
+    color: var(--on-band);
   }
   .tag.update {
     background: transparent;
@@ -712,8 +746,16 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     width: 44px;
     height: 44px;
     align-self: center;
-    --moon-base: var(--night);
+    --moon-base: var(--petrol);
+    --moon-lit: var(--band);
+  }
+  .card:hover .card-score :global(.card-moon) {
+    --moon-base: rgb(255 255 255 / 16%);
     --moon-lit: var(--glow);
+  }
+  .card:hover .tag {
+    background: var(--glow);
+    color: var(--on-glow);
   }
   .card-score b {
     font: 800 64px/0.8 var(--font-display);
@@ -755,14 +797,24 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     opacity: 0.12;
   }
   .word.red {
-    color: var(--glow-text);
+    color: var(--band);
+  }
+  .manifesto-foot {
+    margin: 44px auto 0;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
   }
   .sig {
     display: block;
-    margin: 40px auto 0;
-    max-width: 1200px;
     font: italic 400 clamp(20px, 2vw, 28px) / 1.2 var(--font-serif);
     color: var(--ink-soft);
+  }
+  .manifesto-foot :global(.sig-brand) {
+    color: var(--petrol);
   }
   .sig a {
     color: inherit;
@@ -786,13 +838,13 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
   .orbit-path {
     fill: none;
-    stroke: var(--glow-text);
+    stroke: var(--band);
     stroke-width: 2;
     stroke-dasharray: 2 10;
     stroke-linecap: round;
   }
   .orbit-moon circle {
-    fill: var(--ink);
+    fill: var(--petrol);
   }
   .orbit-moon path {
     fill: var(--glow);
@@ -802,7 +854,8 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .lunas {
     position: relative;
     height: 340svh;
-    background: var(--ink);
+    background:
+      radial-gradient(circle at 72% 50%, var(--sky-halo) 0%, var(--sky-deep) 44%, var(--ink) 100%);
   }
   .lunas-stage {
     position: sticky;
@@ -886,6 +939,9 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     background: var(--glow);
     transform: scaleY(1.06);
   }
+  .bars i:last-child:global(.is-on) {
+    background: var(--on-band);
+  }
   .dist p {
     margin: 12px 0 0;
     /* Room for two lines, so the scene doesn't jump as the text changes */
@@ -897,12 +953,15 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   /* Cities */
   .cities {
     position: relative;
-    background: var(--glow);
-    color: var(--ink);
+    background: linear-gradient(180deg, var(--band) 0%, var(--petrol) 100%);
+    color: var(--on-band);
     padding: 14vh 0 16vh;
     overflow: hidden;
   }
   .marquee {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
     display: flex;
     gap: 0.3em;
     width: max-content;
@@ -914,14 +973,33 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
   .marquee .o {
     color: transparent;
-    -webkit-text-stroke: 2px var(--ink);
+    -webkit-text-stroke: 2.5px var(--glow);
   }
   .m2 {
     margin-top: 2vh;
   }
+  .cities .sticker-wrap {
+    position: absolute;
+    will-change: transform;
+  }
   .cities .sticker {
-    border-color: var(--ink);
-    color: var(--ink);
+    position: relative;
+    background: var(--on-band);
+    border-color: var(--petrol);
+    color: var(--petrol);
+  }
+  .cities .sticker-wrap:nth-of-type(odd) .sticker {
+    background: var(--glow);
+    border-color: var(--petrol);
+    color: var(--petrol);
+  }
+  .cities .sticker-wrap[data-depth="-0.9"] .sticker {
+    transform-origin: center;
+    scale: 0.94;
+  }
+  .cities .sticker-wrap[data-depth="1.2"] .sticker {
+    transform-origin: center;
+    scale: 1.05;
   }
   .lead {
     position: relative;
@@ -930,6 +1008,7 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     margin: 6vh 24px 0 auto;
     padding-right: 6vw;
     font: italic 400 clamp(20px, 2.2vw, 30px) / 1.15 var(--font-serif);
+    color: var(--moon);
   }
 
   /* Reviews */
@@ -990,21 +1069,29 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .fbtn {
     all: unset;
     cursor: pointer;
-    font: 600 17px/1.7 var(--font-display);
+    font: 600 17px/1.5 var(--font-display);
     color: var(--ink-soft);
+    padding: 5px 12px;
+    margin-left: -12px;
+    border-radius: 99px;
     transition:
+      background-color 0.2s,
       color 0.2s,
+      opacity 0.25s ease,
       transform 0.2s;
   }
   .fbtn:hover {
-    color: var(--ink);
+    color: var(--band);
     transform: translateX(4px);
   }
   .fbtn[aria-pressed="true"] {
-    color: var(--glow-text);
+    background: var(--band);
+    color: var(--on-band);
+    font-weight: 800;
   }
   .fbtn[aria-pressed="true"]::before {
     content: "● ";
+    color: var(--on-band);
     font-size: 0.7em;
     vertical-align: 2px;
   }
@@ -1018,6 +1105,17 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   }
   .rows :global([hidden]) {
     display: none;
+  }
+  .rows :global([data-row]) {
+    transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .filters:has(.fbtn:hover) .fbtn:not(:hover, [aria-pressed="true"]) {
+      opacity: 0.45;
+    }
+    .rows:has(:global([data-row]:hover)) :global([data-row]:not(:hover)) {
+      opacity: 0.45;
+    }
   }
   .empty {
     font: italic 400 24px/1.2 var(--font-serif);
@@ -1033,8 +1131,8 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
   .final-panel {
     position: relative;
     overflow: hidden;
-    background: var(--glow);
-    color: var(--ink);
+    background: linear-gradient(165deg, var(--band) 0%, var(--petrol) 100%);
+    color: var(--on-band);
     border-radius: 18px;
     padding: 12vh 6vw 10vh;
     transform-origin: center top;
@@ -1087,16 +1185,21 @@ const manifesto = `${reviews.length} restaurantes. ${years} años comiendo fuera
     z-index: 2;
     padding: 14px 20px 13px;
     border-radius: 99px;
-    background: var(--glow);
-    color: var(--on-glow);
+    background: var(--on-band);
+    color: var(--map-open-fg);
     font: 900 13px/1 var(--font-display);
     font-stretch: 112%;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     text-decoration: none;
-    transition: transform 0.25s;
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      transform 0.25s;
   }
   .map-open:hover {
+    background: var(--glow);
+    color: var(--petrol);
     transform: scale(1.05) rotate(-2deg);
   }
 

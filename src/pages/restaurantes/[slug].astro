@@ -15,6 +15,7 @@ import {
   shortPlan,
   HOME_PICKS,
   srcset,
+  vtName,
   type Review,
 } from "@/lib/reviews"
 
@@ -152,7 +153,11 @@ const jsonLd = reviewGraph(review, {
 >
   <main>
     <header class="head" data-review-head data-score={r.score ?? ""}>
-      <div class="media" data-review-media>
+      <div
+        class="media"
+        data-review-media
+        style={`view-transition-name: ${vtName("photo", review.id)}`}
+      >
         {cover ? (
           <img
             src={cover}
@@ -191,7 +196,7 @@ const jsonLd = reviewGraph(review, {
             <h1
               data-review-name
               class:list={["flush", { long: r.name.length > 16 }]}
-              style={`--chars: ${longestWord}`}
+              style={`--chars: ${longestWord}; view-transition-name: ${vtName("title", review.id)}`}
             >
               {r.name}
             </h1>
@@ -499,7 +504,8 @@ const jsonLd = reviewGraph(review, {
   .no-photo {
     position: relative;
     background:
-      radial-gradient(circle at 70% 32%, #2a2620, transparent 45%), var(--stage);
+      radial-gradient(circle at 70% 32%, var(--night), transparent 45%),
+      var(--stage);
   }
   .no-photo :global(.no-photo-moon) {
     position: absolute;
@@ -659,13 +665,14 @@ const jsonLd = reviewGraph(review, {
     gap: 24px 56px;
     margin: 0;
     padding: 28px 24px;
-    background: var(--glow);
-    color: var(--ink);
+    background: linear-gradient(135deg, var(--petrol) 0%, var(--band) 100%);
+    color: var(--on-band);
   }
   .facts dt {
     font: 700 11px/1 var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.12em;
+    color: var(--glow);
   }
   .facts dd {
     margin: 8px 0 0;
@@ -730,9 +737,9 @@ const jsonLd = reviewGraph(review, {
     align-items: center;
     gap: 8px;
     padding: 9px 14px 8px;
-    border: 2px solid var(--ink);
+    border: 2px solid var(--on-band);
     border-radius: 99px;
-    color: var(--ink);
+    color: var(--on-band);
     font: 800 15px/1 var(--font-display);
     font-stretch: 112%;
     text-decoration: none;
@@ -742,11 +749,11 @@ const jsonLd = reviewGraph(review, {
   }
   .links a:hover,
   .links a:focus-visible {
-    background: var(--ink);
-    color: var(--glow);
+    background: var(--on-band);
+    color: var(--band);
   }
   .facts :focus-visible {
-    outline-color: var(--ink);
+    outline-color: var(--on-band);
   }
   .text p:first-child::first-letter {
     float: left;
@@ -873,10 +880,11 @@ const jsonLd = reviewGraph(review, {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
+    scale: 1;
+    transition: scale 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
   }
   .photo:hover img {
-    transform: scale(1.04);
+    scale: 1.04;
   }
   .moment figcaption {
     margin-top: 10px;

@@ -1,6 +1,8 @@
 ---
 import { url } from "@/lib/url"
 import Moon from "@/components/moon.astro"
+import BrandMark from "@/components/brand-mark.astro"
+import SwapLabel from "@/components/swap-label.astro"
 ---
 
 <header class="nav" data-nav>
@@ -10,7 +12,7 @@ import Moon from "@/components/moon.astro"
     aria-label="Dime un restaurante, inicio"
     data-tone
   >
-    DIME
+    <BrandMark variant="moons" class="logo-mark" />
   </a>
   <span class="when" data-tone>
     <span class="progress" data-progress-moon>
@@ -45,10 +47,10 @@ import Moon from "@/components/moon.astro"
   </span>
   <nav class="links" data-tone>
     <a class="link" href={url("/mapa")}>
-      Mapa
+      <SwapLabel text="Mapa" />
     </a>
     <a class="link" href={url("/restaurantes")}>
-      Restaurantes
+      <SwapLabel text="Restaurantes" />
     </a>
   </nav>
 </header>
@@ -159,12 +161,15 @@ import Moon from "@/components/moon.astro"
     color: var(--ink);
   }
   .logo {
-    font: 900 15px/1 var(--font-display);
-    font-stretch: 118%;
-    letter-spacing: 0.08em;
-    border: 2px solid currentColor;
-    padding: 5px 8px 4px;
+    display: flex;
+    align-items: center;
+    padding: 11px 0;
+    margin: -11px 0;
     text-decoration: none;
+  }
+  .logo :global(.logo-mark) {
+    height: 22px;
+    width: auto;
   }
   .clock,
   .link {

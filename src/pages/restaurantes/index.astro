@@ -11,6 +11,7 @@ import {
   tally,
   HOME_PICKS,
   srcset,
+  vtName,
 } from "@/lib/reviews"
 
 const reviews = await getReviews()
@@ -56,7 +57,7 @@ const cover = (id: string, images: string[]) => {
   <main class="page">
     <header class="top">
       <span class="eyebrow">El archivo · {reviews.length} reseñas</span>
-      <h1 class="flush" data-chars>Elige mesa</h1>
+      <h1 class="flush" data-chars>Elige <span class="o">mesa</span></h1>
       <label class="search">
         <span class="sr-only">Buscar restaurante, plato o zona</span>
         <input
@@ -174,7 +175,7 @@ const cover = (id: string, images: string[]) => {
                 hidden={i >= 36}
               >
                 <a href={reviewUrl(review.id)} data-cursor="Leer">
-                  <figure>
+                  <figure style={`view-transition-name: ${vtName("photo", review.id)}`}>
                     {src ? (
                       <img
                         src={src}
@@ -198,7 +199,9 @@ const cover = (id: string, images: string[]) => {
                     {r.city}
                     {r.year && ` · ${r.year}`}
                   </span>
-                  <h2>{r.name}</h2>
+                  <h2 style={`view-transition-name: ${vtName("title", review.id)}`}>
+                    {r.name}
+                  </h2>
                   <p>{r.headline}</p>
                 </a>
               </li>
@@ -406,11 +409,11 @@ const cover = (id: string, images: string[]) => {
   }
   .top {
     padding: 120px 24px 40px;
-    background: var(--glow);
-    color: var(--ink);
+    background: var(--top-bg);
+    color: var(--on-band);
   }
   .top .eyebrow {
-    color: var(--ink);
+    color: var(--glow);
   }
   /* Room under the line for the descender of the g */
   h1 {
@@ -418,6 +421,12 @@ const cover = (id: string, images: string[]) => {
     font: 900 clamp(56px, 12.5vw, 240px) / 0.8 var(--font-display);
     font-stretch: 125%;
     letter-spacing: -0.05em;
+    color: var(--top-title);
+  }
+  h1 .o,
+  h1 .o :global(*) {
+    color: var(--top-outline-fill);
+    -webkit-text-stroke: var(--top-stroke);
   }
   /* On a phone it takes two lines, so each can be bigger */
   @media (max-width: 640px) {
@@ -430,20 +439,20 @@ const cover = (id: string, images: string[]) => {
     width: 100%;
     background: transparent;
     border: 0;
-    border-bottom: 3px solid var(--ink);
+    border-bottom: 3px solid var(--on-band);
     padding: 10px 0 14px;
     font: 800 clamp(26px, 4vw, 56px) / 1 var(--font-display);
     font-stretch: 88%;
     letter-spacing: -0.02em;
-    color: var(--ink);
+    color: var(--on-band);
     border-radius: 0;
   }
   .search input::placeholder {
-    color: color-mix(in srgb, var(--ink) 45%, transparent);
+    color: color-mix(in srgb, var(--on-band) 55%, transparent);
   }
   /* The global Burnt Gold ring is too faint on gold: ink instead */
   .search input:focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--on-band);
     outline-offset: 6px;
   }
 
@@ -512,16 +521,22 @@ const cover = (id: string, images: string[]) => {
     transition:
       background 0.2s,
       color 0.2s,
-      border-color 0.2s;
+      border-color 0.2s,
+      opacity 0.25s ease;
   }
   .chip:hover {
     border-color: var(--glow-text);
     color: var(--glow-text);
   }
+  @media (hover: hover) and (pointer: fine) {
+    .chips:has(.chip:hover) .chip:not(:hover, [aria-pressed="true"]) {
+      opacity: 0.45;
+    }
+  }
   .chip[aria-pressed="true"] {
-    background: var(--glow);
-    border-color: var(--glow);
-    color: var(--on-glow);
+    background: var(--band);
+    border-color: var(--band);
+    color: var(--on-band);
   }
   .range {
     display: flex;
@@ -605,7 +620,7 @@ const cover = (id: string, images: string[]) => {
     place-items: center;
     width: 100%;
     height: 100%;
-    background: var(--ink);
+    background: radial-gradient(circle at 50% 45%, var(--sky-halo) 0%, var(--petrol) 100%);
   }
   .placeholder :global(.ph-moon) {
     width: 46%;
@@ -620,8 +635,8 @@ const cover = (id: string, images: string[]) => {
     gap: 6px;
     padding: 6px 10px 6px 6px;
     border-radius: 99px;
-    background: var(--glow);
-    color: var(--on-glow);
+    background: var(--badge-bg);
+    color: var(--on-band);
     font: 800 16px/1 var(--font-display);
     font-stretch: 75%;
     font-variant-numeric: tabular-nums;
@@ -629,9 +644,9 @@ const cover = (id: string, images: string[]) => {
   .badge :global(.badge-moon) {
     width: 18px;
     height: 18px;
-    --moon-base: transparent;
-    --moon-ring: var(--on-glow);
-    --moon-lit: var(--on-glow);
+    --moon-base: rgb(255 255 255 / 15%);
+    --moon-ring: var(--moon-on-band);
+    --moon-lit: var(--moon-on-band);
   }
   .meta {
     display: block;

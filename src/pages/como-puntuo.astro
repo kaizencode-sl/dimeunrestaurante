@@ -50,7 +50,7 @@ const PLUSES = [
   <main class="page">
     <header class="top">
       <span class="eyebrow">Alberto de Luna</span>
-      <h1 class="flush" data-chars>Cómo puntúo</h1>
+      <h1 class="flush" data-chars>Cómo <span class="o">puntúo</span></h1>
       <p class="lead" data-reveal>
         En lunas, del 1 al 10. La máxima la reservo, exclusivamente, para los
         restaurantes que uno no puede morir sin conocer.
@@ -210,17 +210,23 @@ const PLUSES = [
   }
   .top {
     padding: 120px 24px 56px;
-    background: var(--glow);
-    color: var(--ink);
+    background: var(--top-bg);
+    color: var(--on-band);
   }
   .top .eyebrow {
-    color: var(--ink);
+    color: var(--glow);
   }
   h1 {
     margin: 12px 0 0.25em;
     font: 900 clamp(56px, 12.5vw, 240px) / 0.82 var(--font-display);
     font-stretch: 125%;
     letter-spacing: -0.05em;
+    color: var(--top-title);
+  }
+  h1 .o,
+  h1 .o :global(*) {
+    color: var(--top-outline-fill);
+    -webkit-text-stroke: var(--top-stroke);
   }
   @media (max-width: 640px) {
     h1 {
@@ -283,10 +289,13 @@ const PLUSES = [
     width: 100%;
     height: calc(var(--h) * 62%);
     min-height: 3px;
-    background: var(--ink);
+    background: var(--petrol);
   }
   .best .bar {
-    background: var(--glow);
+    background: var(--band);
+  }
+  .best :global(.phase) {
+    --moon-lit: var(--band);
   }
   .bars :global(.phase) {
     width: clamp(16px, 3vw, 34px);
@@ -332,7 +341,8 @@ const PLUSES = [
   .pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    border: 2px solid var(--ink);
+    background: var(--card-surface);
+    border: 2px solid var(--petrol);
   }
   .side {
     display: grid;
@@ -341,14 +351,25 @@ const PLUSES = [
     padding: 22px 20px;
     color: var(--ink);
     text-decoration: none;
-    transition: background-color 0.2s;
+    transition:
+      background-color 0.25s,
+      color 0.25s;
   }
   .side + .side {
-    border-left: 2px solid var(--ink);
+    border-left: 2px solid var(--petrol);
   }
   .side:hover,
   .side:focus-visible {
-    background: var(--muted);
+    background: var(--petrol);
+    color: var(--paper);
+  }
+  .side:hover .pair-score em,
+  .side:hover .pair-price {
+    color: var(--glow);
+  }
+  .side:hover :global(.pair-moon) {
+    --moon-lit: var(--glow);
+    --moon-base: rgb(255 255 255 / 16%);
   }
   .side :global(.pair-moon) {
     width: 44px;
@@ -416,7 +437,7 @@ const PLUSES = [
     max-width: none;
     margin-top: clamp(64px, 10vw, 140px);
     padding: clamp(64px, 10vw, 140px) 24px;
-    background: var(--ink);
+    background: radial-gradient(circle at 80% 20%, var(--sky-halo) 0%, var(--sky-deep) 55%, var(--ink) 100%);
     color: var(--moon);
   }
   .about > * {
